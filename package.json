@@ -1,0 +1,52 @@
+{
+    "name": "nrg-ngx-cli",
+    "version": "0.0.0",
+    "description": "An improved AngularX CLI. Uses the latest @angular/cli to create basic components, enriched by a user custom configuration and specific commands.",
+    "main": "dist/index.js",
+    "scripts": {
+        "run-dev": "tsc --watch",
+        "build": "tsc"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/caiusCitiriga/nrg-ngx-cli.git"
+    },
+    "keywords": [
+        "angular",
+        "ng",
+        "ngx",
+        "energy",
+        "cli",
+        "@angular/cli",
+        "angular-cli",
+        "angular_cli",
+        "angularcli",
+        "angular2",
+        "angularX",
+        "scaffold",
+        "domain-configuration",
+        "domain",
+        "configuration",
+        "project-scaffold",
+        "components",
+        "services",
+        "pipes",
+        "modules",
+        "directives",
+        "crud",
+        "default",
+        "basic"
+    ],
+    "author": "Caius Citiriga",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/caiusCitiriga/nrg-ngx-cli/issues"
+    },
+    "homepage": "https://github.com/caiusCitiriga/nrg-ngx-cli#readme",
+    "devDependencies": {
+        "typescript": "^2.7.2"
+    },
+    "dependencies": {
+        "@angular/cli": "^1.7.0"
+    }
+}
