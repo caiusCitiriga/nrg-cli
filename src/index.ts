@@ -3,32 +3,93 @@ import * as process from 'process';
 
 import 'rxjs/add/operator/filter';
 
-import { UI } from './services/ui.service';
+import { Parser } from './core/parser.core';
+import { Dispatcher } from './core/dispatcher.core';
+import { DispatcherOptions } from './interfaces/dispatcher-options.interface';
 
 export class EnergyCLI {
-    private args: string[] = [];
+    private _parser: Parser;
+    private _dispatcher: Dispatcher;
+
+    private dispatcherOptions: DispatcherOptions[];
 
     public constructor() {
+        this.dispatcherOptions = [
+            {
+                command: 'new',
+                desc: 'Generates a new AngularX project',
+                flags: [],
+                aliases: ['n'],
+                action: (flags) => {
+                    console.log(flags);
+                },
+            },
+            {
+                command: 'generate',
+                desc: 'Generates a new item',
+                flags: [
+                    {
+                        flag: 'c',
+                        desc: 'Angular CLI wrap for component'
+                    },
+                    {
+                        flag: 's',
+                        desc: 'Angular CLI wrap for service'
+                    },
+                    {
+                        flag: 'p',
+                        desc: 'Angular CLI wrap for pipe'
+                    },
+                    {
+                        flag: 'g',
+                        desc: 'Angular CLI wrap for guard'
+                    },
+                    {
+                        flag: 'm',
+                        desc: 'Angular CLI wrap for module'
+                    },
+                    {
+                        flag: 'd',
+                        desc: 'Angular CLI wrap for directive'
+                    },
+                    {
+                        flag: 'entity',
+                        desc: 'Creates a new entity inside the entities folder'
+                    },
+                    {
+                        flag: 'conf',
+                        desc: 'Creates a new configuration file inside the configs folder'
+                    },
+                    {
+                        flag: 'const',
+                        desc: 'Creates a new constant file inside the consts folder'
+                    },
+                    {
+                        flag: 'core',
+                        desc: 'Creates a new core file inside the core folder'
+                    },
+                    {
+                        flag: 'enum',
+                        desc: 'Creates a new enum inside the enums folder'
+                    },
+                    {
+                        flag: 'interface',
+                        desc: 'Creates a new interface inside the interfaces folder'
+                    },
+                ],
+                aliases: ['g'],
+                action: (flags) => {
+
+                },
+            },
+        ]
+
+        this._parser = new Parser();
+        this._dispatcher = new Dispatcher();
     }
 
     public start() {
-        this.cleanupArgs();
-
-        if (this.args.length) {
-            this.dispatch();
-            return;
-        }
-    }
-
-    private dispatch() {
-        console.log(this.args[0]);
-    }
-
-
-    private cleanupArgs() {
-        this.args = process.argv;
-        this.args.shift();
-        this.args.shift();
+        this._dispatcher.dispatch(this.dispatcherOptions, this._parser.getCommandSet());
     }
 }
 

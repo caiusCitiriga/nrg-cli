@@ -18,3 +18,4 @@ exports.CORE_COMMANDS = {
         aliases: ['g']
     },
 };
+//# sourceMappingURL=core-commands.const.js.map
