@@ -1,20 +1,11 @@
 #! /usr/bin/env node
-import * as process from 'process';
-
-import 'rxjs/add/operator/filter';
-
-import { Parser } from './core/dispatcher/parser.core';
-import { Dispatcher } from './core/dispatcher/dispatcher.core';
-
-import { DispatcherOptions } from './interfaces/dispatcher-options.interface';
-
-export class EnergyCLI {
-    private _parser: Parser;
-    private _dispatcher: Dispatcher;
-
-    private dispatcherOptions: DispatcherOptions[];
-
-    public constructor() {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("rxjs/add/operator/filter");
+const parser_core_1 = require("./core/dispatcher/parser.core");
+const dispatcher_core_1 = require("./core/dispatcher/dispatcher.core");
+class EnergyCLI {
+    constructor() {
         this.dispatcherOptions = [
             {
                 command: 'new',
@@ -80,19 +71,17 @@ export class EnergyCLI {
                 ],
                 aliases: ['g'],
                 action: (flags) => {
-
                 },
             },
-        ]
-
-        this._parser = new Parser();
-        this._dispatcher = new Dispatcher();
+        ];
+        this._parser = new parser_core_1.Parser();
+        this._dispatcher = new dispatcher_core_1.Dispatcher();
     }
-
-    public start(): void {
+    start() {
         this._dispatcher.dispatch(this.dispatcherOptions, this._parser.getCommandSet());
     }
 }
-
+exports.EnergyCLI = EnergyCLI;
 const NRG = new EnergyCLI();
 NRG.start();
+//# sourceMappingURL=index.js.map
