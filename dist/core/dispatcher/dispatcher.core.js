@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const ui_service_1 = require("../../services/ui.service");
+const ui_core_1 = require("../../core/ui.core");
 class Dispatcher {
     /**
      * Takes the configuration containing all the available commands and the current command set.
@@ -22,10 +22,11 @@ class Dispatcher {
         });
         //  Last check, if action is still null, fire an invalid command error
         if (!action) {
-            ui_service_1.UI.error('Invalid command');
+            ui_core_1.UI.error('Invalid command');
             return;
         }
         action(commandSet.flags); // Exec the action providing the flags
+        ui_core_1.UI.success('Execution completed');
     }
 }
 exports.Dispatcher = Dispatcher;

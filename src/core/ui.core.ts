@@ -4,20 +4,22 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import * as chalk from 'chalk';
 import * as process from 'process';
+import * as SCLI from 'smart-cli/dist';
 
 export class UI {
     public static printKeyValuePairs(set: { key: string, value: string }[], space_char: string = ' ') {
-        let longestKeyLen = set[0].key.length;
-        set.forEach(s => longestKeyLen = s.key.length > longestKeyLen ? s.key.length : longestKeyLen);
+        SCLI.SmartCLI.GenericOutput.printKeyValue(set);
+        // let longestKeyLen = set[0].key.length;
+        // set.forEach(s => longestKeyLen = s.key.length > longestKeyLen ? s.key.length : longestKeyLen);
 
-        set.forEach(pair => {
-            let spaces = space_char;
-            for (let i = 0; i < (longestKeyLen - pair.key.length); i++) {
-                spaces += space_char;
-            }
+        // set.forEach(pair => {
+        //     let spaces = space_char;
+        //     for (let i = 0; i < (longestKeyLen - pair.key.length); i++) {
+        //         spaces += space_char;
+        //     }
 
-            console.log(`- ${chalk.yellow(pair.key)}: ${spaces + pair.value}`);
-        });
+        //     console.log(`- ${chalk.yellow(pair.key)}: ${spaces + pair.value}`);
+        // });
     }
 
     public static askUserInput(question: string, callback?: (data: any) => void, surroundInNewLines?: boolean): void {
@@ -51,7 +53,7 @@ export class UI {
         if (surroundInNewlines) {
             console.log();
         }
-        console.log(chalk.gray(`${string}`));
+        SCLI.SmartCLI.GenericOutput.printMessage(string);
         if (surroundInNewlines) {
             console.log();
         }
@@ -61,7 +63,8 @@ export class UI {
         if (surroundInNewlines) {
             console.log();
         }
-        console.log(chalk.green(`\u2713 ${string}`));
+
+        SCLI.SmartCLI.GenericOutput.printInfo(`\u2713 ${string}`);
         if (surroundInNewlines) {
             console.log();
         }
@@ -71,7 +74,7 @@ export class UI {
         if (surroundInNewlines) {
             console.log();
         }
-        console.log(chalk.yellow(`WARN: ${string}`));
+        SCLI.SmartCLI.GenericOutput.printWarning(string);
         if (surroundInNewlines) {
             console.log();
         }
@@ -81,7 +84,7 @@ export class UI {
         if (surroundInNewlines) {
             console.log();
         }
-        console.log(chalk.red(`ERROR: ${string} \n`));
+        SCLI.SmartCLI.GenericOutput.printError(string);
         if (surroundInNewlines) {
             console.log();
         }

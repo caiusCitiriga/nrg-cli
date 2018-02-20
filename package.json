@@ -2,6 +2,8 @@
     "name": "nrg-ngx-cli",
     "version": "0.0.0",
     "description": "An improved AngularX CLI. Uses the latest @angular/cli to create basic components, enriched by a user custom configuration and specific commands.",
+    "author": "Caius Citiriga",
+    "license": "MIT",
     "main": "dist/index.js",
     "bin": {
         "nrg": "./dist/index.js"
@@ -10,9 +12,22 @@
         "run-dev": "tsc --watch",
         "build": "tsc"
     },
+    "dependencies": {
+        "@angular/cli": "1.7.0",
+        "chalk": "^2.3.1",
+        "smart-cli": "0.3.2"
+    },
+    "devDependencies": {
+        "@types/chalk": "^2.2.0",
+        "typescript": "2.7.2"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/caiusCitiriga/nrg-ngx-cli.git"
+    },
+    "homepage": "https://github.com/caiusCitiriga/nrg-ngx-cli#readme",
+    "bugs": {
+        "url": "https://github.com/caiusCitiriga/nrg-ngx-cli/issues"
     },
     "keywords": [
         "angular",
@@ -39,20 +54,5 @@
         "crud",
         "default",
         "basic"
-    ],
-    "author": "Caius Citiriga",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/caiusCitiriga/nrg-ngx-cli/issues"
-    },
-    "homepage": "https://github.com/caiusCitiriga/nrg-ngx-cli#readme",
-    "devDependencies": {
-        "@types/chalk": "0.4.31",
-        "typescript": "2.7.2"
-    },
-    "dependencies": {
-        "@angular/cli": "1.7.0",
-        "chalk": "2.1.0",
-        "smart-cli": "0.3.2"
-    }
+    ]
 }

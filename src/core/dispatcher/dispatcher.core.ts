@@ -1,9 +1,11 @@
-import { UI } from "../../services/ui.service";
+import * as SCLI from "smart-cli/dist";
 
 import { SeverityEnum } from "../../enums/severity.enum";
 
 import { DispatcherOptions } from "../../interfaces/dispatcher-options.interface";
 import { DispatcherCommandSet } from "../../interfaces/dispatcher-command-set.interface";
+
+import { UI } from "../../core/ui.core";
 
 export class Dispatcher {
     /**
@@ -34,5 +36,6 @@ export class Dispatcher {
         }
 
         action(commandSet.flags);   // Exec the action providing the flags
+        UI.success('Execution completed');
     }
 }
