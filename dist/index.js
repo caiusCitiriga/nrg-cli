@@ -2,8 +2,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("rxjs/add/operator/filter");
-const parser_core_1 = require("./core/parser.core");
-const dispatcher_core_1 = require("./core/dispatcher.core");
+const parser_core_1 = require("./core/dispatcher/parser.core");
+const dispatcher_core_1 = require("./core/dispatcher/dispatcher.core");
 class EnergyCLI {
     constructor() {
         this.dispatcherOptions = [
@@ -71,7 +71,6 @@ class EnergyCLI {
                 ],
                 aliases: ['g'],
                 action: (flags) => {
-                    console.log(flags);
                 },
             },
         ];

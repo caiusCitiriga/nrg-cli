@@ -1,7 +1,9 @@
-import { UI } from "../services/ui.service";
-import { SeverityEnum } from "../enums/severity.enum";
-import { DispatcherOptions } from "../interfaces/dispatcher-options.interface";
-import { DispatcherCommandSet } from "../entities/dispatcher-command-set.entity";
+import { UI } from "../../services/ui.service";
+
+import { SeverityEnum } from "../../enums/severity.enum";
+
+import { DispatcherOptions } from "../../interfaces/dispatcher-options.interface";
+import { DispatcherCommandSet } from "../../interfaces/dispatcher-command-set.interface";
 
 export class Dispatcher {
     /**

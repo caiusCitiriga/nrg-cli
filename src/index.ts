@@ -3,8 +3,8 @@ import * as process from 'process';
 
 import 'rxjs/add/operator/filter';
 
-import { Parser } from './core/parser.core';
-import { Dispatcher } from './core/dispatcher.core';
+import { Parser } from './core/dispatcher/parser.core';
+import { Dispatcher } from './core/dispatcher/dispatcher.core';
 import { DispatcherOptions } from './interfaces/dispatcher-options.interface';
 
 export class EnergyCLI {
