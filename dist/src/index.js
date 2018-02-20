@@ -1,36 +1,27 @@
 #! /usr/bin/env node
-import * as process from 'process';
-
-import 'rxjs/add/operator/filter';
-
-import { UI } from './services/ui.service';
-
-export class EnergyCLI {
-    private args: string[] = [];
-
-    public constructor() {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("rxjs/add/operator/filter");
+class EnergyCLI {
+    constructor() {
+        this.args = [];
     }
-
-    public start() {
+    start() {
         this.cleanupArgs();
-
         if (this.args.length) {
             this.dispatch();
             return;
         }
     }
-
-    private dispatch() {
+    dispatch() {
         console.log(this.args[0]);
     }
-
-
-    private cleanupArgs() {
+    cleanupArgs() {
         this.args = process.argv;
         this.args.shift();
         this.args.shift();
     }
 }
-
+exports.EnergyCLI = EnergyCLI;
 const NRG = new EnergyCLI();
 NRG.start();

@@ -3,6 +3,9 @@
     "version": "0.0.0",
     "description": "An improved AngularX CLI. Uses the latest @angular/cli to create basic components, enriched by a user custom configuration and specific commands.",
     "main": "dist/index.js",
+    "bin": {
+        "nrg": "./dist/index.js"
+    },
     "scripts": {
         "run-dev": "tsc --watch",
         "build": "tsc"
@@ -44,9 +47,12 @@
     },
     "homepage": "https://github.com/caiusCitiriga/nrg-ngx-cli#readme",
     "devDependencies": {
-        "typescript": "^2.7.2"
+        "@types/chalk": "0.4.31",
+        "typescript": "2.7.2"
     },
     "dependencies": {
-        "@angular/cli": "^1.7.0"
+        "@angular/cli": "1.7.0",
+        "chalk": "2.1.0",
+        "smart-cli": "0.3.2"
     }
 }
