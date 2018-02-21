@@ -7,10 +7,40 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "NRG h",
             "program": "${workspaceFolder}/dist/index.js",
             "args": [
-                "n"
+                "h"
+            ],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "NRG h -generate",
+            "program": "${workspaceFolder}/dist/index.js",
+            "args": [
+                "h",
+                "-generate"
+            ],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "NRG h -new",
+            "program": "${workspaceFolder}/dist/index.js",
+            "args": [
+                "h",
+                "-new"
+            ],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "NRG g -c",
+            "program": "${workspaceFolder}/dist/index.js",
+            "args": [
+                "g",
+                "c"
             ],
         }
     ]

@@ -26,7 +26,6 @@ class Dispatcher {
             return;
         }
         action(commandSet.flags); // Exec the action providing the flags
-        ui_core_1.UI.success('Execution completed');
     }
 }
 exports.Dispatcher = Dispatcher;

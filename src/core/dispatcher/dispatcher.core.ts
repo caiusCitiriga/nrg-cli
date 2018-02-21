@@ -36,6 +36,5 @@ export class Dispatcher {
         }
 
         action(commandSet.flags);   // Exec the action providing the flags
-        UI.success('Execution completed');
     }
 }
