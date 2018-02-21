@@ -1,5 +1,5 @@
 {
-    "name": "nrg-ngx-cli",
+    "name": "@nrg-ngx/cli",
     "version": "0.0.0",
     "description": "An improved AngularX CLI. Uses the latest @angular/cli to create basic components, enriched by a user custom configuration and specific commands.",
     "author": "Caius Citiriga",
@@ -14,11 +14,9 @@
     },
     "dependencies": {
         "@angular/cli": "1.7.0",
-        "chalk": "^2.3.1",
-        "smart-cli": "0.3.2"
+        "smart-cli": "0.3.3"
     },
     "devDependencies": {
-        "@types/chalk": "^2.2.0",
         "typescript": "2.7.2"
     },
     "repository": {
