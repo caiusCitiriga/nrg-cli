@@ -80,7 +80,7 @@ export class EnergyCLI {
                 ],
                 aliases: ['g'],
                 action: (flags) => {
-
+                    console.log('Yolo');
                 },
             },
         ]

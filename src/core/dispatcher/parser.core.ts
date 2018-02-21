@@ -25,7 +25,7 @@ export class Parser {
      * Extracts the command from the progcess.argv
      */
     private extractRAWCommand(): string {
-        return this.userRanArgs[0] + this.userRanArgs[1];
+        return this.userRanArgs[0] + (this.userRanArgs[1] ? this.userRanArgs[1] : '');
     }
 
     /**

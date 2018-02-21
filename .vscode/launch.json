@@ -10,8 +10,7 @@
             "name": "Launch Program",
             "program": "${workspaceFolder}/dist/index.js",
             "args": [
-                "g",
-                "-c"
+                "n"
             ],
         }
     ]
