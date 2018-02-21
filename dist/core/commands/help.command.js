@@ -43,13 +43,13 @@ class HelpCommand {
             dist_1.SmartCLI.GenericOutput.printBoxedTitle('nrg ' + concernedDispatcherOpts.command);
             dist_1.SmartCLI.GenericOutput.printMessage(concernedDispatcherOpts.desc);
             if (kvp.length) {
-                dist_1.SmartCLI.GenericOutput.printMessage(`Below, all the ${kvp.length} aliases:`);
+                dist_1.SmartCLI.GenericOutput.printMessage(`Below, all the ${kvp.length} flags:`);
                 console.log();
                 dist_1.SmartCLI.GenericOutput.printKeyValue(kvp);
                 console.log();
                 return;
             }
-            dist_1.SmartCLI.GenericOutput.printMessage(`This command runs without any alias`);
+            dist_1.SmartCLI.GenericOutput.printMessage(`This command runs without any flag`);
             console.log();
         });
     }

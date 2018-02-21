@@ -56,14 +56,14 @@ export class HelpCommand implements CommandRunner {
             SmartCLI.GenericOutput.printMessage(concernedDispatcherOpts.desc);
 
             if (kvp.length) {
-                SmartCLI.GenericOutput.printMessage(`Below, all the ${kvp.length} aliases:`);
+                SmartCLI.GenericOutput.printMessage(`Below, all the ${kvp.length} flags:`);
                 console.log();
                 SmartCLI.GenericOutput.printKeyValue(kvp);
                 console.log();
                 return;
             }
 
-            SmartCLI.GenericOutput.printMessage(`This command runs without any alias`);
+            SmartCLI.GenericOutput.printMessage(`This command runs without any flag`);
             console.log();
         });
     }
