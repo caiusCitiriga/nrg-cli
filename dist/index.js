@@ -11,36 +11,35 @@ const default_dispatcher_options_const_1 = require("./consts/default-dispatcher-
 const factory_core_1 = require("./core/factory/factory.core");
 class EnergyCLI {
     constructor() {
-        //  Shitty TS doesn't understand that in strict mode these instances can be intialized into another method
-        //  Need to do it ALL here -,-''
-        //  Mock these instances at first, they will be assigned by the factory
-        this._parser = {};
-        this._dispatcher = {};
-        this._helpCommand = {};
-        this._generateCommand = {};
         //  Core class properties initialization
-        this._dispatcherOptions = this.getDispatcherOptions();
+        this._dispatcherOptions = default_dispatcher_options_const_1.DEFAULT_DISPATCHER_OPTS.options;
         this._parentCtorInitialized = new BehaviorSubject_1.BehaviorSubject(false);
         //  Init factory and check that is successfully initialized
         this._factory = new factory_core_1.Factory(this._dispatcherOptions, this._parentCtorInitialized);
         if (!(this._factory instanceof factory_core_1.Factory)) {
             throw new Error('Couldn\'t initialize the FACTORY');
         }
-        //  Wait the value from all the instances and bind them all at once. Then unsubscribe by setting the val to false
         this._parser = this._factory.getInstance(available_instances_enum_1.AvailableInstances.parser);
         this._dispatcher = this._factory.getInstance(available_instances_enum_1.AvailableInstances.dispatcher);
         this._helpCommand = this._factory.getInstance(available_instances_enum_1.AvailableInstances.helpCommand);
         this._generateCommand = this._factory.getInstance(available_instances_enum_1.AvailableInstances.generateCommand);
+        const callbacksBinding = {
+            newCmd: (flags) => console.log('Called new command'),
+            initCmd: (flags) => console.log('Called init command'),
+            helpCmd: (flags) => this._helpCommand.run(this._dispatcherOptions, flags),
+            generateCmd: (flags) => this._generateCommand.run(this._dispatcherOptions, flags),
+        };
+        this.assignActionsToDispatcherCommands(callbacksBinding);
         //  Tell the dispatcher that it can start dispatching commands from now on
         this._parentCtorInitialized.next(true);
         this._dispatcher.dispatch(this._dispatcherOptions, this._parser.getCommandSet());
     }
-    getDispatcherOptions() {
+    assignActionsToDispatcherCommands(bindings) {
         const dispatcherOPTS = default_dispatcher_options_const_1.DEFAULT_DISPATCHER_OPTS;
-        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.new.command, (flags) => console.log('called new command'));
-        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.init.command, (flags) => console.log('called init command'));
-        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.help.command, (flags) => console.log('called help command'));
-        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.generate.command, (flags) => console.log('called generate command'));
+        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.new.command, bindings.newCmd);
+        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.init.command, bindings.initCmd);
+        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.help.command, bindings.helpCmd);
+        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.generate.command, bindings.generateCmd);
         return dispatcherOPTS.options;
     }
 }

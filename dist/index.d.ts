@@ -10,5 +10,5 @@ export declare class EnergyCLI {
     private _dispatcherOptions;
     private _parentCtorInitialized;
     constructor();
-    private getDispatcherOptions();
+    private assignActionsToDispatcherCommands(bindings);
 }
