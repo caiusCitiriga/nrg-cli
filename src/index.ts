@@ -8,6 +8,7 @@ import 'rxjs/add/operator/takeWhile';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
+import { CORE_COMMANDS } from './consts/core-commands.const';
 import { AvailableInstances } from './enums/available-instances.enum';
 
 import { DEFAULT_DISPATCHER_OPTS } from './consts/default-dispatcher-options.const';
@@ -23,7 +24,6 @@ import { GenerateCommand } from './core/commands/generate.command';
 import { CommandFlag } from './interfaces/command-flag.interface';
 import { CommandRunner } from './interfaces/command-runner.interface';
 import { DispatcherOptions } from './interfaces/dispatcher-options.interface';
-import { CORE_COMMANDS } from './consts/core-commands.const';
 
 export class EnergyCLI {
     private _parser: Parser;
@@ -46,13 +46,7 @@ export class EnergyCLI {
         this._generateCommand = {} as GenerateCommand;
 
         //  Core class properties initialization
-        const dispatcherOPTS = DEFAULT_DISPATCHER_OPTS;
-        dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.new.command, (flags) => console.log('called new command'));
-        dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.init.command, (flags) => console.log('called init command'));
-        dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.help.command, (flags) => console.log('called help command'));
-        dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.generate.command, (flags) => console.log('called generate command'));
-        this._dispatcherOptions = dispatcherOPTS.options;
-
+        this._dispatcherOptions = this.getDispatcherOptions();
         this._parentCtorInitialized = new BehaviorSubject(false);
 
         //  Init factory and check that is successfully initialized
@@ -60,7 +54,6 @@ export class EnergyCLI {
         if (!(this._factory instanceof Factory)) {
             throw new Error('Couldn\'t initialize the FACTORY');
         }
-        (global as any)['factory'] = this._factory;
 
         //  Wait the value from all the instances and bind them all at once. Then unsubscribe by setting the val to false
         this._parser = this._factory.getInstance<Parser>(AvailableInstances.parser);
@@ -71,6 +64,15 @@ export class EnergyCLI {
         //  Tell the dispatcher that it can start dispatching commands from now on
         this._parentCtorInitialized.next(true);
         this._dispatcher.dispatch(this._dispatcherOptions, this._parser.getCommandSet());
+    }
+
+    private getDispatcherOptions(): DispatcherOptions[] {
+        const dispatcherOPTS = DEFAULT_DISPATCHER_OPTS;
+        dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.new.command, (flags) => console.log('called new command'));
+        dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.init.command, (flags) => console.log('called init command'));
+        dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.help.command, (flags) => console.log('called help command'));
+        dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.generate.command, (flags) => console.log('called generate command'));
+        return dispatcherOPTS.options;
     }
 }
 
