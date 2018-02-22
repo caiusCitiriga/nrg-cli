@@ -1,92 +1,47 @@
 #! /usr/bin/env node
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+require("rxjs/add/observable/zip");
 require("rxjs/add/operator/filter");
-const parser_core_1 = require("./core/dispatcher/parser.core");
-const dispatcher_core_1 = require("./core/dispatcher/dispatcher.core");
-const help_command_1 = require("./core/commands/help.command");
+require("rxjs/add/operator/takeWhile");
+const BehaviorSubject_1 = require("rxjs/BehaviorSubject");
+const available_instances_enum_1 = require("./enums/available-instances.enum");
+const default_dispatcher_options_const_1 = require("./consts/default-dispatcher-options.const");
+const factory_core_1 = require("./core/factory/factory.core");
+const core_commands_const_1 = require("./consts/core-commands.const");
 class EnergyCLI {
     constructor() {
-        this.dispatcherOptions = [
-            {
-                command: 'init',
-                desc: 'Initializes a new AngularX project inside the current folder',
-                flags: [],
-                aliases: ['i'],
-                action: (flags) => {
-                },
-            },
-            {
-                command: 'new',
-                desc: 'Generates a new AngularX project',
-                flags: [],
-                aliases: ['n'],
-                action: (flags) => {
-                },
-            },
-            {
-                command: 'generate',
-                desc: 'Generates a new item',
-                flags: [
-                    {
-                        flag: 'c',
-                        desc: 'Angular CLI wrap for component'
-                    },
-                    {
-                        flag: 's',
-                        desc: 'Angular CLI wrap for service'
-                    },
-                    {
-                        flag: 'p',
-                        desc: 'Angular CLI wrap for pipe'
-                    },
-                    {
-                        flag: 'g',
-                        desc: 'Angular CLI wrap for guard'
-                    },
-                    {
-                        flag: 'm',
-                        desc: 'Angular CLI wrap for module'
-                    },
-                    {
-                        flag: 'd',
-                        desc: 'Angular CLI wrap for directive'
-                    },
-                    {
-                        flag: 'item',
-                        desc: 'Creates a new project item.'
-                    }
-                ],
-                aliases: ['g'],
-                action: (flags) => {
-                },
-            },
-            {
-                command: 'help',
-                desc: 'Shows the help for each command. Type help [-command] to see details',
-                flags: [
-                    {
-                        flag: 'new',
-                        desc: 'Shows flags and detailed info about the NEW command'
-                    },
-                    {
-                        flag: 'generate',
-                        desc: 'Shows flags and detailed info about the GENERATE command'
-                    }
-                ],
-                aliases: ['h'],
-                action: (flags) => this._helpCommand.run(this.dispatcherOptions, flags)
-            }
-        ];
-        this._parser = new parser_core_1.Parser();
-        this._dispatcher = new dispatcher_core_1.Dispatcher();
-        this._helpCommand = new help_command_1.HelpCommand();
-    }
-    start() {
-        this._dispatcher.dispatch(this.dispatcherOptions, this._parser.getCommandSet());
+        //  Shitty TS doesn't understand that in strict mode these instances can be intialized into another method
+        //  Need to do it ALL here -,-''
+        //  Mock these instances at first, they will be assigned by the factory
+        this._parser = {};
+        this._dispatcher = {};
+        this._helpCommand = {};
+        this._generateCommand = {};
+        //  Core class properties initialization
+        const dispatcherOPTS = default_dispatcher_options_const_1.DEFAULT_DISPATCHER_OPTS;
+        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.new.command, (flags) => console.log('called new command'));
+        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.init.command, (flags) => console.log('called init command'));
+        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.help.command, (flags) => console.log('called help command'));
+        dispatcherOPTS.assignCallbackToCommand(core_commands_const_1.CORE_COMMANDS.generate.command, (flags) => console.log('called generate command'));
+        this._dispatcherOptions = dispatcherOPTS.options;
+        this._parentCtorInitialized = new BehaviorSubject_1.BehaviorSubject(false);
+        //  Init factory and check that is successfully initialized
+        this._factory = new factory_core_1.Factory(this._dispatcherOptions, this._parentCtorInitialized);
+        if (!(this._factory instanceof factory_core_1.Factory)) {
+            throw new Error('Couldn\'t initialize the FACTORY');
+        }
+        global['factory'] = this._factory;
+        //  Wait the value from all the instances and bind them all at once. Then unsubscribe by setting the val to false
+        this._parser = this._factory.getInstance(available_instances_enum_1.AvailableInstances.parser);
+        this._dispatcher = this._factory.getInstance(available_instances_enum_1.AvailableInstances.dispatcher);
+        this._helpCommand = this._factory.getInstance(available_instances_enum_1.AvailableInstances.helpCommand);
+        this._generateCommand = this._factory.getInstance(available_instances_enum_1.AvailableInstances.generateCommand);
+        //  Tell the dispatcher that it can start dispatching commands from now on
+        this._parentCtorInitialized.next(true);
+        this._dispatcher.dispatch(this._dispatcherOptions, this._parser.getCommandSet());
     }
 }
 exports.EnergyCLI = EnergyCLI;
 const NRG = new EnergyCLI();
-NRG.start();
 //# sourceMappingURL=index.js.map

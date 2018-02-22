@@ -1,7 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const ui_core_1 = require("../../core/ui.core");
+const core_commands_const_1 = require("../../consts/core-commands.const");
 class Dispatcher {
+    constructor(parentCtorInitialized) {
+        this._parentCtorInitialized = parentCtorInitialized;
+    }
     /**
      * Takes the configuration containing all the available commands and the current command set.
      * It searches the command through all the available commands in the configuration.
@@ -22,7 +25,9 @@ class Dispatcher {
         });
         //  Last check, if action is still null, fire an invalid command error
         if (!action) {
-            ui_core_1.UI.error('Invalid command');
+            this._parentCtorInitialized
+                .filter(res => !!res)
+                .subscribe(res => configuration.find(conf => conf.command === core_commands_const_1.CORE_COMMANDS.help.command).action([]));
             return;
         }
         action(commandSet.flags); // Exec the action providing the flags

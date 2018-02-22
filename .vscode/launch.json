@@ -7,6 +7,13 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "NRG",
+            "program": "${workspaceFolder}/dist/index.js",
+            "args": [],
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "NRG h",
             "program": "${workspaceFolder}/dist/index.js",
             "args": [
