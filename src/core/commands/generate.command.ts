@@ -157,7 +157,7 @@ export class GenerateCommand implements CommandRunner {
             return;
         };
 
-        let fileExtension = explodedFileByDot[explodedFileByDot.length - 1];
+        GenerateCommand.itemToGenerate.extension = explodedFileByDot[explodedFileByDot.length - 1];
         GenerateCommand.startFileGenerationForThisItem();
     }
 
@@ -201,13 +201,12 @@ export class GenerateCommand implements CommandRunner {
 
             } else {
                 const filename = `${previousFoldersStack + GenerateCommand.itemToGenerate.filename}.${AvailableItemTypes[GenerateCommand.itemToGenerate.type]}.${GenerateCommand.itemToGenerate.extension}`;
-
                 fs.writeFile(filename, null, (err: Error) => {
                     if (err) {
                         throw new Error(`Error creating the item: ${err.message}`);
                     }
 
-                    UI.success(`File ${GenerateCommand.itemToGenerate.filename}.${GenerateCommand.itemToGenerate.extension} generated`);
+                    UI.success(`File ${GenerateCommand.itemToGenerate.filename}.${AvailableItemTypes[GenerateCommand.itemToGenerate.type]}.${GenerateCommand.itemToGenerate.extension} generated`);
                 });
             }
         } catch (e) {

@@ -134,7 +134,7 @@ class GenerateCommand {
             return;
         }
         ;
-        let fileExtension = explodedFileByDot[explodedFileByDot.length - 1];
+        GenerateCommand.itemToGenerate.extension = explodedFileByDot[explodedFileByDot.length - 1];
         GenerateCommand.startFileGenerationForThisItem();
     }
     static extractMultipleUserCustomExtensions(part) {
@@ -176,7 +176,7 @@ class GenerateCommand {
                     if (err) {
                         throw new Error(`Error creating the item: ${err.message}`);
                     }
-                    ui_core_1.UI.success(`File ${GenerateCommand.itemToGenerate.filename}.${GenerateCommand.itemToGenerate.extension} generated`);
+                    ui_core_1.UI.success(`File ${GenerateCommand.itemToGenerate.filename}.${available_item_types_enum_1.AvailableItemTypes[GenerateCommand.itemToGenerate.type]}.${GenerateCommand.itemToGenerate.extension} generated`);
                 });
             }
         }
