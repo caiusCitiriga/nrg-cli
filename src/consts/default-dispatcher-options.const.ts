@@ -10,7 +10,6 @@ export const DEFAULT_DISPATCHER_OPTS: {
         assignCallbackToCommand: (command: string, callback: (flags: CommandFlag[]) => void) => {
             (DEFAULT_DISPATCHER_OPTS.options.find(opt => opt.command === command) as DispatcherOptions).action = callback;
         },
-
         options: [
             {
                 command: 'init',
