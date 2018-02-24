@@ -20,26 +20,26 @@ exports.CORE_COMMANDS = {
         command: 'generate',
         aliases: ['g'],
         flags: {
-            c: {
-                value: 'c'
+            dto: {
+                value: 'dto'
             },
-            s: {
-                value: 's'
+            core: {
+                value: 'core'
             },
-            p: {
-                value: 'p'
+            enum: {
+                value: 'enum'
             },
-            g: {
-                value: 'g'
+            const: {
+                value: 'const'
             },
-            m: {
-                value: 'm'
+            entity: {
+                value: 'entity'
             },
-            d: {
-                value: 'd'
+            service: {
+                value: 'service'
             },
-            item: {
-                value: 'item'
+            interface: {
+                value: 'interface'
             },
         }
     },

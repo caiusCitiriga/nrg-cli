@@ -18,25 +18,25 @@ export declare const CORE_COMMANDS: {
         command: string;
         aliases: string[];
         flags: {
-            c: {
+            dto: {
                 value: string;
             };
-            s: {
+            core: {
                 value: string;
             };
-            p: {
+            enum: {
                 value: string;
             };
-            g: {
+            const: {
                 value: string;
             };
-            m: {
+            entity: {
                 value: string;
             };
-            d: {
+            service: {
                 value: string;
             };
-            item: {
+            interface: {
                 value: string;
             };
         };

@@ -1,5 +1,6 @@
 import { DispatcherCommandSet } from "../../interfaces/dispatcher-command-set.interface";
 export declare class Parser {
+    private flagDelimiter;
     private userRanArgs;
     private commandSet;
     constructor();

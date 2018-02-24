@@ -9,12 +9,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
+const Subject_1 = require("rxjs/Subject");
 const dist_1 = require("smart-cli/dist");
-const core_commands_const_1 = require("../../consts/core-commands.const");
-const available_item_types_enum_1 = require("../../enums/available-item-types.enum");
 const ui_core_1 = require("../ui.core");
 const defaults_conf_1 = require("../../config/defaults.conf");
-const Subject_1 = require("rxjs/Subject");
+const core_commands_const_1 = require("../../consts/core-commands.const");
+const available_item_types_enum_1 = require("../../enums/available-item-types.enum");
 //  Since is generated getting inputs from user, the reference to "GenerateCommand" gets lost.
 //  Needs to be therefore static inside
 class GenerateCommand {
@@ -33,8 +33,26 @@ class GenerateCommand {
             ui_core_1.UI.error('Your are not inside an Energy project. Cannot run this command here.');
             return;
         }
-        switch (flags[0].flag.split(':')[0]) {
-            case core_commands_const_1.CORE_COMMANDS.generate.flags.item.value:
+        //  Take the part before any -flag:options. The flag itself
+        switch (flags[0] ? flags[0].flag.split(':')[0] : null) {
+            case core_commands_const_1.CORE_COMMANDS.generate.flags.dto.value:
+                const opts = flags[0].flag.split(':');
+                opts.shift();
+                console.log(`Filename: ${opts.join().split(',')[0]}; Extension: ${opts.join().split(',')[1]}`);
+                return;
+            case core_commands_const_1.CORE_COMMANDS.generate.flags.core.value:
+            // throw new Error('Shorhand for CORE not yet implemented');
+            case core_commands_const_1.CORE_COMMANDS.generate.flags.enum.value:
+            // throw new Error('Shorhand for ENUM not yet implemented');
+            case core_commands_const_1.CORE_COMMANDS.generate.flags.const.value:
+            // throw new Error('Shorhand for CONST not yet implemented');
+            case core_commands_const_1.CORE_COMMANDS.generate.flags.entity.value:
+            // throw new Error('Shorhand for ENTITY not yet implemented');
+            case core_commands_const_1.CORE_COMMANDS.generate.flags.service.value:
+            // throw new Error('Shorhand for SERVICE not yet implemented');
+            case core_commands_const_1.CORE_COMMANDS.generate.flags.interface.value:
+            // throw new Error('Shorhand for INTERFACE not yet implemented');
+            default:
                 GenerateCommand.currentFlags = flags[0];
                 GenerateCommand.generateItem();
                 break;
@@ -179,7 +197,7 @@ class GenerateCommand {
         return customPart;
     }
     static startFileGenerationForThisItem() {
-        const jobDone = new Subject_1.Subject(false);
+        const jobDone = new Subject_1.Subject();
         try {
             const foldersStack = GenerateCommand.composeFoldersStack();
             if (GenerateCommand.itemToGenerate.type === available_item_types_enum_1.AvailableItemTypes.custom) {
@@ -263,11 +281,13 @@ class GenerateCommand {
         return filename;
     }
     static getCLIConf() {
-        const conf = JSON.parse(fs.readFileSync(process.cwd() + path.sep + defaults_conf_1.DEFAULTS.cliConfigurationFilename).toString());
-        if (!conf) {
+        try {
+            const conf = JSON.parse(fs.readFileSync(process.cwd() + path.sep + defaults_conf_1.DEFAULTS.cliConfigurationFilename).toString());
+            return conf;
+        }
+        catch (e) {
             throw new Error('Invalid CLI configuration');
         }
-        return conf;
     }
     //  Askers
     static askForItemFilename() {

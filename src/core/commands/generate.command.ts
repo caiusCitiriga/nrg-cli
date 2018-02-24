@@ -1,22 +1,21 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { Subject } from 'rxjs/Subject';
 import { SmartCLI } from "smart-cli/dist";
 import { Observable } from "rxjs/Observable";
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
 
+import { UI } from "../ui.core";
+
+import { DEFAULTS } from '../../config/defaults.conf';
 import { CORE_COMMANDS } from "../../consts/core-commands.const";
 import { AvailableItemTypes } from "../../enums/available-item-types.enum";
 
 import { CommandFlag } from "../../interfaces/command-flag.interface";
+import { CLIConfiguration } from '../../interfaces/cli-conf.interface';
 import { CommandRunner } from "../../interfaces/command-runner.interface";
 import { DispatcherOptions } from "../../interfaces/dispatcher-options.interface";
 import { ItemToGenerateOptions } from "../../interfaces/item-to-generate-options.interface";
-
-import { UI } from "../ui.core";
-import { DEFAULTS } from '../../config/defaults.conf';
-import { CLIConfiguration } from '../../interfaces/cli-conf.interface';
-import { Subject } from 'rxjs/Subject';
 
 //  Since is generated getting inputs from user, the reference to "GenerateCommand" gets lost.
 //  Needs to be therefore static inside
@@ -42,8 +41,26 @@ export class GenerateCommand implements CommandRunner {
             return;
         }
 
-        switch (flags[0].flag.split(':')[0]) {
-            case CORE_COMMANDS.generate.flags.item.value:
+        //  Take the part before any -flag:options. The flag itself
+        switch (flags[0] ? flags[0].flag.split(':')[0] : null) {
+            case CORE_COMMANDS.generate.flags.dto.value:
+                const opts = flags[0].flag.split(':');
+                opts.shift();
+                console.log(`Filename: ${opts.join().split(',')[0]}; Extension: ${opts.join().split(',')[1]}`);
+                return;
+            case CORE_COMMANDS.generate.flags.core.value:
+            // throw new Error('Shorhand for CORE not yet implemented');
+            case CORE_COMMANDS.generate.flags.enum.value:
+            // throw new Error('Shorhand for ENUM not yet implemented');
+            case CORE_COMMANDS.generate.flags.const.value:
+            // throw new Error('Shorhand for CONST not yet implemented');
+            case CORE_COMMANDS.generate.flags.entity.value:
+            // throw new Error('Shorhand for ENTITY not yet implemented');
+            case CORE_COMMANDS.generate.flags.service.value:
+            // throw new Error('Shorhand for SERVICE not yet implemented');
+            case CORE_COMMANDS.generate.flags.interface.value:
+            // throw new Error('Shorhand for INTERFACE not yet implemented');
+            default:
                 GenerateCommand.currentFlags = flags[0];
                 GenerateCommand.generateItem();
                 break;
@@ -211,7 +228,7 @@ export class GenerateCommand implements CommandRunner {
     }
 
     private static startFileGenerationForThisItem(): Observable<boolean> {
-        const jobDone: Subject<boolean> = new Subject(false);
+        const jobDone: Subject<boolean> = new Subject();
         try {
             const foldersStack = GenerateCommand.composeFoldersStack();
             if (GenerateCommand.itemToGenerate.type === AvailableItemTypes.custom) {
@@ -304,12 +321,13 @@ export class GenerateCommand implements CommandRunner {
     }
 
     private static getCLIConf(): CLIConfiguration {
-        const conf: CLIConfiguration = JSON.parse(fs.readFileSync(process.cwd() + path.sep + DEFAULTS.cliConfigurationFilename).toString()) as CLIConfiguration;
-        if (!conf) {
+        try {
+            const conf: CLIConfiguration = JSON.parse(fs.readFileSync(process.cwd() + path.sep + DEFAULTS.cliConfigurationFilename).toString()) as CLIConfiguration;
+            return conf;
+
+        } catch (e) {
             throw new Error('Invalid CLI configuration');
         }
-
-        return conf;
     }
 
     //  Askers

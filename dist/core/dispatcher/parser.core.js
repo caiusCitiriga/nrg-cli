@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Parser {
     constructor() {
+        this.flagDelimiter = '--';
         this.userRanArgs = [];
         this.commandSet = {
             command: null,
@@ -27,8 +28,8 @@ class Parser {
             command: null,
             flags: null
         };
-        command_set.command = raw_command.split('-')[0].trim(); //  This will take only what's before any flag
-        const flags = raw_command.split('-');
+        command_set.command = raw_command.split(this.flagDelimiter)[0].trim(); //  This will take only what's before any flag
+        const flags = raw_command.split(this.flagDelimiter);
         flags.shift(); // remove the command from the flags array;
         command_set.flags = flags.map(f => ({ flag: f.toLowerCase() }));
         return command_set;

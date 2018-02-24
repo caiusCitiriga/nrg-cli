@@ -6,6 +6,7 @@ import { DispatcherOptions } from "../../interfaces/dispatcher-options.interface
 import { DispatcherCommandSet } from "../../interfaces/dispatcher-command-set.interface";
 
 export class Parser {
+    private flagDelimiter = '--';
     private userRanArgs: string[] = [];
     private commandSet: DispatcherCommandSet = {
         command: null,
@@ -37,9 +38,9 @@ export class Parser {
             flags: null
         };
 
-        command_set.command = raw_command.split('-')[0].trim(); //  This will take only what's before any flag
+        command_set.command = raw_command.split(this.flagDelimiter)[0].trim(); //  This will take only what's before any flag
 
-        const flags = raw_command.split('-');
+        const flags = raw_command.split(this.flagDelimiter);
         flags.shift(); // remove the command from the flags array;
         command_set.flags = flags.map(f => <CommandFlag>{ flag: f.toLowerCase() });
 
