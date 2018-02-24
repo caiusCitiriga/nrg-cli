@@ -14,9 +14,13 @@ export declare class GenerateCommand implements CommandRunner {
     private static generateItem();
     private static printAvailableTypesList();
     private static extractRelativePathFromItemSourceFolder(data);
-    private static extractFilenameAndExtension(data);
+    private static extractFilename(data);
+    private static extractClassname(data);
+    private static extractExtension(data);
     private static extractMultipleUserCustomExtensions(part);
     private static startFileGenerationForThisItem();
+    private static composeFoldersStack();
+    private static generateFilename(previousFoldersStack);
     private static getCLIConf();
     private static askForItemFilename();
     private static askForItemExtension();

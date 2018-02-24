@@ -71,8 +71,17 @@ export class GenerateCommand implements CommandRunner {
             return;
         }
 
-        GenerateCommand.extractRelativePathFromItemSourceFolder(data);
-        GenerateCommand.extractFilenameAndExtension(data);
+        GenerateCommand.itemToGenerate.relativePathFromSrc = GenerateCommand.extractRelativePathFromItemSourceFolder(data);
+        GenerateCommand.itemToGenerate.filename = GenerateCommand.extractFilename(data);
+        GenerateCommand.itemToGenerate.className = GenerateCommand.extractClassname(data);
+
+        const extension = GenerateCommand.extractExtension(data);
+        if (!extension || extension === AvailableItemTypes[GenerateCommand.itemToGenerate.type]) {
+            GenerateCommand.askForItemExtension();
+            return;
+        }
+
+        GenerateCommand.startFileGenerationForThisItem();
     };
 
     private static getItemExtensionFromUser(data: string): void {
@@ -119,22 +128,27 @@ export class GenerateCommand implements CommandRunner {
         UI.print('Type the name, or the corresponding number to generate the item');
     }
 
-    private static extractRelativePathFromItemSourceFolder(data: string): boolean {
+    private static extractRelativePathFromItemSourceFolder(data: string): string {
+
         const explodedFilenameByPathDelimiter = data.split(GenerateCommand.pathDelimiter);
         explodedFilenameByPathDelimiter.pop();
-        if (!explodedFilenameByPathDelimiter.length) { return false; }
 
+        if (!explodedFilenameByPathDelimiter.length) { return ''; }
+
+        let path = '';
         explodedFilenameByPathDelimiter.forEach((folder, index) => {
-            GenerateCommand.itemToGenerate.relativePathFromSrc += folder + GenerateCommand.pathDelimiter;
+            path += folder + GenerateCommand.pathDelimiter;
         });
 
-        return true;
+        return path;
     }
 
-    private static extractFilenameAndExtension(data: string): void {
+    private static extractFilename(data: string): string {
         const explodedFilenameByPathDelimiter = data.split(GenerateCommand.pathDelimiter);
-        GenerateCommand.itemToGenerate.filename = explodedFilenameByPathDelimiter[explodedFilenameByPathDelimiter.length - 1];
+        return explodedFilenameByPathDelimiter[explodedFilenameByPathDelimiter.length - 1];
+    }
 
+    private static extractClassname(data: string): string {
         const explodedFileByDash = GenerateCommand.itemToGenerate.filename.split('-');
         let className = '';
         explodedFileByDash.forEach(part => {
@@ -146,19 +160,18 @@ export class GenerateCommand implements CommandRunner {
                 return;
             }
             //  If none of the statements before where true, it means that the file is like "item.ext"
-            className += (part.charAt(0).toUpperCase()) + (part.slice(1).toLowerCase());
+            className += (part.charAt(0).toUpperCase()) + (part.slice(1).toLowerCase()).split('.')[0];
         });
 
+        return className;
+    }
 
+    private static extractExtension(data: string): string | boolean {
         //  Try to extract the extension. Throw if can't
         const explodedFileByDot = GenerateCommand.itemToGenerate.filename.split('.')
-        if (explodedFileByDot.length === 1) {
-            this.askForItemExtension();
-            return;
-        };
+        if (explodedFileByDot.length === 1) { return false; };
 
-        GenerateCommand.itemToGenerate.extension = explodedFileByDot[explodedFileByDot.length - 1];
-        GenerateCommand.startFileGenerationForThisItem();
+        return explodedFileByDot[explodedFileByDot.length - 1];
     }
 
     private static extractMultipleUserCustomExtensions(part: string): string {
@@ -177,36 +190,17 @@ export class GenerateCommand implements CommandRunner {
     private static startFileGenerationForThisItem(): Observable<boolean> {
         const jobDone: BehaviorSubject<boolean> = new BehaviorSubject(false);
         try {
-            let previousFoldersStack = GenerateCommand.getCLIConf().sourceFolder + path.sep;
-            const explodedPathToCheck = GenerateCommand
-                .itemToGenerate
-                .relativePathFromSrc
-                .split(GenerateCommand.pathDelimiter);
-
-            //  Remove the last "" element
-            explodedPathToCheck.pop();
-            explodedPathToCheck
-                .forEach((folder: string) => {
-                    previousFoldersStack += folder + path.sep;
-                    if (!fs.existsSync(previousFoldersStack)) {
-                        fs.mkdirSync(previousFoldersStack);
-                        if (!fs.readdirSync(previousFoldersStack)) {
-                            throw new Error(`The folder ${folder} wasn't created. Aborting`);
-                        }
-
-                        UI.success(`Folder ${folder} created`);
-                    }
-                });
+            const foldersStack = GenerateCommand.composeFoldersStack();
             if (GenerateCommand.itemToGenerate.type === AvailableItemTypes.custom) {
 
             } else {
-                const filename = `${previousFoldersStack + GenerateCommand.itemToGenerate.filename}.${AvailableItemTypes[GenerateCommand.itemToGenerate.type]}.${GenerateCommand.itemToGenerate.extension}`;
+                const filename = GenerateCommand.generateFilename(foldersStack);
                 fs.writeFile(filename, null, (err: Error) => {
                     if (err) {
                         throw new Error(`Error creating the item: ${err.message}`);
                     }
 
-                    UI.success(`File ${GenerateCommand.itemToGenerate.filename}.${AvailableItemTypes[GenerateCommand.itemToGenerate.type]}.${GenerateCommand.itemToGenerate.extension} generated`);
+                    UI.success(`File ${filename} generated`);
                 });
             }
         } catch (e) {
@@ -217,6 +211,64 @@ export class GenerateCommand implements CommandRunner {
         }
 
         return jobDone.asObservable();
+    }
+
+    private static composeFoldersStack(): string {
+        let foldersStack = GenerateCommand.getCLIConf().sourceFolder + path.sep + `${AvailableItemTypes[GenerateCommand.itemToGenerate.type]}s` + path.sep;
+        if (!fs.existsSync(foldersStack)) {
+            fs.mkdirSync(foldersStack); // if the item-type folder doesn't exists, create it
+        }
+
+        const explodedPathToCheck = GenerateCommand
+            .itemToGenerate
+            .relativePathFromSrc
+            .split(GenerateCommand.pathDelimiter);
+
+        //  Remove the last "" element
+        explodedPathToCheck.pop();
+        explodedPathToCheck
+            .forEach((folder: string) => {
+                foldersStack += folder + path.sep;
+                if (!fs.existsSync(foldersStack)) {
+                    fs.mkdirSync(foldersStack);
+                    if (!fs.readdirSync(foldersStack)) {
+                        throw new Error(`The folder ${folder} wasn't created. Aborting`);
+                    }
+
+                    UI.success(`Folder ${folder} created`);
+                }
+            });
+
+        return foldersStack;
+    }
+
+    private static generateFilename(previousFoldersStack: string): string {
+        let filename = '';
+        // If the item-type is already included in the filename by the user, and the extension is present, add only the extension
+        if (GenerateCommand.itemToGenerate.filename.indexOf(AvailableItemTypes[GenerateCommand.itemToGenerate.type]) !== -1 && !!GenerateCommand.itemToGenerate.extension.length) {
+            filename = `${previousFoldersStack + GenerateCommand.itemToGenerate.filename}.${GenerateCommand.itemToGenerate.extension}`;
+        }
+        //  If the item-type is NOT included, and the user has provided an extension
+        if (GenerateCommand.itemToGenerate.filename.indexOf(AvailableItemTypes[GenerateCommand.itemToGenerate.type]) === -1 && !!GenerateCommand.itemToGenerate.extension.length) {
+            filename = `${previousFoldersStack + GenerateCommand.itemToGenerate.filename}.${AvailableItemTypes[GenerateCommand.itemToGenerate.type]}.${GenerateCommand.itemToGenerate.extension}`;
+        }
+        //  If the item-type is included, and the extension is not provided, suppose that is included in the filename after the item-type dot notation
+        if (GenerateCommand.itemToGenerate.filename.indexOf(AvailableItemTypes[GenerateCommand.itemToGenerate.type]) !== -1 && !GenerateCommand.itemToGenerate.extension.length) {
+            filename = `${previousFoldersStack + GenerateCommand.itemToGenerate.filename}`;
+        }
+        //  If the item-type is NOT included, and the extension is implicitly included in the filename
+        if (GenerateCommand.itemToGenerate.filename.indexOf(AvailableItemTypes[GenerateCommand.itemToGenerate.type]) === -1 && !GenerateCommand.itemToGenerate.extension.length) {
+            const extPosition = GenerateCommand.itemToGenerate.filename.lastIndexOf('.');
+            filename = [
+                previousFoldersStack,
+                GenerateCommand.itemToGenerate.filename.slice(0, extPosition),
+                '.',
+                AvailableItemTypes[GenerateCommand.itemToGenerate.type],
+                GenerateCommand.itemToGenerate.filename.slice(extPosition)
+            ].join('');
+        }
+
+        return filename;
     }
 
     private static getCLIConf(): CLIConfiguration {
