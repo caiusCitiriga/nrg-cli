@@ -23,7 +23,7 @@
             "console": "integratedTerminal",
             "args": [
                 "g",
-                "--dto:[\"test-response\", \"ts\"]"
+                "--dto:retest/deep-test/test-response.custom.relay,ts"
             ],
         }
     ]

@@ -6,7 +6,7 @@ import { DispatcherOptions } from "../../interfaces/dispatcher-options.interface
 import { DispatcherCommandSet } from "../../interfaces/dispatcher-command-set.interface";
 
 export class Parser {
-    private flagDelimiter = '--';
+    private flagDelimiter: string;
     private userRanArgs: string[] = [];
     private commandSet: DispatcherCommandSet = {
         command: null,
@@ -15,6 +15,7 @@ export class Parser {
 
     public constructor() {
         this.cleanupArgs();
+        this.flagDelimiter = '--';
     }
 
     public getCommandSet(): DispatcherCommandSet {

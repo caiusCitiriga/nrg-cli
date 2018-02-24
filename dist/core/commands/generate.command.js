@@ -23,12 +23,13 @@ class GenerateCommand {
         GenerateCommand.itemToGenerate = {
             type: null,
             filename: '',
-            extension: '',
             className: '',
+            extension: '',
             relativePathFromSrc: ''
         };
     }
     run(dispatcherOptions, flags) {
+        GenerateCommand.resetItemToGenerate();
         if (!GenerateCommand.ensureIsEnergyProject()) {
             ui_core_1.UI.error('Your are not inside an Energy project. Cannot run this command here.');
             return;
@@ -38,7 +39,18 @@ class GenerateCommand {
             case core_commands_const_1.CORE_COMMANDS.generate.flags.dto.value:
                 const opts = flags[0].flag.split(':');
                 opts.shift();
-                console.log(`Filename: ${opts.join().split(',')[0]}; Extension: ${opts.join().split(',')[1]}`);
+                const filenameAndPath = opts.join().split(',')[0];
+                const extension = opts.join().split(',')[1];
+                dist_1.SmartCLI.GenericOutput.printKeyValue([
+                    { key: 'filename', value: filenameAndPath },
+                    { key: 'extension', value: extension },
+                ]);
+                GenerateCommand.itemToGenerate.extension = extension;
+                GenerateCommand.itemToGenerate.type = available_item_types_enum_1.AvailableItemTypes.dto;
+                GenerateCommand.itemToGenerate.filename = GenerateCommand.extractFilename(filenameAndPath);
+                GenerateCommand.itemToGenerate.className = GenerateCommand.extractClassname(`${GenerateCommand.itemToGenerate.filename}.${extension}`, true);
+                GenerateCommand.itemToGenerate.relativePathFromSrc = GenerateCommand.extractRelativePathFromItemSourceFolder(filenameAndPath);
+                dist_1.SmartCLI.GenericOutput.printMessage(JSON.stringify(GenerateCommand.itemToGenerate));
                 return;
             case core_commands_const_1.CORE_COMMANDS.generate.flags.core.value:
             // throw new Error('Shorhand for CORE not yet implemented');
@@ -58,67 +70,16 @@ class GenerateCommand {
                 break;
         }
     }
-    //  Input getters
-    static getItemTypeFromUser(data) {
-        //  If is typed as string
-        if (isNaN(parseInt(data)) && !!available_item_types_enum_1.AvailableItemTypes[data]) {
-            GenerateCommand.itemToGenerate.type = available_item_types_enum_1.AvailableItemTypes[data];
-        }
-        else {
-            if (!available_item_types_enum_1.AvailableItemTypes[data]) {
-                ui_core_1.UI.throw('The given type is invalid', GenerateCommand.generateItem);
-                return;
-            }
-            GenerateCommand.itemToGenerate.type = data;
-        }
-        GenerateCommand.askForItemFilename();
-    }
-    static getItemFilenameFromUser(data) {
-        if (!data) {
-            ui_core_1.UI.throw(`The given filename: "${data}" is not valid`, GenerateCommand.askForItemFilename);
-            return;
-        }
-        GenerateCommand.itemToGenerate.relativePathFromSrc = GenerateCommand.extractRelativePathFromItemSourceFolder(data);
-        GenerateCommand.itemToGenerate.filename = GenerateCommand.extractFilename(data);
-        GenerateCommand.itemToGenerate.className = GenerateCommand.extractClassname(data);
-        const extension = GenerateCommand.extractExtension(data);
-        if (!extension || extension === available_item_types_enum_1.AvailableItemTypes[GenerateCommand.itemToGenerate.type]) {
-            GenerateCommand.askForItemExtension();
-            return;
-        }
-        const sub = GenerateCommand
-            .startFileGenerationForThisItem()
-            .subscribe(res => {
-            if (!res) {
-                ui_core_1.UI.error(`Couldn't create the item. Aborting.`);
-                sub.unsubscribe();
-                return;
-            }
-            ui_core_1.UI.success('Job completed successfully');
-            sub.unsubscribe();
-        });
-    }
-    ;
-    static getItemExtensionFromUser(data) {
-        if (!data) {
-            dist_1.SmartCLI.GenericOutput.printWarning('Invalid extension name');
-            GenerateCommand.askForItemExtension();
-        }
-        GenerateCommand.itemToGenerate.extension = data;
-        ui_core_1.UI.success('Extension successfully set');
-        const sub = GenerateCommand
-            .startFileGenerationForThisItem()
-            .subscribe(res => {
-            if (!res) {
-                ui_core_1.UI.error(`Couldn't create the item. Aborting.`);
-                sub.unsubscribe();
-                return;
-            }
-            ui_core_1.UI.success('Job completed successfully');
-            sub.unsubscribe();
-        });
-    }
+    ////////////////////////////////////////////////////////////////////////////////////
     //  Internals
+    ////////////////////////////////////////////////////////////////////////////////////
+    static resetItemToGenerate() {
+        GenerateCommand.itemToGenerate.className = '';
+        GenerateCommand.itemToGenerate.extension = '';
+        GenerateCommand.itemToGenerate.filename = '';
+        GenerateCommand.itemToGenerate.relativePathFromSrc = '';
+        GenerateCommand.itemToGenerate.type = null;
+    }
     static ensureIsEnergyProject() {
         const dir = fs.readdirSync('.');
         if (!dir.find(file => file === defaults_conf_1.DEFAULTS.cliConfigurationFilename)) {
@@ -159,7 +120,7 @@ class GenerateCommand {
         const explodedFilenameByPathDelimiter = data.split(GenerateCommand.pathDelimiter);
         return explodedFilenameByPathDelimiter[explodedFilenameByPathDelimiter.length - 1];
     }
-    static extractClassname(data) {
+    static extractClassname(data, isShorhandMode = false) {
         const explodedFileByDash = GenerateCommand.itemToGenerate.filename.split('-');
         let className = '';
         explodedFileByDash.forEach(part => {
@@ -169,7 +130,7 @@ class GenerateCommand {
             }
             //  If instead, it has a "composite custom dot notation" parse it skipping the last one.
             if (part.indexOf('.') != -1 && part.split('.').length >= 3) {
-                className += GenerateCommand.extractMultipleUserCustomExtensions(part);
+                className += GenerateCommand.extractMultipleUserCustomExtensions(part, isShorhandMode);
                 return;
             }
             //  If none of the statements before where true, it means that the file is like "item.ext"
@@ -186,10 +147,10 @@ class GenerateCommand {
         ;
         return explodedFileByDot[explodedFileByDot.length - 1];
     }
-    static extractMultipleUserCustomExtensions(part) {
+    static extractMultipleUserCustomExtensions(part, isShorthand = false) {
         let customPart = '';
         const explodedPart = part.split('.');
-        explodedPart.pop();
+        !isShorthand ? explodedPart.pop() : null;
         if (explodedPart.length === 0) {
             throw new Error('Something went wrong in extractMultipleUsersCustomExtension. The part arrived, has only one element in it');
         }
@@ -289,7 +250,71 @@ class GenerateCommand {
             throw new Error('Invalid CLI configuration');
         }
     }
+    ////////////////////////////////////////////////////////////////////////////////////
+    //  Input getters
+    ////////////////////////////////////////////////////////////////////////////////////
+    static getItemTypeFromUser(data) {
+        //  If is typed as string
+        if (isNaN(parseInt(data)) && !!available_item_types_enum_1.AvailableItemTypes[data]) {
+            GenerateCommand.itemToGenerate.type = available_item_types_enum_1.AvailableItemTypes[data];
+        }
+        else {
+            if (!available_item_types_enum_1.AvailableItemTypes[data]) {
+                ui_core_1.UI.throw('The given type is invalid', GenerateCommand.generateItem);
+                return;
+            }
+            GenerateCommand.itemToGenerate.type = data;
+        }
+        GenerateCommand.askForItemFilename();
+    }
+    static getItemFilenameFromUser(data) {
+        if (!data) {
+            ui_core_1.UI.throw(`The given filename: "${data}" is not valid`, GenerateCommand.askForItemFilename);
+            return;
+        }
+        GenerateCommand.itemToGenerate.relativePathFromSrc = GenerateCommand.extractRelativePathFromItemSourceFolder(data);
+        GenerateCommand.itemToGenerate.filename = GenerateCommand.extractFilename(data);
+        GenerateCommand.itemToGenerate.className = GenerateCommand.extractClassname(data);
+        const extension = GenerateCommand.extractExtension(data);
+        if (!extension || extension === available_item_types_enum_1.AvailableItemTypes[GenerateCommand.itemToGenerate.type]) {
+            GenerateCommand.askForItemExtension();
+            return;
+        }
+        const sub = GenerateCommand
+            .startFileGenerationForThisItem()
+            .subscribe(res => {
+            if (!res) {
+                ui_core_1.UI.error(`Couldn't create the item. Aborting.`);
+                sub.unsubscribe();
+                return;
+            }
+            ui_core_1.UI.success('Job completed successfully');
+            sub.unsubscribe();
+        });
+    }
+    ;
+    static getItemExtensionFromUser(data) {
+        if (!data) {
+            dist_1.SmartCLI.GenericOutput.printWarning('Invalid extension name');
+            GenerateCommand.askForItemExtension();
+        }
+        GenerateCommand.itemToGenerate.extension = data;
+        ui_core_1.UI.success('Extension successfully set');
+        const sub = GenerateCommand
+            .startFileGenerationForThisItem()
+            .subscribe(res => {
+            if (!res) {
+                ui_core_1.UI.error(`Couldn't create the item. Aborting.`);
+                sub.unsubscribe();
+                return;
+            }
+            ui_core_1.UI.success('Job completed successfully');
+            sub.unsubscribe();
+        });
+    }
+    ////////////////////////////////////////////////////////////////////////////////////
     //  Askers
+    ////////////////////////////////////////////////////////////////////////////////////
     static askForItemFilename() {
         ui_core_1.UI.print(`Type the filename for the new ${available_item_types_enum_1.AvailableItemTypes[GenerateCommand.itemToGenerate.type]}`, true);
         ui_core_1.UI.askUserInput('> ', GenerateCommand.getItemFilenameFromUser);

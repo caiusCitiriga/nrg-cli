@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Parser {
     constructor() {
-        this.flagDelimiter = '--';
         this.userRanArgs = [];
         this.commandSet = {
             command: null,
             flags: null
         };
         this.cleanupArgs();
+        this.flagDelimiter = '--';
     }
     getCommandSet() {
         this.assignCommandSet();

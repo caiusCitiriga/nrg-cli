@@ -29,13 +29,14 @@ export class GenerateCommand implements CommandRunner {
         GenerateCommand.itemToGenerate = {
             type: null as any,
             filename: '',
-            extension: '',
             className: '',
+            extension: '',
             relativePathFromSrc: ''
         };
     }
 
     public run(dispatcherOptions: DispatcherOptions[], flags: CommandFlag[]): void {
+        GenerateCommand.resetItemToGenerate();
         if (!GenerateCommand.ensureIsEnergyProject()) {
             UI.error('Your are not inside an Energy project. Cannot run this command here.');
             return;
@@ -46,7 +47,21 @@ export class GenerateCommand implements CommandRunner {
             case CORE_COMMANDS.generate.flags.dto.value:
                 const opts = flags[0].flag.split(':');
                 opts.shift();
-                console.log(`Filename: ${opts.join().split(',')[0]}; Extension: ${opts.join().split(',')[1]}`);
+                const filenameAndPath = opts.join().split(',')[0];
+                const extension = opts.join().split(',')[1];
+
+                SmartCLI.GenericOutput.printKeyValue([
+                    { key: 'filename', value: filenameAndPath },
+                    { key: 'extension', value: extension },
+                ]);
+
+                GenerateCommand.itemToGenerate.extension = extension;
+                GenerateCommand.itemToGenerate.type = AvailableItemTypes.dto;
+                GenerateCommand.itemToGenerate.filename = GenerateCommand.extractFilename(filenameAndPath);
+                GenerateCommand.itemToGenerate.className = GenerateCommand.extractClassname(`${GenerateCommand.itemToGenerate.filename}.${extension}`, true);
+                GenerateCommand.itemToGenerate.relativePathFromSrc = GenerateCommand.extractRelativePathFromItemSourceFolder(filenameAndPath);
+
+                SmartCLI.GenericOutput.printMessage(JSON.stringify(GenerateCommand.itemToGenerate as any));
                 return;
             case CORE_COMMANDS.generate.flags.core.value:
             // throw new Error('Shorhand for CORE not yet implemented');
@@ -67,76 +82,17 @@ export class GenerateCommand implements CommandRunner {
         }
     }
 
-    //  Input getters
-    private static getItemTypeFromUser(data: string): void {
-        //  If is typed as string
-        if (isNaN(parseInt(data)) && !!(AvailableItemTypes as any)[data]) {
-            GenerateCommand.itemToGenerate.type = (AvailableItemTypes as any)[data];
-        } else {
-            if (!(AvailableItemTypes as any)[data]) {
-                UI.throw('The given type is invalid', GenerateCommand.generateItem);
-                return;
-            }
-            GenerateCommand.itemToGenerate.type = data as any;
-        }
-
-        GenerateCommand.askForItemFilename();
-    }
-
-    private static getItemFilenameFromUser(data: string): void {
-        if (!data) {
-            UI.throw(`The given filename: "${data}" is not valid`, GenerateCommand.askForItemFilename);
-            return;
-        }
-
-        GenerateCommand.itemToGenerate.relativePathFromSrc = GenerateCommand.extractRelativePathFromItemSourceFolder(data);
-        GenerateCommand.itemToGenerate.filename = GenerateCommand.extractFilename(data);
-        GenerateCommand.itemToGenerate.className = GenerateCommand.extractClassname(data);
-
-        const extension = GenerateCommand.extractExtension(data);
-        if (!extension || extension === AvailableItemTypes[GenerateCommand.itemToGenerate.type]) {
-            GenerateCommand.askForItemExtension();
-            return;
-        }
-
-        const sub = GenerateCommand
-            .startFileGenerationForThisItem()
-            .subscribe(res => {
-                if (!res) {
-                    UI.error(`Couldn't create the item. Aborting.`);
-                    sub.unsubscribe();
-                    return;
-                }
-
-                UI.success('Job completed successfully');
-                sub.unsubscribe();
-            });
-    };
-
-    private static getItemExtensionFromUser(data: string): void {
-        if (!data) {
-            SmartCLI.GenericOutput.printWarning('Invalid extension name');
-            GenerateCommand.askForItemExtension();
-        }
-
-        GenerateCommand.itemToGenerate.extension = data;
-        UI.success('Extension successfully set');
-        const sub = GenerateCommand
-            .startFileGenerationForThisItem()
-            .subscribe(res => {
-                if (!res) {
-                    UI.error(`Couldn't create the item. Aborting.`);
-                    sub.unsubscribe();
-                    return;
-                }
-
-                UI.success('Job completed successfully');
-                sub.unsubscribe();
-            });
-    }
-
-
+    ////////////////////////////////////////////////////////////////////////////////////
     //  Internals
+    ////////////////////////////////////////////////////////////////////////////////////
+    private static resetItemToGenerate(): void {
+        GenerateCommand.itemToGenerate.className = '';
+        GenerateCommand.itemToGenerate.extension = '';
+        GenerateCommand.itemToGenerate.filename = '';
+        GenerateCommand.itemToGenerate.relativePathFromSrc = '';
+        GenerateCommand.itemToGenerate.type = null as any;
+    }
+
     private static ensureIsEnergyProject(): boolean {
         const dir = fs.readdirSync('.');
         if (!dir.find(file => file === DEFAULTS.cliConfigurationFilename)) {
@@ -188,7 +144,7 @@ export class GenerateCommand implements CommandRunner {
         return explodedFilenameByPathDelimiter[explodedFilenameByPathDelimiter.length - 1];
     }
 
-    private static extractClassname(data: string): string {
+    private static extractClassname(data: string, isShorhandMode = false): string {
         const explodedFileByDash = GenerateCommand.itemToGenerate.filename.split('-');
         let className = '';
         explodedFileByDash.forEach(part => {
@@ -196,7 +152,7 @@ export class GenerateCommand implements CommandRunner {
             if (part.indexOf('.') != -1 && part.split('.').length === 1) { return; }
             //  If instead, it has a "composite custom dot notation" parse it skipping the last one.
             if (part.indexOf('.') != -1 && part.split('.').length >= 3) {
-                className += GenerateCommand.extractMultipleUserCustomExtensions(part);
+                className += GenerateCommand.extractMultipleUserCustomExtensions(part, isShorhandMode);
                 return;
             }
             //  If none of the statements before where true, it means that the file is like "item.ext"
@@ -214,10 +170,10 @@ export class GenerateCommand implements CommandRunner {
         return explodedFileByDot[explodedFileByDot.length - 1];
     }
 
-    private static extractMultipleUserCustomExtensions(part: string): string {
+    private static extractMultipleUserCustomExtensions(part: string, isShorthand = false): string {
         let customPart = '';
         const explodedPart = part.split('.');
-        explodedPart.pop();
+        !isShorthand ? explodedPart.pop() : null;
 
         if (explodedPart.length === 0) {
             throw new Error('Something went wrong in extractMultipleUsersCustomExtension. The part arrived, has only one element in it');
@@ -330,7 +286,79 @@ export class GenerateCommand implements CommandRunner {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //  Input getters
+    ////////////////////////////////////////////////////////////////////////////////////
+    private static getItemTypeFromUser(data: string): void {
+        //  If is typed as string
+        if (isNaN(parseInt(data)) && !!(AvailableItemTypes as any)[data]) {
+            GenerateCommand.itemToGenerate.type = (AvailableItemTypes as any)[data];
+        } else {
+            if (!(AvailableItemTypes as any)[data]) {
+                UI.throw('The given type is invalid', GenerateCommand.generateItem);
+                return;
+            }
+            GenerateCommand.itemToGenerate.type = data as any;
+        }
+
+        GenerateCommand.askForItemFilename();
+    }
+
+    private static getItemFilenameFromUser(data: string): void {
+        if (!data) {
+            UI.throw(`The given filename: "${data}" is not valid`, GenerateCommand.askForItemFilename);
+            return;
+        }
+
+        GenerateCommand.itemToGenerate.relativePathFromSrc = GenerateCommand.extractRelativePathFromItemSourceFolder(data);
+        GenerateCommand.itemToGenerate.filename = GenerateCommand.extractFilename(data);
+        GenerateCommand.itemToGenerate.className = GenerateCommand.extractClassname(data);
+
+        const extension = GenerateCommand.extractExtension(data);
+        if (!extension || extension === AvailableItemTypes[GenerateCommand.itemToGenerate.type]) {
+            GenerateCommand.askForItemExtension();
+            return;
+        }
+
+        const sub = GenerateCommand
+            .startFileGenerationForThisItem()
+            .subscribe(res => {
+                if (!res) {
+                    UI.error(`Couldn't create the item. Aborting.`);
+                    sub.unsubscribe();
+                    return;
+                }
+
+                UI.success('Job completed successfully');
+                sub.unsubscribe();
+            });
+    };
+
+    private static getItemExtensionFromUser(data: string): void {
+        if (!data) {
+            SmartCLI.GenericOutput.printWarning('Invalid extension name');
+            GenerateCommand.askForItemExtension();
+        }
+
+        GenerateCommand.itemToGenerate.extension = data;
+        UI.success('Extension successfully set');
+        const sub = GenerateCommand
+            .startFileGenerationForThisItem()
+            .subscribe(res => {
+                if (!res) {
+                    UI.error(`Couldn't create the item. Aborting.`);
+                    sub.unsubscribe();
+                    return;
+                }
+
+                UI.success('Job completed successfully');
+                sub.unsubscribe();
+            });
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
     //  Askers
+    ////////////////////////////////////////////////////////////////////////////////////
     private static askForItemFilename(): void {
         UI.print(`Type the filename for the new ${AvailableItemTypes[GenerateCommand.itemToGenerate.type]}`, true);
         UI.askUserInput('> ', GenerateCommand.getItemFilenameFromUser);
