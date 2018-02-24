@@ -4,6 +4,18 @@ export declare const CORE_COMMANDS: {
         flags: null;
         aliases: string[];
     };
+    set: {
+        command: string;
+        flags: {
+            gitignore: {
+                value: string;
+            };
+            gitignoreAdd: {
+                value: string;
+            };
+        };
+        aliases: never[];
+    };
     new: {
         command: string;
         flags: null;

@@ -45,36 +45,19 @@ export class GenerateCommand implements CommandRunner {
         //  Take the part before any -flag:options. The flag itself
         switch (flags[0] ? flags[0].flag.split(':')[0] : null) {
             case CORE_COMMANDS.generate.flags.dto.value:
-                const opts = flags[0].flag.split(':');
-                opts.shift();
-                const filenameAndPath = opts.join().split(',')[0];
-                const extension = opts.join().split(',')[1];
-
-                SmartCLI.GenericOutput.printKeyValue([
-                    { key: 'filename', value: filenameAndPath },
-                    { key: 'extension', value: extension },
-                ]);
-
-                GenerateCommand.itemToGenerate.extension = extension;
-                GenerateCommand.itemToGenerate.type = AvailableItemTypes.dto;
-                GenerateCommand.itemToGenerate.filename = GenerateCommand.extractFilename(filenameAndPath);
-                GenerateCommand.itemToGenerate.className = GenerateCommand.extractClassname(`${GenerateCommand.itemToGenerate.filename}.${extension}`, true);
-                GenerateCommand.itemToGenerate.relativePathFromSrc = GenerateCommand.extractRelativePathFromItemSourceFolder(filenameAndPath);
-
-                SmartCLI.GenericOutput.printMessage(JSON.stringify(GenerateCommand.itemToGenerate as any));
-                return;
+                return GenerateCommand.shorthand(AvailableItemTypes.dto, flags);
             case CORE_COMMANDS.generate.flags.core.value:
-            // throw new Error('Shorhand for CORE not yet implemented');
+                return GenerateCommand.shorthand(AvailableItemTypes.core, flags);
             case CORE_COMMANDS.generate.flags.enum.value:
-            // throw new Error('Shorhand for ENUM not yet implemented');
+                return GenerateCommand.shorthand(AvailableItemTypes.enum, flags);
             case CORE_COMMANDS.generate.flags.const.value:
-            // throw new Error('Shorhand for CONST not yet implemented');
+                return GenerateCommand.shorthand(AvailableItemTypes.const, flags);
             case CORE_COMMANDS.generate.flags.entity.value:
-            // throw new Error('Shorhand for ENTITY not yet implemented');
+                return GenerateCommand.shorthand(AvailableItemTypes.entity, flags);
             case CORE_COMMANDS.generate.flags.service.value:
-            // throw new Error('Shorhand for SERVICE not yet implemented');
+                return GenerateCommand.shorthand(AvailableItemTypes.service, flags);
             case CORE_COMMANDS.generate.flags.interface.value:
-            // throw new Error('Shorhand for INTERFACE not yet implemented');
+                return GenerateCommand.shorthand(AvailableItemTypes.interface, flags);
             default:
                 GenerateCommand.currentFlags = flags[0];
                 GenerateCommand.generateItem();
@@ -85,6 +68,33 @@ export class GenerateCommand implements CommandRunner {
     ////////////////////////////////////////////////////////////////////////////////////
     //  Internals
     ////////////////////////////////////////////////////////////////////////////////////
+    private static shorthand(type: AvailableItemTypes, flags: CommandFlag[]): void {
+        const opts = flags[0].flag.split(':');
+
+        opts.shift();
+        const extension = opts.join().split(',')[1];
+        const filenameAndPath = opts.join().split(',')[0];
+
+        GenerateCommand.itemToGenerate.type = type;
+        GenerateCommand.itemToGenerate.extension = extension;
+        GenerateCommand.itemToGenerate.filename = GenerateCommand.extractFilename(filenameAndPath);
+        GenerateCommand.itemToGenerate.relativePathFromSrc = GenerateCommand.extractRelativePathFromItemSourceFolder(filenameAndPath);
+        GenerateCommand.itemToGenerate.className = GenerateCommand.extractClassname(`${GenerateCommand.itemToGenerate.filename}.${extension}`, true);
+
+        const sub = GenerateCommand
+            .startFileGenerationForThisItem()
+            .subscribe(res => {
+                if (!res) {
+                    UI.error(`Couldn't create the item. Aborting.`);
+                    sub.unsubscribe();
+                    return;
+                }
+                UI.success('Job completed successfully');
+                sub.unsubscribe();
+            });
+    }
+
+
     private static resetItemToGenerate(): void {
         GenerateCommand.itemToGenerate.className = '';
         GenerateCommand.itemToGenerate.extension = '';
@@ -194,7 +204,7 @@ export class GenerateCommand implements CommandRunner {
                 throw err;
             } else {
                 const filename = GenerateCommand.generateFilename(foldersStack);
-                fs.writeFile(filename, null, (err: Error) => {
+                fs.writeFile(filename, GenerateCommand.getFileTemplate(GenerateCommand.itemToGenerate.type), (err: Error) => {
                     if (err) {
                         throw new Error(`Error creating the item: ${err.message}`);
                     }
@@ -216,6 +226,30 @@ export class GenerateCommand implements CommandRunner {
         }
 
         return jobDone.asObservable();
+    }
+
+    private static getFileTemplate(type: AvailableItemTypes): string {
+        let template = '';
+        switch (type) {
+            case AvailableItemTypes.dto:
+            case AvailableItemTypes.core:
+            case AvailableItemTypes.entity:
+            case AvailableItemTypes.service:
+                template = `export class ${GenerateCommand.itemToGenerate.className} {\n\n}`;
+                break;
+            case AvailableItemTypes.enum:
+                template = `export enum ${GenerateCommand.itemToGenerate.className} {\n\n}`;
+                break;
+            case AvailableItemTypes.interface:
+                template = `export interface ${GenerateCommand.itemToGenerate.className} {\n\n}`;
+                break;
+            case AvailableItemTypes.custom:
+                throw new Error('Custom files tempaltes not handled yet');
+            default:
+                break;
+        }
+
+        return template;
     }
 
     private static composeFoldersStack(): string {
@@ -328,7 +362,6 @@ export class GenerateCommand implements CommandRunner {
                     sub.unsubscribe();
                     return;
                 }
-
                 UI.success('Job completed successfully');
                 sub.unsubscribe();
             });
@@ -350,7 +383,6 @@ export class GenerateCommand implements CommandRunner {
                     sub.unsubscribe();
                     return;
                 }
-
                 UI.success('Job completed successfully');
                 sub.unsubscribe();
             });

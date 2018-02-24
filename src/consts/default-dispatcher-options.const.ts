@@ -14,27 +14,44 @@ export const DEFAULT_DISPATCHER_OPTS: {
         options: [
             {
                 command: 'init',
-                desc: 'Initializes a new AngularX project inside the current folder',
+                desc: '\nInitializes a new project inside the current folder\n',
                 flags: [],
                 aliases: ['i'],
                 action: null as any,
             },
             {
+                command: 'set',
+                desc: '\nSets a preference in the CLI configuration\n' +
+                    `${chalk.dim('Type ') + chalk.white.italic('nrg help --set') + chalk.dim(' to see the full flags list')}\n`,
+                flags: [
+                    {
+                        flag: 'gitignore',
+                        desc: `Sets the list of entries in the .gitignore file. Use a separated entries list.`
+                    },
+                    {
+                        flag: 'gitignore-add',
+                        desc: 'Pushes a new item in the current .gitignore items list'
+                    }
+                ],
+                aliases: [''],
+                action: null as any,
+            },
+            {
                 command: 'new',
-                desc: 'Generates a new AngularX project',
+                desc: '\nGenerates a new Energy project\n',
                 flags: [],
                 aliases: ['n'],
                 action: null as any,
             },
             {
                 command: 'generate',
-                desc: '\nGenerates a new item.\n\n' +
+                desc: '\nGenerates a new item.\n' +
                     ' - The respective file will be namespaced by a [.item-type.extension] notation.\n' +
                     ' - Also, the item-type will match a specific folder inside your source folder.\n' +
                     ' - If the folder does not exists, it will be created.\n' +
                     ' - During the process, Energy will try to guess the extension, if provided.\n' +
                     ' - If the guess fails, you will be prompted for the extension. Type it, with no dots.\n\n' +
-                    `${chalk.yellow('NOTE: This command can be run without any flags. The flags are meant for a quicker usage, skipping the prompts.')}`,
+                    `${chalk.dim('NOTE: This command can be run without any flags. The flags are meant for a quicker usage, skipping the prompts.\nType ') + chalk.white.italic('nrg help --generate') + chalk.dim(' to see the full flags list')}\n`,
                 flags: [
                     {
                         flag: 'dto',
@@ -70,7 +87,8 @@ export const DEFAULT_DISPATCHER_OPTS: {
             },
             {
                 command: 'help',
-                desc: 'Shows the help for each command. Type help [-command] to see details',
+                desc: '\nShows the help for each command.\n' +
+                    `${chalk.dim('Type ') + chalk.white.italic('nrg help --command-name') + chalk.dim(' to see the details for that command')}\n`,
                 flags: [
                     {
                         flag: 'new',

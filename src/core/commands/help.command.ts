@@ -17,7 +17,7 @@ export class HelpCommand implements CommandRunner {
         const kvpOpts: { key: string, value: string }[] = [];
 
         dispatcherOpts.forEach(opt => {
-            kvpOpts.push({ key: opt.command, value: opt.desc });
+            kvpOpts.push({ key: opt.command.toUpperCase(), value: opt.desc });
         });
 
         console.log();
@@ -31,6 +31,9 @@ export class HelpCommand implements CommandRunner {
             const kvp: { key: string, value: string }[] = [];
 
             switch (f.flag) {
+                case CORE_COMMANDS.set.command:
+                    concernedDispatcherOpts = dispatcherOpts.find(o => o.command === CORE_COMMANDS.set.command) as DispatcherOptions;
+                    break;
                 case CORE_COMMANDS.init.command:
                     concernedDispatcherOpts = dispatcherOpts.find(o => o.command === CORE_COMMANDS.init.command) as DispatcherOptions;
                     break;

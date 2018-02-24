@@ -7,12 +7,23 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "NRG help --set",
+            "program": "${workspaceFolder}/dist/index.js",
+            "console": "integratedTerminal",
+            "args": [
+                "help",
+                "--set"
+            ],
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "NRG",
             "program": "${workspaceFolder}/dist/index.js",
             "console": "integratedTerminal",
             "args": [
                 "g",
-                "-item"
+                "--item"
             ],
         },
         {

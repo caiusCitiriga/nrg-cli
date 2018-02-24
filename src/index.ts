@@ -51,6 +51,7 @@ export class EnergyCLI {
         this._generateCommand = this._factory.getInstance<GenerateCommand>(AvailableInstances.generateCommand);
 
         const callbacksBinding: ActionsCallbackBindings = {
+            setCmd: (flags: CommandFlag[]) => console.log('Called set command'),
             newCmd: (flags: CommandFlag[]) => console.log('Called new command'),
             initCmd: (flags: CommandFlag[]) => console.log('Called init command'),
             helpCmd: (flags: CommandFlag[]) => this._helpCommand.run(this._dispatcherOptions, flags),
@@ -66,6 +67,7 @@ export class EnergyCLI {
 
     private assignActionsToDispatcherCommands(bindings: ActionsCallbackBindings): DispatcherOptions[] {
         const dispatcherOPTS = DEFAULT_DISPATCHER_OPTS;
+        dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.set.command, bindings.setCmd);
         dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.new.command, bindings.newCmd);
         dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.init.command, bindings.initCmd);
         dispatcherOPTS.assignCallbackToCommand(CORE_COMMANDS.help.command, bindings.helpCmd);

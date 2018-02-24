@@ -6,6 +6,18 @@ exports.CORE_COMMANDS = {
         flags: null,
         aliases: ['h']
     },
+    set: {
+        command: 'set',
+        flags: {
+            gitignore: {
+                value: 'gitignore',
+            },
+            gitignoreAdd: {
+                value: 'gitignore-add'
+            }
+        },
+        aliases: []
+    },
     new: {
         command: 'new',
         flags: null,

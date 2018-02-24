@@ -37,33 +37,19 @@ class GenerateCommand {
         //  Take the part before any -flag:options. The flag itself
         switch (flags[0] ? flags[0].flag.split(':')[0] : null) {
             case core_commands_const_1.CORE_COMMANDS.generate.flags.dto.value:
-                const opts = flags[0].flag.split(':');
-                opts.shift();
-                const filenameAndPath = opts.join().split(',')[0];
-                const extension = opts.join().split(',')[1];
-                dist_1.SmartCLI.GenericOutput.printKeyValue([
-                    { key: 'filename', value: filenameAndPath },
-                    { key: 'extension', value: extension },
-                ]);
-                GenerateCommand.itemToGenerate.extension = extension;
-                GenerateCommand.itemToGenerate.type = available_item_types_enum_1.AvailableItemTypes.dto;
-                GenerateCommand.itemToGenerate.filename = GenerateCommand.extractFilename(filenameAndPath);
-                GenerateCommand.itemToGenerate.className = GenerateCommand.extractClassname(`${GenerateCommand.itemToGenerate.filename}.${extension}`, true);
-                GenerateCommand.itemToGenerate.relativePathFromSrc = GenerateCommand.extractRelativePathFromItemSourceFolder(filenameAndPath);
-                dist_1.SmartCLI.GenericOutput.printMessage(JSON.stringify(GenerateCommand.itemToGenerate));
-                return;
+                return GenerateCommand.shorthand(available_item_types_enum_1.AvailableItemTypes.dto, flags);
             case core_commands_const_1.CORE_COMMANDS.generate.flags.core.value:
-            // throw new Error('Shorhand for CORE not yet implemented');
+                return GenerateCommand.shorthand(available_item_types_enum_1.AvailableItemTypes.core, flags);
             case core_commands_const_1.CORE_COMMANDS.generate.flags.enum.value:
-            // throw new Error('Shorhand for ENUM not yet implemented');
+                return GenerateCommand.shorthand(available_item_types_enum_1.AvailableItemTypes.enum, flags);
             case core_commands_const_1.CORE_COMMANDS.generate.flags.const.value:
-            // throw new Error('Shorhand for CONST not yet implemented');
+                return GenerateCommand.shorthand(available_item_types_enum_1.AvailableItemTypes.const, flags);
             case core_commands_const_1.CORE_COMMANDS.generate.flags.entity.value:
-            // throw new Error('Shorhand for ENTITY not yet implemented');
+                return GenerateCommand.shorthand(available_item_types_enum_1.AvailableItemTypes.entity, flags);
             case core_commands_const_1.CORE_COMMANDS.generate.flags.service.value:
-            // throw new Error('Shorhand for SERVICE not yet implemented');
+                return GenerateCommand.shorthand(available_item_types_enum_1.AvailableItemTypes.service, flags);
             case core_commands_const_1.CORE_COMMANDS.generate.flags.interface.value:
-            // throw new Error('Shorhand for INTERFACE not yet implemented');
+                return GenerateCommand.shorthand(available_item_types_enum_1.AvailableItemTypes.interface, flags);
             default:
                 GenerateCommand.currentFlags = flags[0];
                 GenerateCommand.generateItem();
@@ -73,6 +59,28 @@ class GenerateCommand {
     ////////////////////////////////////////////////////////////////////////////////////
     //  Internals
     ////////////////////////////////////////////////////////////////////////////////////
+    static shorthand(type, flags) {
+        const opts = flags[0].flag.split(':');
+        opts.shift();
+        const extension = opts.join().split(',')[1];
+        const filenameAndPath = opts.join().split(',')[0];
+        GenerateCommand.itemToGenerate.type = type;
+        GenerateCommand.itemToGenerate.extension = extension;
+        GenerateCommand.itemToGenerate.filename = GenerateCommand.extractFilename(filenameAndPath);
+        GenerateCommand.itemToGenerate.relativePathFromSrc = GenerateCommand.extractRelativePathFromItemSourceFolder(filenameAndPath);
+        GenerateCommand.itemToGenerate.className = GenerateCommand.extractClassname(`${GenerateCommand.itemToGenerate.filename}.${extension}`, true);
+        const sub = GenerateCommand
+            .startFileGenerationForThisItem()
+            .subscribe(res => {
+            if (!res) {
+                ui_core_1.UI.error(`Couldn't create the item. Aborting.`);
+                sub.unsubscribe();
+                return;
+            }
+            ui_core_1.UI.success('Job completed successfully');
+            sub.unsubscribe();
+        });
+    }
     static resetItemToGenerate() {
         GenerateCommand.itemToGenerate.className = '';
         GenerateCommand.itemToGenerate.extension = '';
@@ -169,7 +177,7 @@ class GenerateCommand {
             }
             else {
                 const filename = GenerateCommand.generateFilename(foldersStack);
-                fs.writeFile(filename, null, (err) => {
+                fs.writeFile(filename, GenerateCommand.getFileTemplate(GenerateCommand.itemToGenerate.type), (err) => {
                     if (err) {
                         throw new Error(`Error creating the item: ${err.message}`);
                     }
@@ -189,6 +197,28 @@ class GenerateCommand {
             jobDone.next(false);
         }
         return jobDone.asObservable();
+    }
+    static getFileTemplate(type) {
+        let template = '';
+        switch (type) {
+            case available_item_types_enum_1.AvailableItemTypes.dto:
+            case available_item_types_enum_1.AvailableItemTypes.core:
+            case available_item_types_enum_1.AvailableItemTypes.entity:
+            case available_item_types_enum_1.AvailableItemTypes.service:
+                template = `export class ${GenerateCommand.itemToGenerate.className} {\n\n}`;
+                break;
+            case available_item_types_enum_1.AvailableItemTypes.enum:
+                template = `export enum ${GenerateCommand.itemToGenerate.className} {\n\n}`;
+                break;
+            case available_item_types_enum_1.AvailableItemTypes.interface:
+                template = `export interface ${GenerateCommand.itemToGenerate.className} {\n\n}`;
+                break;
+            case available_item_types_enum_1.AvailableItemTypes.custom:
+                throw new Error('Custom files tempaltes not handled yet');
+            default:
+                break;
+        }
+        return template;
     }
     static composeFoldersStack() {
         let foldersStack = GenerateCommand.getCLIConf().sourceFolder + path.sep + `${available_item_types_enum_1.AvailableItemTypes[GenerateCommand.itemToGenerate.type]}s` + path.sep;

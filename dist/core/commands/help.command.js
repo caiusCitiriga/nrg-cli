@@ -11,7 +11,7 @@ class HelpCommand {
         }
         const kvpOpts = [];
         dispatcherOpts.forEach(opt => {
-            kvpOpts.push({ key: opt.command, value: opt.desc });
+            kvpOpts.push({ key: opt.command.toUpperCase(), value: opt.desc });
         });
         console.log();
         dist_1.SmartCLI.GenericOutput.printKeyValue(kvpOpts);
@@ -22,6 +22,9 @@ class HelpCommand {
             let concernedDispatcherOpts = null;
             const kvp = [];
             switch (f.flag) {
+                case core_commands_const_1.CORE_COMMANDS.set.command:
+                    concernedDispatcherOpts = dispatcherOpts.find(o => o.command === core_commands_const_1.CORE_COMMANDS.set.command);
+                    break;
                 case core_commands_const_1.CORE_COMMANDS.init.command:
                     concernedDispatcherOpts = dispatcherOpts.find(o => o.command === core_commands_const_1.CORE_COMMANDS.init.command);
                     break;

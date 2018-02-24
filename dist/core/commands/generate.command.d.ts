@@ -7,6 +7,7 @@ export declare class GenerateCommand implements CommandRunner {
     private static itemToGenerate;
     constructor();
     run(dispatcherOptions: DispatcherOptions[], flags: CommandFlag[]): void;
+    private static shorthand(type, flags);
     private static resetItemToGenerate();
     private static ensureIsEnergyProject();
     private static generateItem();
@@ -17,6 +18,7 @@ export declare class GenerateCommand implements CommandRunner {
     private static extractExtension(data);
     private static extractMultipleUserCustomExtensions(part, isShorthand?);
     private static startFileGenerationForThisItem();
+    private static getFileTemplate(type);
     private static composeFoldersStack();
     private static generateFilename(previousFoldersStack);
     private static getCLIConf();
