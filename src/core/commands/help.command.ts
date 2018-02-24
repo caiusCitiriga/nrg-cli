@@ -4,6 +4,7 @@ import { CommandFlag } from "../../interfaces/command-flag.interface";
 import { CommandRunner } from "../../interfaces/command-runner.interface";
 import { DispatcherOptions } from "../../interfaces/dispatcher-options.interface";
 import { CORE_COMMANDS } from "../../consts/core-commands.const";
+import { UI } from "../ui.core";
 
 export class HelpCommand implements CommandRunner {
 
@@ -53,18 +54,16 @@ export class HelpCommand implements CommandRunner {
 
             console.log();
             SmartCLI.GenericOutput.printBoxedTitle('nrg ' + concernedDispatcherOpts.command);
-            SmartCLI.GenericOutput.printMessage(concernedDispatcherOpts.desc);
+            UI.print(concernedDispatcherOpts.desc);
 
             if (kvp.length) {
-                SmartCLI.GenericOutput.printMessage(`Below, all the ${kvp.length} flags:`);
-                console.log();
+                UI.print(`Below, all the ${kvp.length} flags:`, true);
                 SmartCLI.GenericOutput.printKeyValue(kvp);
                 console.log();
                 return;
             }
 
-            SmartCLI.GenericOutput.printMessage(`This command runs without any flag`);
-            console.log();
+            UI.print(`This command runs without any flag`, true);
         });
     }
 

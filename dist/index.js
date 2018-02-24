@@ -11,10 +11,8 @@ const default_dispatcher_options_const_1 = require("./consts/default-dispatcher-
 const factory_core_1 = require("./core/factory/factory.core");
 class EnergyCLI {
     constructor() {
-        //  Core class properties initialization
         this._dispatcherOptions = default_dispatcher_options_const_1.DEFAULT_DISPATCHER_OPTS.options;
         this._parentCtorInitialized = new BehaviorSubject_1.BehaviorSubject(false);
-        //  Init factory and check that is successfully initialized
         this._factory = new factory_core_1.Factory(this._dispatcherOptions, this._parentCtorInitialized);
         if (!(this._factory instanceof factory_core_1.Factory)) {
             throw new Error('Couldn\'t initialize the FACTORY');

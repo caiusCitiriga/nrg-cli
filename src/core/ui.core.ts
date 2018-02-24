@@ -4,25 +4,11 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import * as chalk from 'chalk';
 import * as process from 'process';
-import * as SCLI from 'smart-cli/dist';
+import { SmartCLI } from 'smart-cli/dist';
 
 export class UI {
-    public static printKeyValuePairs(set: { key: string, value: string }[], space_char: string = ' ') {
-        SCLI.SmartCLI.GenericOutput.printKeyValue(set);
-        // let longestKeyLen = set[0].key.length;
-        // set.forEach(s => longestKeyLen = s.key.length > longestKeyLen ? s.key.length : longestKeyLen);
 
-        // set.forEach(pair => {
-        //     let spaces = space_char;
-        //     for (let i = 0; i < (longestKeyLen - pair.key.length); i++) {
-        //         spaces += space_char;
-        //     }
-
-        //     console.log(`- ${chalk.yellow(pair.key)}: ${spaces + pair.value}`);
-        // });
-    }
-
-    public static askUserInput(question: string, callback?: (data: any) => void, surroundInNewLines?: boolean): void {
+    public static askUserInput(question: string, callback?: (data: string) => void, surroundInNewLines?: boolean): void {
         const __this = this;
         const stdin = process.stdin;
         const stdout = process.stdout;
@@ -49,14 +35,34 @@ export class UI {
         });
     }
 
+    public static clear(): void {
+        var lines = (process.stdout as any).getWindowSize()[1];
+        for (var i = 0; i < lines; i++) {
+            console.log('');
+        }
+    }
+
     public static print(string: string, surroundInNewlines?: boolean) {
         if (surroundInNewlines) {
             console.log();
         }
-        SCLI.SmartCLI.GenericOutput.printMessage(string);
+        SmartCLI.GenericOutput.printMessage(string);
         if (surroundInNewlines) {
             console.log();
         }
+    }
+
+    public static throw(message: string, callback: any, clearTime = 1000) {
+        if (!callback) {
+            throw new Error('Cannot run UI.throw without any callback passed');
+        }
+
+        UI.clear();
+        UI.error(message);
+        setTimeout(() => {
+            UI.clear();
+            callback();
+        }, clearTime);
     }
 
     public static success(string: string, surroundInNewlines?: boolean) {
@@ -64,7 +70,7 @@ export class UI {
             console.log();
         }
 
-        SCLI.SmartCLI.GenericOutput.printInfo(`\u2713 ${string}`);
+        SmartCLI.GenericOutput.printInfo(`\u2713 ${string}`);
         if (surroundInNewlines) {
             console.log();
         }
@@ -74,7 +80,17 @@ export class UI {
         if (surroundInNewlines) {
             console.log();
         }
-        SCLI.SmartCLI.GenericOutput.printWarning(string);
+        SmartCLI.GenericOutput.printWarning(string);
+        if (surroundInNewlines) {
+            console.log();
+        }
+    }
+
+    public static info(string: string, surroundInNewlines?: boolean) {
+        if (surroundInNewlines) {
+            console.log();
+        }
+        SmartCLI.GenericOutput.printInfo(string);
         if (surroundInNewlines) {
             console.log();
         }
@@ -84,7 +100,7 @@ export class UI {
         if (surroundInNewlines) {
             console.log();
         }
-        SCLI.SmartCLI.GenericOutput.printError(string);
+        SmartCLI.GenericOutput.printError(string);
         if (surroundInNewlines) {
             console.log();
         }

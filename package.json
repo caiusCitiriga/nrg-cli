@@ -17,6 +17,7 @@
         "smart-cli": "0.3.3"
     },
     "devDependencies": {
+        "@types/node": "^9.4.6",
         "typescript": "2.7.2"
     },
     "repository": {

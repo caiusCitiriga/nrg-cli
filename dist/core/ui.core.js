@@ -9,20 +9,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("rxjs/add/observable/of");
 const process = __importStar(require("process"));
-const SCLI = __importStar(require("smart-cli/dist"));
+const dist_1 = require("smart-cli/dist");
 class UI {
-    static printKeyValuePairs(set, space_char = ' ') {
-        SCLI.SmartCLI.GenericOutput.printKeyValue(set);
-        // let longestKeyLen = set[0].key.length;
-        // set.forEach(s => longestKeyLen = s.key.length > longestKeyLen ? s.key.length : longestKeyLen);
-        // set.forEach(pair => {
-        //     let spaces = space_char;
-        //     for (let i = 0; i < (longestKeyLen - pair.key.length); i++) {
-        //         spaces += space_char;
-        //     }
-        //     console.log(`- ${chalk.yellow(pair.key)}: ${spaces + pair.value}`);
-        // });
-    }
     static askUserInput(question, callback, surroundInNewLines) {
         const __this = this;
         const stdin = process.stdin;
@@ -45,20 +33,37 @@ class UI {
             }
         });
     }
+    static clear() {
+        var lines = process.stdout.getWindowSize()[1];
+        for (var i = 0; i < lines; i++) {
+            console.log('');
+        }
+    }
     static print(string, surroundInNewlines) {
         if (surroundInNewlines) {
             console.log();
         }
-        SCLI.SmartCLI.GenericOutput.printMessage(string);
+        dist_1.SmartCLI.GenericOutput.printMessage(string);
         if (surroundInNewlines) {
             console.log();
         }
+    }
+    static throw(message, callback, clearTime = 1000) {
+        if (!callback) {
+            throw new Error('Cannot run UI.throw without any callback passed');
+        }
+        UI.clear();
+        UI.error(message);
+        setTimeout(() => {
+            UI.clear();
+            callback();
+        }, clearTime);
     }
     static success(string, surroundInNewlines) {
         if (surroundInNewlines) {
             console.log();
         }
-        SCLI.SmartCLI.GenericOutput.printInfo(`\u2713 ${string}`);
+        dist_1.SmartCLI.GenericOutput.printInfo(`\u2713 ${string}`);
         if (surroundInNewlines) {
             console.log();
         }
@@ -67,7 +72,16 @@ class UI {
         if (surroundInNewlines) {
             console.log();
         }
-        SCLI.SmartCLI.GenericOutput.printWarning(string);
+        dist_1.SmartCLI.GenericOutput.printWarning(string);
+        if (surroundInNewlines) {
+            console.log();
+        }
+    }
+    static info(string, surroundInNewlines) {
+        if (surroundInNewlines) {
+            console.log();
+        }
+        dist_1.SmartCLI.GenericOutput.printInfo(string);
         if (surroundInNewlines) {
             console.log();
         }
@@ -76,7 +90,7 @@ class UI {
         if (surroundInNewlines) {
             console.log();
         }
-        SCLI.SmartCLI.GenericOutput.printError(string);
+        dist_1.SmartCLI.GenericOutput.printError(string);
         if (surroundInNewlines) {
             console.log();
         }

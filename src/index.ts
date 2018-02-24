@@ -37,11 +37,9 @@ export class EnergyCLI {
     private _parentCtorInitialized: BehaviorSubject<boolean>;
 
     public constructor() {
-        //  Core class properties initialization
         this._dispatcherOptions = DEFAULT_DISPATCHER_OPTS.options;
         this._parentCtorInitialized = new BehaviorSubject(false);
 
-        //  Init factory and check that is successfully initialized
         this._factory = new Factory(this._dispatcherOptions, this._parentCtorInitialized);
         if (!(this._factory instanceof Factory)) {
             throw new Error('Couldn\'t initialize the FACTORY');

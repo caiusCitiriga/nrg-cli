@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const dist_1 = require("smart-cli/dist");
 const core_commands_const_1 = require("../../consts/core-commands.const");
+const ui_core_1 = require("../ui.core");
 class HelpCommand {
     run(dispatcherOpts, flags) {
         if (flags.length) {
@@ -41,16 +42,14 @@ class HelpCommand {
             });
             console.log();
             dist_1.SmartCLI.GenericOutput.printBoxedTitle('nrg ' + concernedDispatcherOpts.command);
-            dist_1.SmartCLI.GenericOutput.printMessage(concernedDispatcherOpts.desc);
+            ui_core_1.UI.print(concernedDispatcherOpts.desc);
             if (kvp.length) {
-                dist_1.SmartCLI.GenericOutput.printMessage(`Below, all the ${kvp.length} flags:`);
-                console.log();
+                ui_core_1.UI.print(`Below, all the ${kvp.length} flags:`, true);
                 dist_1.SmartCLI.GenericOutput.printKeyValue(kvp);
                 console.log();
                 return;
             }
-            dist_1.SmartCLI.GenericOutput.printMessage(`This command runs without any flag`);
-            console.log();
+            ui_core_1.UI.print(`This command runs without any flag`, true);
         });
     }
     printSpecificCommandHelp(kvpOpts) {
