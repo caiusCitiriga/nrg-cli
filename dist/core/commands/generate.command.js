@@ -10,11 +10,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const dist_1 = require("smart-cli/dist");
-const BehaviorSubject_1 = require("rxjs/BehaviorSubject");
 const core_commands_const_1 = require("../../consts/core-commands.const");
 const available_item_types_enum_1 = require("../../enums/available-item-types.enum");
 const ui_core_1 = require("../ui.core");
 const defaults_conf_1 = require("../../config/defaults.conf");
+const Subject_1 = require("rxjs/Subject");
 //  Since is generated getting inputs from user, the reference to "GenerateCommand" gets lost.
 //  Needs to be therefore static inside
 class GenerateCommand {
@@ -68,7 +68,17 @@ class GenerateCommand {
             GenerateCommand.askForItemExtension();
             return;
         }
-        GenerateCommand.startFileGenerationForThisItem();
+        const sub = GenerateCommand
+            .startFileGenerationForThisItem()
+            .subscribe(res => {
+            if (!res) {
+                ui_core_1.UI.error(`Couldn't create the item. Aborting.`);
+                sub.unsubscribe();
+                return;
+            }
+            ui_core_1.UI.success('Job completed successfully');
+            sub.unsubscribe();
+        });
     }
     ;
     static getItemExtensionFromUser(data) {
@@ -78,7 +88,17 @@ class GenerateCommand {
         }
         GenerateCommand.itemToGenerate.extension = data;
         ui_core_1.UI.success('Extension successfully set');
-        GenerateCommand.startFileGenerationForThisItem();
+        const sub = GenerateCommand
+            .startFileGenerationForThisItem()
+            .subscribe(res => {
+            if (!res) {
+                ui_core_1.UI.error(`Couldn't create the item. Aborting.`);
+                sub.unsubscribe();
+                return;
+            }
+            ui_core_1.UI.success('Job completed successfully');
+            sub.unsubscribe();
+        });
     }
     //  Internals
     static ensureIsEnergyProject() {
@@ -159,10 +179,14 @@ class GenerateCommand {
         return customPart;
     }
     static startFileGenerationForThisItem() {
-        const jobDone = new BehaviorSubject_1.BehaviorSubject(false);
+        const jobDone = new Subject_1.Subject(false);
         try {
             const foldersStack = GenerateCommand.composeFoldersStack();
             if (GenerateCommand.itemToGenerate.type === available_item_types_enum_1.AvailableItemTypes.custom) {
+                const err = new Error();
+                err.message = 'The custom types are not handled yet.';
+                err.name = 'Method not implemented exception';
+                throw err;
             }
             else {
                 const filename = GenerateCommand.generateFilename(foldersStack);
@@ -171,6 +195,7 @@ class GenerateCommand {
                         throw new Error(`Error creating the item: ${err.message}`);
                     }
                     ui_core_1.UI.success(`File ${filename} generated`);
+                    jobDone.next(true);
                 });
             }
         }
@@ -179,6 +204,10 @@ class GenerateCommand {
             if (error.message === 'Invalid CLI configuration') {
                 ui_core_1.UI.warn('Your CLI configuration appears to be corrupted.');
             }
+            if (error.name === 'Method not implemented exception') {
+                ui_core_1.UI.warn('This feature is not available yet. Sorry.');
+            }
+            jobDone.next(false);
         }
         return jobDone.asObservable();
     }

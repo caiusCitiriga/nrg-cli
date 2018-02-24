@@ -16,6 +16,7 @@ import { ItemToGenerateOptions } from "../../interfaces/item-to-generate-options
 import { UI } from "../ui.core";
 import { DEFAULTS } from '../../config/defaults.conf';
 import { CLIConfiguration } from '../../interfaces/cli-conf.interface';
+import { Subject } from 'rxjs/Subject';
 
 //  Since is generated getting inputs from user, the reference to "GenerateCommand" gets lost.
 //  Needs to be therefore static inside
@@ -50,7 +51,7 @@ export class GenerateCommand implements CommandRunner {
     }
 
     //  Input getters
-    private static getItemTypeFromUser(data: string) {
+    private static getItemTypeFromUser(data: string): void {
         //  If is typed as string
         if (isNaN(parseInt(data)) && !!(AvailableItemTypes as any)[data]) {
             GenerateCommand.itemToGenerate.type = (AvailableItemTypes as any)[data];
@@ -81,7 +82,18 @@ export class GenerateCommand implements CommandRunner {
             return;
         }
 
-        GenerateCommand.startFileGenerationForThisItem();
+        const sub = GenerateCommand
+            .startFileGenerationForThisItem()
+            .subscribe(res => {
+                if (!res) {
+                    UI.error(`Couldn't create the item. Aborting.`);
+                    sub.unsubscribe();
+                    return;
+                }
+
+                UI.success('Job completed successfully');
+                sub.unsubscribe();
+            });
     };
 
     private static getItemExtensionFromUser(data: string): void {
@@ -92,7 +104,18 @@ export class GenerateCommand implements CommandRunner {
 
         GenerateCommand.itemToGenerate.extension = data;
         UI.success('Extension successfully set');
-        GenerateCommand.startFileGenerationForThisItem();
+        const sub = GenerateCommand
+            .startFileGenerationForThisItem()
+            .subscribe(res => {
+                if (!res) {
+                    UI.error(`Couldn't create the item. Aborting.`);
+                    sub.unsubscribe();
+                    return;
+                }
+
+                UI.success('Job completed successfully');
+                sub.unsubscribe();
+            });
     }
 
 
@@ -188,11 +211,14 @@ export class GenerateCommand implements CommandRunner {
     }
 
     private static startFileGenerationForThisItem(): Observable<boolean> {
-        const jobDone: BehaviorSubject<boolean> = new BehaviorSubject(false);
+        const jobDone: Subject<boolean> = new Subject(false);
         try {
             const foldersStack = GenerateCommand.composeFoldersStack();
             if (GenerateCommand.itemToGenerate.type === AvailableItemTypes.custom) {
-
+                const err = new Error();
+                err.message = 'The custom types are not handled yet.';
+                err.name = 'Method not implemented exception';
+                throw err;
             } else {
                 const filename = GenerateCommand.generateFilename(foldersStack);
                 fs.writeFile(filename, null, (err: Error) => {
@@ -201,6 +227,7 @@ export class GenerateCommand implements CommandRunner {
                     }
 
                     UI.success(`File ${filename} generated`);
+                    jobDone.next(true);
                 });
             }
         } catch (e) {
@@ -208,6 +235,11 @@ export class GenerateCommand implements CommandRunner {
             if (error.message === 'Invalid CLI configuration') {
                 UI.warn('Your CLI configuration appears to be corrupted.');
             }
+            if (error.name === 'Method not implemented exception') {
+                UI.warn('This feature is not available yet. Sorry.');
+            }
+
+            jobDone.next(false);
         }
 
         return jobDone.asObservable();
