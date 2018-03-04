@@ -1,0 +1,41 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "NRG help --set",
+            "program": "${workspaceFolder}/dist/index.js",
+            "console": "integratedTerminal",
+            "args": [
+                "help",
+                "--set"
+            ],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "NRG",
+            "program": "${workspaceFolder}/dist/index.js",
+            "console": "integratedTerminal",
+            "args": [
+                "g",
+                "--item"
+            ],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "NRG short",
+            "program": "${workspaceFolder}/dist/index.js",
+            "console": "integratedTerminal",
+            "args": [
+                "g",
+                "--dto:retest/deep-test/test-response.custom.relay,ts"
+            ],
+        }
+    ]
+}

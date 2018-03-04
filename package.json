@@ -1,0 +1,59 @@
+{
+    "name": "@nrg-ngx/cli",
+    "version": "0.0.0",
+    "description": "A fully customizable CLI that aims to improve your workflow. It integrates well with Angular but is suited for any project.",
+    "author": "Caius Citiriga",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "bin": {
+        "nrg": "./dist/index.js"
+    },
+    "scripts": {
+        "run-dev": "tsc --watch",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "chalk": "2.3.1",
+        "rxjs": "5.5.6",
+        "smart-cli": "1.0.0"
+    },
+    "devDependencies": {
+        "@types/chalk": "2.2.0",
+        "@types/node": "9.4.6",
+        "typescript": "2.7.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/caiusCitiriga/nrg-ngx-cli.git"
+    },
+    "homepage": "https://github.com/caiusCitiriga/nrg-ngx-cli#readme",
+    "bugs": {
+        "url": "https://github.com/caiusCitiriga/nrg-ngx-cli/issues"
+    },
+    "keywords": [
+        "angular",
+        "ng",
+        "ngx",
+        "energy",
+        "cli",
+        "@angular/cli",
+        "angular-cli",
+        "angular_cli",
+        "angularcli",
+        "angular2",
+        "angularX",
+        "scaffold",
+        "domain-configuration",
+        "domain",
+        "configuration",
+        "project-scaffold",
+        "components",
+        "services",
+        "pipes",
+        "modules",
+        "directives",
+        "crud",
+        "default",
+        "basic"
+    ]
+}
