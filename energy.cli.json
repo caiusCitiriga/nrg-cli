@@ -1,4 +1,5 @@
 {
+    "$schema": "https://raw.githubusercontent.com/caiusCitiriga/nrg-ngx-cli/dev/src/config/nrg-cli-conf.schema.json",
     "srcFolder": "src",
     "defaultExt": "ts",
     "additionalTypes": [
