@@ -1,5 +1,4 @@
 {
-    "$id": "https://www.github.com/caiuscitiriga/nrg-ngx-cli/src/config/nrg-cli-conf.schema.json",
     "type": "object",
     "properties": {
         "srcFolder": {
