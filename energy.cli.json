@@ -1,3 +1,10 @@
 {
-    "sourceFolder": "src"
+    "srcFolder": "src",
+    "defaultExt": "ts",
+    "additionalTypes": [
+        {
+            "name": "custom",
+            "plural": "customs"
+        }
+    ]
 }

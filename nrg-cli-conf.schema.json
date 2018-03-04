@@ -1,0 +1,52 @@
+{
+    "$id": "https://www.github.com/caiuscitiriga/nrg-ngx-cli/nrg-cli-conf.schema.json",
+    "type": "object",
+    "properties": {
+        "srcFolder": {
+            "$id": "/properties/srcFolder",
+            "type": "string",
+            "title": "EnergyCLIConfSchema",
+            "default": "",
+            "examples": [
+                "src"
+            ]
+        },
+        "defaultExt": {
+            "$id": "/properties/defaultExt",
+            "type": "string",
+            "title": "The Defaultext Schema ",
+            "default": "",
+            "examples": [
+                "ts"
+            ]
+        },
+        "additionalTypes": {
+            "$id": "/properties/additionalTypes",
+            "type": "array",
+            "items": {
+                "$id": "/properties/additionalTypes/items",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "$id": "/properties/additionalTypes/items/properties/name",
+                        "type": "string",
+                        "title": "The Name Schema ",
+                        "default": "",
+                        "examples": [
+                            "custom"
+                        ]
+                    },
+                    "plural": {
+                        "$id": "/properties/additionalTypes/items/properties/plural",
+                        "type": "string",
+                        "title": "The Plural Schema ",
+                        "default": "",
+                        "examples": [
+                            "customs"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
