@@ -10,16 +10,10 @@ import { IConfReader } from './interfaces/conf-reader.interface';
 
 export class EnergyCLI {
     private _cli: SmartCLI;
-    private _confReader: IConfReader;
 
     public constructor() {
         //  Initialization of stuff
         this._cli = new SmartCLI();
-        this._confReader = IoCContainer.get<IConfReader>(TYPES.IConfReader);
-
-        console.log(this._confReader.getSrcFolder());
-        console.log(this._confReader.getAdditionalTypes());
-        console.log(this._confReader.getDefaultFilesExt());
 
         //  Sets all the commands to SmartCLI
         this.setupCLI();
