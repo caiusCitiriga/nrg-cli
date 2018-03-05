@@ -6,7 +6,7 @@ import { injectable } from 'inversify';
 
 import { NRG_EXCEPTIONS } from '../consts/exceptions.conts';
 
-import { IConfReader } from "../interfaces/conf-reader.interface";
+import { IConfReader } from '../interfaces/conf-reader.interface';
 import { IEnergyAdditionalTypeCLIConf, IEnergyCLIConf } from '../interfaces/energy-cli-conf.interface';
 import { NRGException } from './nrg-exception.entity';
 import { CLI_DEFAULTS } from '../config/cli-defaults.config';
@@ -19,6 +19,26 @@ export class ConfReader implements IConfReader {
     public constructor() {
         this._configFile = null as any;
         this._cliConfFilename = 'energy.cli.json';
+    }
+
+    public getSrcFolder(): string {
+        this.readConf();
+        return this._configFile.srcFolder;
+    }
+
+    public getDefaultFilesExt(): string {
+        this.readConf();
+        return this._configFile.defaultExt;
+    }
+
+    public getAdditionalTypes(): IEnergyAdditionalTypeCLIConf[] {
+        this.readConf();
+        return this._configFile.additionalTypes;
+    }
+
+    public useDotnetInterfaceStyle(): boolean {
+        this.readConf();
+        return this._configFile.dotnetInterfaceStyle;
     }
 
     private ensureIsEnergyProjectFolder(): void {
@@ -51,20 +71,5 @@ export class ConfReader implements IConfReader {
             : CLI_DEFAULTS.additionalTypes;
 
         return fileContent;
-    }
-
-    public getSrcFolder(): string {
-        this.readConf();
-        return this._configFile.srcFolder;
-    }
-
-    public getDefaultFilesExt(): string {
-        this.readConf();
-        return this._configFile.defaultExt;
-    }
-
-    public getAdditionalTypes(): IEnergyAdditionalTypeCLIConf[] {
-        this.readConf();
-        return this._configFile.additionalTypes;
     }
 }

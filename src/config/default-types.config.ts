@@ -1,5 +1,5 @@
-import { ItemTypes } from "../enums/item-types.enum";
-import { IEnergyAdditionalTypeCLIConf } from "../interfaces/energy-cli-conf.interface";
+import { ItemTypes } from '../enums/item-types.enum';
+import { IEnergyAdditionalTypeCLIConf } from '../interfaces/energy-cli-conf.interface';
 
 export const DefaultItemTypes: IEnergyAdditionalTypeCLIConf[] = [
     {

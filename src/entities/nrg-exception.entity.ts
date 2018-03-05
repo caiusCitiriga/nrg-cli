@@ -1,5 +1,5 @@
-import { INrgException } from "../interfaces/nrg-exception.interface";
-import { INrgExceptionOpts } from "../interfaces/nrg-exception-opts.interface";
+import { INrgException } from '../interfaces/nrg-exception.interface';
+import { INrgExceptionOpts } from '../interfaces/nrg-exception-opts.interface';
 
 export class NRGException implements INrgException {
     public get(opts: INrgExceptionOpts): Error {

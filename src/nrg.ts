@@ -1,5 +1,6 @@
 #! /usr/bin/env node
 import 'reflect-metadata';
+import 'rxjs/add/operator/filter';
 import * as process from 'process';
 import { injectable, inject, named } from 'inversify';
 
@@ -78,7 +79,12 @@ export class EnergyCLI implements IEnergy {
                         options: []
                     }
                 ],
-                action: (flags: IFlag[]) => this._generateComand.run(flags)
+                action: (flags: IFlag[]) => {
+                    this._generateComand
+                        .run(flags)
+                        .filter(res => !!res)
+                        .subscribe(res => this._cli.UI.out.printInfo('Item generated successfully!'));
+                }
             });
     }
 }

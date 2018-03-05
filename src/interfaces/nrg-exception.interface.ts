@@ -1,4 +1,4 @@
-import { INrgExceptionOpts } from "../opts/nrg-exception-opts.interface";
+import { INrgExceptionOpts } from "./nrg-exception-opts.interface";
 
 export interface INrgException {
     get(opts: INrgExceptionOpts): Error;

@@ -5,6 +5,12 @@ export const NRG_EXCEPTIONS = {
             return `This is not a valid EnergyCLI project. Run nrg init to create a CLI conf file.`;
         }
     },
+    ItemWriteToDiskException: {
+        name: 'ItemWriteToDiskException',
+        message: (err: string) => {
+            return `There was an error when trying to create the item to disk: ${err}`;
+        }
+    },
     MissingItemTypeFlagException: {
         name: 'MissingItemTypeFlagException',
         message: () => {

@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import * as process from 'process';
 
@@ -15,39 +16,39 @@ import { ICommandRunner } from '../interfaces/command-runner.interface';
 import { IEnergyAdditionalTypeCLIConf } from '../interfaces/energy-cli-conf.interface';
 import { NRGException } from './nrg-exception.entity';
 import { NRG_EXCEPTIONS } from '../consts/exceptions.conts';
+import { IUserInterface } from 'smart-cli/dist/interfaces/plain/user-interface.interface';
+import { SmartCLI } from 'smart-cli/dist';
 
 @injectable()
 export class GenerateCommand implements ICommandRunner {
+    private _UI: IUserInterface;
     private _availableItemTypes: IEnergyAdditionalTypeCLIConf[];
     @inject(TYPES.IConfReader) private _confReader: IConfReader;
 
-    public run(flags: IFlag[]): void {
+    public constructor() {
+        this._UI = new SmartCLI().UI;
+    }
+
+    public run(flags: IFlag[]): Observable<boolean> {
         this.ensureFlagsIntegrity(flags);
         this._availableItemTypes = this.mergeAdditionalTypesWithDefaultOnes();
         this._availableItemTypes.forEach((t, idx) => !!t.itemType ? null : this._availableItemTypes[idx].itemType = ItemTypes.custom);
 
         switch (flags[0].name) {
             case this._availableItemTypes.find(t => t.itemType === ItemTypes.dto).name:
-                this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.dto), flags);
-                break;
+                return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.dto), flags);
             case this._availableItemTypes.find(t => t.itemType === ItemTypes.enum).name:
-                this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.enum), flags);
-                break;
+                return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.enum), flags);
             case this._availableItemTypes.find(t => t.itemType === ItemTypes.model).name:
-                this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.model), flags);
-                break;
+                return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.model), flags);
             case this._availableItemTypes.find(t => t.itemType === ItemTypes.const).name:
-                this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.const), flags);
-                break;
+                return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.const), flags);
             case this._availableItemTypes.find(t => t.itemType === ItemTypes.entity).name:
-                this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.entity), flags);
-                break;
+                return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.entity), flags);
             case this._availableItemTypes.find(t => t.itemType === ItemTypes.interface).name:
-                this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.interface), flags);
-                break;
+                return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.interface), flags);
             case this._availableItemTypes.find(t => t.itemType === ItemTypes.custom).name:
-                this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.custom), flags);
-                break;
+                return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.custom), flags);
             default:
                 throw new NRGException().throw({
                     name: NRG_EXCEPTIONS.InvalidItemTypeGenerationException.name,
@@ -76,22 +77,40 @@ export class GenerateCommand implements ICommandRunner {
         return DefaultItemTypes.concat(this._confReader.getAdditionalTypes());
     }
 
-    private generateItem(type: IEnergyAdditionalTypeCLIConf, flags: IFlag[]): Observable<boolean> {
+    private generateItem(itemType: IEnergyAdditionalTypeCLIConf, flags: IFlag[]): Observable<boolean> {
         const status = new BehaviorSubject(false);
-        const filename = this.parseFilename(flags[0].options[0].value);
-        // const className = this.parseClassname(flags[0].options[0].value);
-        const itemPath = process.cwd() + path.sep + this._confReader.getSrcFolder();
+        const rawFilename = flags[0].options[0].value;
 
+        const ext = this.extractExtension(rawFilename);
+        const filename = this.extractFilename(rawFilename, ext);
+        const className = this.extractClassname(rawFilename, ext);
+        const folderName = itemType.plural;
+        const itemFullPath = `${process.cwd()}${path.sep}${this._confReader.getSrcFolder()}${path.sep}${folderName}${path.sep}${filename}.${itemType.name}.${ext}`;
+
+        const pathItemsToCheck = itemFullPath.split(path.sep);
+        pathItemsToCheck.pop(); //      remove the filename
+        pathItemsToCheck.shift(); //    remove the '/' at the beginning
+        this.ensureEveryFolderExistsBeforeWrite(pathItemsToCheck);
+
+        const exportType = itemType.itemType === ItemTypes.interface
+            ? 'interface'
+            : itemType.itemType === ItemTypes.const
+                ? 'const'
+                : itemType.itemType === ItemTypes.enum
+                    ? 'enum'
+                    : 'class';
+
+        fs.writeFile(itemFullPath, `export ${exportType} ${className} {\n\t\n}\n`, (err) => {
+            if (!!err) {
+                throw new NRGException().throw({
+                    name: NRG_EXCEPTIONS.ItemWriteToDiskException.name,
+                    message: NRG_EXCEPTIONS.ItemWriteToDiskException.message(err.message),
+                });
+            }
+
+            status.next(true);
+        });
         return status.asObservable();
-    }
-
-    private parseFilename(rawString: string): string {
-        const ext = this.extractExtension(rawString);
-        const filename = this.extractFilename(rawString, ext);
-        const classname = this.extractClassname(rawString, ext);
-
-        console.log(classname);
-        return;
     }
 
     private extractExtension(rawString: string): string {
@@ -99,7 +118,7 @@ export class GenerateCommand implements ICommandRunner {
         const splittedValueByExtensionDelimiter = rawString.split('.');
         splittedValueByExtensionDelimiter.shift(); // remove the filename
 
-        if (splittedValueByExtensionDelimiter.length >= 1) {
+        if (splittedValueByExtensionDelimiter.length > 1) {
             //  Has own extension
             extension = splittedValueByExtensionDelimiter[splittedValueByExtensionDelimiter.length - 1];
         }
@@ -131,8 +150,19 @@ export class GenerateCommand implements ICommandRunner {
             finalClassName += word[0].toUpperCase() + word.substr(1);
         });
 
+        return this._confReader.useDotnetInterfaceStyle() ? `I${finalClassName}` : finalClassName;
+    }
 
+    private ensureEveryFolderExistsBeforeWrite(pathItems: string[]): void {
+        let progressivePath = path.sep;
+        let directoriesCreated = 0;
 
-        return finalClassName;
+        pathItems.forEach(item => {
+            progressivePath += item + path.sep;
+            if (!fs.existsSync(progressivePath)) {
+                directoriesCreated++;
+                fs.mkdirSync(progressivePath);
+            }
+        });
     }
 }
