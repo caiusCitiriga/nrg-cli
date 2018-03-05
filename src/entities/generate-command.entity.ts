@@ -7,9 +7,14 @@ import { TYPES } from "../consts/types.const";
 
 @injectable()
 export class GenerateCommand implements ICommandRunner {
+
     @inject(TYPES.IConfReader) private _confReader: IConfReader;
 
     public run(flags: IFlag[]): void {
+        const itemType = flags[0].name;
+        const itemFileName = flags[0].options[0].value;
+        const itemFileExtension = 'ts';
+
         console.log(flags);
     }
 }

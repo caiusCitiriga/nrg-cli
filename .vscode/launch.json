@@ -7,12 +7,11 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "NRG help --set",
-            "program": "${workspaceFolder}/dist/index.js",
+            "name": "NRG help",
+            "program": "${workspaceFolder}/dist/main.js",
             "console": "integratedTerminal",
             "args": [
                 "help",
-                "--set"
             ],
         },
         {
@@ -24,17 +23,6 @@
             "args": [
                 "g",
                 "--item"
-            ],
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "NRG short",
-            "program": "${workspaceFolder}/dist/index.js",
-            "console": "integratedTerminal",
-            "args": [
-                "g",
-                "--dto:retest/deep-test/test-response.custom.relay,ts"
             ],
         }
     ]
