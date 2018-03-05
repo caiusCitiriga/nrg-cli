@@ -1,11 +1,11 @@
 {
     "$schema": "https://raw.githubusercontent.com/caiusCitiriga/nrg-ngx-cli/dev/src/config/cli-conf.schema.json",
-    "srcFolder": "src",
-    "defaultExt": "js",
+    "srcFolder": "test_src",
+    "defaultExt": "ts",
     "additionalTypes": [
         {
-            "name": "custom",
-            "plural": "customs"
+            "name": "rumble",
+            "plural": "rumbles"
         }
     ]
 }

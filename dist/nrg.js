@@ -9,19 +9,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const process = require("process");
 const inversify_1 = require("inversify");
+const dist_1 = require("smart-cli/dist");
 const types_const_1 = require("./consts/types.const");
-const inversify_config_1 = require("./inversify.config");
 let EnergyCLI = class EnergyCLI {
-    constructor() {
+    constructor(generateComand) {
         //  Initialization of stuff
-        // this._cli = new SmartCLI();
-        console.log(this._generateComand);
-        //  Sets all the commands to SmartCLI
-        // this.setupCLI();
+        this._cli = new dist_1.SmartCLI();
+        this._generateComand = generateComand;
+        // Sets all the commands to SmartCLI
+        this.setupCLI();
     }
     /**
      * Runs the CLI program passing the user args.
@@ -68,19 +71,15 @@ let EnergyCLI = class EnergyCLI {
                     options: []
                 }
             ],
-            action: (flags) => { }
+            action: (flags) => this._generateComand.run(flags)
         });
     }
 };
-__decorate([
-    inversify_1.inject(types_const_1.TYPES.ICommandRunner),
-    inversify_1.named(types_const_1.NAMED_TYPES.GenerateCommand),
-    __metadata("design:type", Object)
-], EnergyCLI.prototype, "_generateComand", void 0);
 EnergyCLI = __decorate([
     inversify_1.injectable(),
-    __metadata("design:paramtypes", [])
+    __param(0, inversify_1.inject(types_const_1.TYPES.ICommandRunner)),
+    __param(0, inversify_1.named(types_const_1.NAMED_TYPES.GenerateCommand)),
+    __metadata("design:paramtypes", [Object])
 ], EnergyCLI);
 exports.EnergyCLI = EnergyCLI;
-const cli = inversify_config_1.IoCContainer.get(types_const_1.TYPES.IEnergy);
 //# sourceMappingURL=nrg.js.map

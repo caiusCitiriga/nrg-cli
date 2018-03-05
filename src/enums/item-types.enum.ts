@@ -1,8 +1,9 @@
 export enum ItemTypes {
-    dto,
+    dto = 1,
     enum,
     model,
     const,
     entity,
-    interface
+    interface,
+    custom,
 }

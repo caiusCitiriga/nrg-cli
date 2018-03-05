@@ -17,18 +17,19 @@ import { ICommandRunner } from './interfaces/command-runner.interface';
 @injectable()
 export class EnergyCLI implements IEnergy {
     private _cli: SmartCLI;
-
-    @inject(TYPES.ICommandRunner)
-    @named(NAMED_TYPES.GenerateCommand)
     private _generateComand: ICommandRunner;
 
-    public constructor() {
+    public constructor(
+        @inject(TYPES.ICommandRunner)
+        @named(NAMED_TYPES.GenerateCommand)
+        generateComand: ICommandRunner
+    ) {
         //  Initialization of stuff
-        // this._cli = new SmartCLI();
+        this._cli = new SmartCLI();
+        this._generateComand = generateComand;
 
-        console.log(this._generateComand);
-        //  Sets all the commands to SmartCLI
-        // this.setupCLI();
+        // Sets all the commands to SmartCLI
+        this.setupCLI();
     }
 
     /**
@@ -77,9 +78,7 @@ export class EnergyCLI implements IEnergy {
                         options: []
                     }
                 ],
-                action: (flags: IFlag[]) => { }
+                action: (flags: IFlag[]) => this._generateComand.run(flags)
             });
     }
 }
-
-const cli = IoCContainer.get<IEnergy>(TYPES.IEnergy);

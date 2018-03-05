@@ -1,13 +1,15 @@
 {
     "type": "object",
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "properties": {
         "srcFolder": {
             "$id": "/properties/srcFolder",
             "type": "string",
-            "title": "EnergyCLIConfSchema",
+            "title": "The Srcfolder Schema ",
             "default": "",
             "examples": [
-                "src"
+                "test_src"
             ]
         },
         "defaultExt": {
@@ -32,7 +34,7 @@
                         "title": "The Name Schema ",
                         "default": "",
                         "examples": [
-                            "custom"
+                            "rumble"
                         ]
                     },
                     "plural": {
@@ -41,11 +43,20 @@
                         "title": "The Plural Schema ",
                         "default": "",
                         "examples": [
-                            "customs"
+                            "rumbles"
                         ]
                     }
                 }
             }
+        },
+        "dotnetInterfaceStyle": {
+            "$id": "/properties/dotnetInterfaceStyle",
+            "type": "boolean",
+            "title": "The Dotnetinterfacestyle Schema ",
+            "default": false,
+            "examples": [
+                true
+            ]
         }
     }
 }

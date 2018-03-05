@@ -1,3 +1,4 @@
+import { ItemTypes } from "../enums/item-types.enum";
 export interface IEnergyCLIConf {
     srcFolder: string;
     defaultExt: string;
@@ -6,4 +7,5 @@ export interface IEnergyCLIConf {
 export interface IEnergyAdditionalTypeCLIConf {
     name: string;
     plural?: string;
+    itemType?: ItemTypes;
 }
