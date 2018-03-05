@@ -1,7 +1,7 @@
 {
     "$schema": "https://raw.githubusercontent.com/caiusCitiriga/nrg-ngx-cli/dev/src/config/cli-conf.schema.json",
     "srcFolder": "src",
-    "defaultExt": "ts",
+    "defaultExt": "js",
     "additionalTypes": [
         {
             "name": "custom",

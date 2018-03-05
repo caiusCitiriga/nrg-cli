@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const item_types_enum_1 = require("../enums/item-types.enum");
-exports.DefaultTypesConfig = {
+exports.DefaultItemTypes = {
     dto: {
         name: 'dto',
         plural: 'dtos',

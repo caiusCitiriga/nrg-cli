@@ -1,6 +1,6 @@
 import { ItemTypes } from "../enums/item-types.enum";
 
-export const DefaultTypesConfig = {
+export const DefaultItemTypes = {
     dto: {
         name: 'dto',
         plural: 'dtos',
