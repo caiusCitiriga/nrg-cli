@@ -1,4 +1,3 @@
-#! /usr/bin/env node
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -15,7 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 require("rxjs/add/operator/filter");
-const process = require("process");
 const inversify_1 = require("inversify");
 const dist_1 = require("smart-cli/dist");
 const types_const_1 = require("./consts/types.const");
@@ -28,12 +26,13 @@ let EnergyCLI = class EnergyCLI {
         this.setupCLI();
     }
     /**
-     * Runs the CLI program passing the user args.
+     * Runs the program with the given args
      *
+     * @param {string} args
      * @memberof EnergyCLI
      */
-    runProgram() {
-        this, this._cli.run(process.argv.filter((arg, idx) => idx >= 2).join(' ').toString());
+    runProgram(args) {
+        this, this._cli.run(args);
     }
     setupCLI() {
         this._cli

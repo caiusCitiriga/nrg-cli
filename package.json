@@ -6,7 +6,7 @@
     "license": "MIT",
     "main": "dist/index.js",
     "bin": {
-        "nrg": "./dist/index.js"
+        "nrg": "dist/index.js"
     },
     "scripts": {
         "build": "tsc",

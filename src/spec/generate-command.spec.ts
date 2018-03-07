@@ -1,31 +1,34 @@
 import 'rxjs/add/operator/filter';
 
 import * as fs from 'fs';
+import * as path from 'path';
 import * as rimraf from 'rimraf';
-import * as cp from 'child_process';
+import * as child_process from 'child_process';
+
 import { IFlag } from "smart-cli/dist/interfaces/plain/flag.interface";
 import { IConfReader } from "../interfaces/conf-reader.interface";
-import { IEnergyAdditionalTypeCLIConf } from "../interfaces/energy-cli-conf.interface";
+import { IEnergyAdditionalType } from "../interfaces/energy-cli-conf.interface";
 
 import { GenerateCommand } from "../entities/generate-command.entity";
 import { DefaultItemTypes } from "../config/default-types.config";
 import { ItemTypes } from "../enums/item-types.enum";
+import { IItemData } from '../interfaces/item-data.interface';
 
 export class MockConfReader implements IConfReader {
     private additionalTypes = [];
     private useDotnetInterfaces = false;
     private defaultFilesExtension = 'ts';
-    private srcFolder = './dist/spec/src_outlet';
+    private srcFolder = 'dist/spec/src_outlet';
 
     public setSrcFolder(val: string): void { this.srcFolder = val; }
     public setUseDotnetInterfaceStyle(val: boolean) { this.useDotnetInterfaces = val; }
     public setDefaultFilesExtension(val: string): void { this.defaultFilesExtension = val; }
-    public setAdditionalTypes(val: IEnergyAdditionalTypeCLIConf[]): void { this.additionalTypes = val; }
+    public setAdditionalTypes(val: IEnergyAdditionalType[]): void { this.additionalTypes = val; }
 
     public getSrcFolder(): string { return this.srcFolder; }
     public getDefaultFilesExt(): string { return this.defaultFilesExtension; }
     public useDotnetInterfaceStyle(): boolean { return this.useDotnetInterfaces; }
-    public getAdditionalTypes(): IEnergyAdditionalTypeCLIConf[] { return this.additionalTypes; }
+    public getAdditionalTypes(): IEnergyAdditionalType[] { return this.additionalTypes; }
 }
 
 const confReader = new MockConfReader();
@@ -397,8 +400,10 @@ describe('GenerateCommand with case "g --dto=test-one.special.dto.ts"', () => {
         //  Assert
         expect(classnameResult).toEqual(expectedClassname);
     });
+});
 
-    it('should create the item correctly', () => {
+describe('GenerateCommand integration testing', () => {
+    it('should create the item correctly without the deep folder path', () => {
         //  Arrange
         const flags: IFlag[] = [{
             name: "dto",
@@ -421,8 +426,33 @@ describe('GenerateCommand with case "g --dto=test-one.special.dto.ts"', () => {
             .filter(res => !!res)
             .subscribe(res => {
                 //  Assert
-                expect(fs.existsSync(confReader.getSrcFolder() + '/dtos/' + 'test-one.special.ts')).toBeTruthy();
+                expect(fs.existsSync(process.cwd() + path.sep + confReader.getSrcFolder() + '/dtos/' + 'test-one.special.dto.ts')).toBeTruthy();
                 rimraf.sync(confReader.getSrcFolder());
             });
+    });
+
+    it('should return the item data parsed correctly', () => {
+        //  Arrange
+        const flags: IFlag[] = [{
+            name: "dto",
+            options: [
+                {
+                    name: "dto",
+                    value: "deep/test-one.special.ts"
+
+                }
+            ]
+        }];
+        const expectedFullPath = `${process.cwd()}${path.sep}${confReader.getSrcFolder()}${path.sep}dtos${path.sep}deep${path.sep}test-one.special.dto.ts`;
+
+        //  Act
+        const itemData: IItemData = (generateCommand as any).extractItemData(flags, DefaultItemTypes.find(t => t.name === 'dto'));
+
+        //  Assert
+        expect(itemData.ext).toBe('ts');
+        expect(itemData.foldername).toBe('dtos');
+        expect(itemData.fullPath).toBe(expectedFullPath);
+        expect(itemData.filename).toBe('test-one.special');
+        expect(itemData.classname).toBe('TestOneSpecial');
     });
 });

@@ -1,3 +1,3 @@
 export interface IEnergy {
-    runProgram(): void;
+    runProgram(args: string): void;
 }

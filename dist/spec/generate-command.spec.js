@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("rxjs/add/operator/filter");
 const fs = require("fs");
+const path = require("path");
 const rimraf = require("rimraf");
 const generate_command_entity_1 = require("../entities/generate-command.entity");
 const default_types_config_1 = require("../config/default-types.config");
@@ -11,7 +12,7 @@ class MockConfReader {
         this.additionalTypes = [];
         this.useDotnetInterfaces = false;
         this.defaultFilesExtension = 'ts';
-        this.srcFolder = './dist/spec/src_outlet';
+        this.srcFolder = 'dist/spec/src_outlet';
     }
     setSrcFolder(val) { this.srcFolder = val; }
     setUseDotnetInterfaceStyle(val) { this.useDotnetInterfaces = val; }
@@ -315,7 +316,9 @@ describe('GenerateCommand with case "g --dto=test-one.special.dto.ts"', () => {
         //  Assert
         expect(classnameResult).toEqual(expectedClassname);
     });
-    it('should create the item correctly', () => {
+});
+describe('GenerateCommand integration testing', () => {
+    it('should create the item correctly without the deep folder path', () => {
         //  Arrange
         const flags = [{
                 name: "dto",
@@ -335,9 +338,30 @@ describe('GenerateCommand with case "g --dto=test-one.special.dto.ts"', () => {
             .filter(res => !!res)
             .subscribe(res => {
             //  Assert
-            expect(fs.existsSync(confReader.getSrcFolder() + '/dtos/' + 'test-one.special.ts')).toBeTruthy();
+            expect(fs.existsSync(process.cwd() + path.sep + confReader.getSrcFolder() + '/dtos/' + 'test-one.special.dto.ts')).toBeTruthy();
             rimraf.sync(confReader.getSrcFolder());
         });
+    });
+    it('should return the item data parsed correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "deep/test-one.special.ts"
+                    }
+                ]
+            }];
+        const expectedFullPath = `${process.cwd()}${path.sep}${confReader.getSrcFolder()}${path.sep}dtos${path.sep}deep${path.sep}test-one.special.dto.ts`;
+        //  Act
+        const itemData = generateCommand.extractItemData(flags, default_types_config_1.DefaultItemTypes.find(t => t.name === 'dto'));
+        //  Assert
+        expect(itemData.ext).toBe('ts');
+        expect(itemData.foldername).toBe('dtos');
+        expect(itemData.fullPath).toBe(expectedFullPath);
+        expect(itemData.filename).toBe('test-one.special');
+        expect(itemData.classname).toBe('TestOneSpecial');
     });
 });
 //# sourceMappingURL=generate-command.spec.js.map

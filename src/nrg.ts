@@ -1,4 +1,3 @@
-#! /usr/bin/env node
 import 'reflect-metadata';
 import 'rxjs/add/operator/filter';
 import * as process from 'process';
@@ -34,12 +33,13 @@ export class EnergyCLI implements IEnergy {
     }
 
     /**
-     * Runs the CLI program passing the user args.
+     * Runs the program with the given args
      * 
+     * @param {string} args 
      * @memberof EnergyCLI
      */
-    public runProgram(): void {
-        this, this._cli.run(process.argv.filter((arg, idx) => idx >= 2).join(' ').toString())
+    public runProgram(args: string): void {
+        this, this._cli.run(args);
     }
 
     private setupCLI(): void {

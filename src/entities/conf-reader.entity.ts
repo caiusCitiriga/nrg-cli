@@ -7,7 +7,7 @@ import { injectable } from 'inversify';
 import { NRG_EXCEPTIONS } from '../consts/exceptions.conts';
 
 import { IConfReader } from '../interfaces/conf-reader.interface';
-import { IEnergyAdditionalTypeCLIConf, IEnergyCLIConf } from '../interfaces/energy-cli-conf.interface';
+import { IEnergyAdditionalType, IEnergyCLIConf } from '../interfaces/energy-cli-conf.interface';
 import { NRGException } from './nrg-exception.entity';
 import { CLI_DEFAULTS } from '../config/cli-defaults.config';
 
@@ -31,7 +31,7 @@ export class ConfReader implements IConfReader {
         return this._configFile.defaultExt;
     }
 
-    public getAdditionalTypes(): IEnergyAdditionalTypeCLIConf[] {
+    public getAdditionalTypes(): IEnergyAdditionalType[] {
         this.readConf();
         return this._configFile.additionalTypes;
     }

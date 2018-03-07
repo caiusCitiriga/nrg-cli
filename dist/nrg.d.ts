@@ -7,10 +7,11 @@ export declare class EnergyCLI implements IEnergy {
     private _generateComand;
     constructor(generateComand: ICommandRunner);
     /**
-     * Runs the CLI program passing the user args.
+     * Runs the program with the given args
      *
+     * @param {string} args
      * @memberof EnergyCLI
      */
-    runProgram(): void;
+    runProgram(args: string): void;
     private setupCLI();
 }

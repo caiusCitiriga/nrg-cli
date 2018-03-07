@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class ITest {
+class TestCustom {
 }
-exports.ITest = ITest;
-/testCustom {;
+exports.TestCustom = TestCustom;
 //# sourceMappingURL=test.custom.dto.js.map
