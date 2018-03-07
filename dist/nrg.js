@@ -73,6 +73,7 @@ let EnergyCLI = class EnergyCLI {
                 }
             ],
             action: (flags) => {
+                console.log(JSON.stringify(flags));
                 this._generateComand
                     .run(flags)
                     .filter(res => !!res)

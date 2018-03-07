@@ -22,11 +22,15 @@ import { SmartCLI } from 'smart-cli/dist';
 @injectable()
 export class GenerateCommand implements ICommandRunner {
     private _UI: IUserInterface;
+    private _confReader: IConfReader;
     private _availableItemTypes: IEnergyAdditionalTypeCLIConf[];
-    @inject(TYPES.IConfReader) private _confReader: IConfReader;
 
-    public constructor() {
+    public constructor(
+        @inject(TYPES.IConfReader) confReader: IConfReader
+    ) {
         this._UI = new SmartCLI().UI;
+        this._confReader = confReader;
+        this._availableItemTypes = [];
     }
 
     public run(flags: IFlag[]): Observable<boolean> {
@@ -78,16 +82,10 @@ export class GenerateCommand implements ICommandRunner {
     }
 
     private generateItem(itemType: IEnergyAdditionalTypeCLIConf, flags: IFlag[]): Observable<boolean> {
-        const status = new BehaviorSubject(false);
-        const rawFilename = flags[0].options[0].value;
+        const jobStatus = new BehaviorSubject(false);
+        const itemData = this.extractItemData(flags, itemType);
 
-        const ext = this.extractExtension(rawFilename);
-        const filename = this.extractFilename(rawFilename, ext);
-        const className = this.extractClassname(rawFilename, ext);
-        const folderName = itemType.plural;
-        const itemFullPath = `${process.cwd()}${path.sep}${this._confReader.getSrcFolder()}${path.sep}${folderName}${path.sep}${filename}.${itemType.name}.${ext}`;
-
-        const pathItemsToCheck = itemFullPath.split(path.sep);
+        const pathItemsToCheck = itemData.fullPath.split(path.sep);
         pathItemsToCheck.pop(); //      remove the filename
         pathItemsToCheck.shift(); //    remove the '/' at the beginning
         this.ensureEveryFolderExistsBeforeWrite(pathItemsToCheck);
@@ -100,7 +98,8 @@ export class GenerateCommand implements ICommandRunner {
                     ? 'enum'
                     : 'class';
 
-        fs.writeFile(itemFullPath, `export ${exportType} ${className} {\n\t\n}\n`, (err) => {
+        const typescriptItemContent = `export ${exportType} ${itemData.classname} {\n\t\n}\n`;
+        fs.writeFile(itemData.fullPath, itemData.ext === 'ts' ? typescriptItemContent : '', (err) => {
             if (!!err) {
                 throw new NRGException().throw({
                     name: NRG_EXCEPTIONS.ItemWriteToDiskException.name,
@@ -108,17 +107,35 @@ export class GenerateCommand implements ICommandRunner {
                 });
             }
 
-            status.next(true);
+            jobStatus.next(true);
         });
-        return status.asObservable();
+        return jobStatus.asObservable();
     }
 
-    private extractExtension(rawString: string): string {
+    private extractItemData(flags: IFlag[], itemType: IEnergyAdditionalTypeCLIConf): { ext: string, filename: string, classname: string, foldername: string, fullPath: string } {
+        const rawFilename = flags[0].options[0].value;
+        const ext = this.extractExtension(rawFilename, itemType.name);
+        const result = {
+            ext: ext,
+            filename: this.extractFilename(rawFilename, ext),
+            classname: this.extractClassname(rawFilename, ext),
+            foldername: itemType.plural,
+            fullPath: ``,
+        };
+
+        result.fullPath = `${process.cwd()}${path.sep}${this._confReader.getSrcFolder()}${path.sep}${result.foldername}${path.sep}${result.filename}.${itemType.name}.${ext}`
+        return result;
+    }
+
+    private extractExtension(rawString: string, itemTypeName: string): string {
         let extension = this._confReader.getDefaultFilesExt();
         const splittedValueByExtensionDelimiter = rawString.split('.');
         splittedValueByExtensionDelimiter.shift(); // remove the filename
 
-        if (splittedValueByExtensionDelimiter.length > 1) {
+        if (
+            splittedValueByExtensionDelimiter.length > 1
+            && splittedValueByExtensionDelimiter[splittedValueByExtensionDelimiter.length - 1] !== ItemTypes[ItemTypes[itemTypeName]]
+        ) {
             //  Has own extension
             extension = splittedValueByExtensionDelimiter[splittedValueByExtensionDelimiter.length - 1];
         }

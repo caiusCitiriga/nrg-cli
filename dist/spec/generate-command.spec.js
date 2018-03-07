@@ -1,0 +1,343 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("rxjs/add/operator/filter");
+const fs = require("fs");
+const rimraf = require("rimraf");
+const generate_command_entity_1 = require("../entities/generate-command.entity");
+const default_types_config_1 = require("../config/default-types.config");
+const item_types_enum_1 = require("../enums/item-types.enum");
+class MockConfReader {
+    constructor() {
+        this.additionalTypes = [];
+        this.useDotnetInterfaces = false;
+        this.defaultFilesExtension = 'ts';
+        this.srcFolder = './dist/spec/src_outlet';
+    }
+    setSrcFolder(val) { this.srcFolder = val; }
+    setUseDotnetInterfaceStyle(val) { this.useDotnetInterfaces = val; }
+    setDefaultFilesExtension(val) { this.defaultFilesExtension = val; }
+    setAdditionalTypes(val) { this.additionalTypes = val; }
+    getSrcFolder() { return this.srcFolder; }
+    getDefaultFilesExt() { return this.defaultFilesExtension; }
+    useDotnetInterfaceStyle() { return this.useDotnetInterfaces; }
+    getAdditionalTypes() { return this.additionalTypes; }
+}
+exports.MockConfReader = MockConfReader;
+const confReader = new MockConfReader();
+const generateCommand = new generate_command_entity_1.GenerateCommand(confReader);
+beforeAll(() => {
+    const defTypes = default_types_config_1.DefaultItemTypes.concat(confReader.getAdditionalTypes());
+    generateCommand._availableItemTypes = defTypes;
+    generateCommand._availableItemTypes
+        .forEach((t, idx) => !!t.itemType ? null : generateCommand._availableItemTypes[idx].itemType = item_types_enum_1.ItemTypes.custom);
+});
+describe('GenerateCommand with case "g --dto=test-one.dto"', () => {
+    it('should parse the extension correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.dto"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        //  Assert
+        expect(extensionResult).toEqual(expectedExtension);
+    });
+    it('should parse the filename correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.dto"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        const expectedFilename = 'test-one.dto';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        const filenameResult = generateCommand.extractFilename(flags[0].options[0].value, extensionResult);
+        //  Assert
+        expect(`${filenameResult}.${extensionResult}`).toEqual(`${expectedFilename}.${expectedExtension}`);
+    });
+    it('should parse the classname correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.dto"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        const expectedClassname = 'TestOneDto';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        const classnameResult = generateCommand.extractClassname(flags[0].options[0].value, extensionResult);
+        //  Assert
+        expect(classnameResult).toEqual(expectedClassname);
+    });
+});
+describe('GenerateCommand with case "g --dto=test-one"', () => {
+    it('should parse the extension correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        //  Assert
+        expect(extensionResult).toEqual(expectedExtension);
+    });
+    it('should parse the filename correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        const expectedFilename = 'test-one';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        const filenameResult = generateCommand.extractFilename(flags[0].options[0].value, extensionResult);
+        //  Assert
+        expect(`${filenameResult}.${extensionResult}`).toEqual(`${expectedFilename}.${expectedExtension}`);
+    });
+    it('should parse the classname correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        const expectedClassname = 'TestOne';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        const classnameResult = generateCommand.extractClassname(flags[0].options[0].value, extensionResult);
+        //  Assert
+        expect(classnameResult).toEqual(expectedClassname);
+    });
+});
+describe('GenerateCommand with case "g --dto=test-one.special"', () => {
+    it('should parse the extension correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.special"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        //  Assert
+        expect(extensionResult).toEqual(expectedExtension);
+    });
+    it('should parse the filename correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.special"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        const expectedFilename = 'test-one.special';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        const filenameResult = generateCommand.extractFilename(flags[0].options[0].value, extensionResult);
+        //  Assert
+        expect(`${filenameResult}.${extensionResult}`).toEqual(`${expectedFilename}.${expectedExtension}`);
+    });
+    it('should parse the classname correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.special"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        const expectedClassname = 'TestOneSpecial';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        const classnameResult = generateCommand.extractClassname(flags[0].options[0].value, extensionResult);
+        //  Assert
+        expect(classnameResult).toEqual(expectedClassname);
+    });
+});
+describe('GenerateCommand with case "g --dto=test-one.special.dto"', () => {
+    it('should parse the extension correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.special.dto"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        //  Assert
+        expect(extensionResult).toEqual(expectedExtension);
+    });
+    it('should parse the filename correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.special.dto"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        const expectedFilename = 'test-one.special.dto';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        const filenameResult = generateCommand.extractFilename(flags[0].options[0].value, extensionResult);
+        //  Assert
+        expect(`${filenameResult}.${extensionResult}`).toEqual(`${expectedFilename}.${expectedExtension}`);
+    });
+    it('should parse the classname correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.special.dto"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        const expectedClassname = 'TestOneSpecialDto';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        const classnameResult = generateCommand.extractClassname(flags[0].options[0].value, extensionResult);
+        //  Assert
+        expect(classnameResult).toEqual(expectedClassname);
+    });
+});
+describe('GenerateCommand with case "g --dto=test-one.special.dto.ts"', () => {
+    it('should parse the extension correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.special.dto.ts"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        //  Assert
+        expect(extensionResult).toEqual(expectedExtension);
+    });
+    it('should parse the filename correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.special.dto.ts"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        const expectedFilename = 'test-one.special.dto';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        const filenameResult = generateCommand.extractFilename(flags[0].options[0].value, extensionResult);
+        //  Assert
+        expect(`${filenameResult}.${extensionResult}`).toEqual(`${expectedFilename}.${expectedExtension}`);
+    });
+    it('should parse the classname correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.special.dto.ts"
+                    }
+                ]
+            }];
+        const expectedExtension = 'ts';
+        const expectedClassname = 'TestOneSpecialDto';
+        //  Act
+        const extensionResult = generateCommand.extractExtension(flags[0].options[0].value, flags[0].name);
+        const classnameResult = generateCommand.extractClassname(flags[0].options[0].value, extensionResult);
+        //  Assert
+        expect(classnameResult).toEqual(expectedClassname);
+    });
+    it('should create the item correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "dto",
+                options: [
+                    {
+                        name: "dto",
+                        value: "test-one.special.ts"
+                    }
+                ]
+            }];
+        //  Act/Assert
+        if (fs.existsSync(confReader.getSrcFolder())) {
+            rimraf.sync(confReader.getSrcFolder());
+        }
+        generateCommand
+            .run(flags)
+            .filter(res => !!res)
+            .subscribe(res => {
+            //  Assert
+            expect(fs.existsSync(confReader.getSrcFolder() + '/dtos/' + 'test-one.special.ts')).toBeTruthy();
+            rimraf.sync(confReader.getSrcFolder());
+        });
+    });
+});
+//# sourceMappingURL=generate-command.spec.js.map

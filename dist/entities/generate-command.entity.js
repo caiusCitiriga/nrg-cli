@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const path = require("path");
@@ -21,8 +24,10 @@ const nrg_exception_entity_1 = require("./nrg-exception.entity");
 const exceptions_conts_1 = require("../consts/exceptions.conts");
 const dist_1 = require("smart-cli/dist");
 let GenerateCommand = class GenerateCommand {
-    constructor() {
+    constructor(confReader) {
         this._UI = new dist_1.SmartCLI().UI;
+        this._confReader = confReader;
+        this._availableItemTypes = [];
     }
     run(flags) {
         this.ensureFlagsIntegrity(flags);
@@ -68,14 +73,9 @@ let GenerateCommand = class GenerateCommand {
         return default_types_config_1.DefaultItemTypes.concat(this._confReader.getAdditionalTypes());
     }
     generateItem(itemType, flags) {
-        const status = new BehaviorSubject_1.BehaviorSubject(false);
-        const rawFilename = flags[0].options[0].value;
-        const ext = this.extractExtension(rawFilename);
-        const filename = this.extractFilename(rawFilename, ext);
-        const className = this.extractClassname(rawFilename, ext);
-        const folderName = itemType.plural;
-        const itemFullPath = `${process.cwd()}${path.sep}${this._confReader.getSrcFolder()}${path.sep}${folderName}${path.sep}${filename}.${itemType.name}.${ext}`;
-        const pathItemsToCheck = itemFullPath.split(path.sep);
+        const jobStatus = new BehaviorSubject_1.BehaviorSubject(false);
+        const itemData = this.extractItemData(flags, itemType);
+        const pathItemsToCheck = itemData.fullPath.split(path.sep);
         pathItemsToCheck.pop(); //      remove the filename
         pathItemsToCheck.shift(); //    remove the '/' at the beginning
         this.ensureEveryFolderExistsBeforeWrite(pathItemsToCheck);
@@ -86,22 +86,37 @@ let GenerateCommand = class GenerateCommand {
                 : itemType.itemType === item_types_enum_1.ItemTypes.enum
                     ? 'enum'
                     : 'class';
-        fs.writeFile(itemFullPath, `export ${exportType} ${className} {\n\t\n}\n`, (err) => {
+        const typescriptItemContent = `export ${exportType} ${itemData.classname} {\n\t\n}\n`;
+        fs.writeFile(itemData.fullPath, itemData.ext === 'ts' ? typescriptItemContent : '', (err) => {
             if (!!err) {
                 throw new nrg_exception_entity_1.NRGException().throw({
                     name: exceptions_conts_1.NRG_EXCEPTIONS.ItemWriteToDiskException.name,
                     message: exceptions_conts_1.NRG_EXCEPTIONS.ItemWriteToDiskException.message(err.message),
                 });
             }
-            status.next(true);
+            jobStatus.next(true);
         });
-        return status.asObservable();
+        return jobStatus.asObservable();
     }
-    extractExtension(rawString) {
+    extractItemData(flags, itemType) {
+        const rawFilename = flags[0].options[0].value;
+        const ext = this.extractExtension(rawFilename, itemType.name);
+        const result = {
+            ext: ext,
+            filename: this.extractFilename(rawFilename, ext),
+            classname: this.extractClassname(rawFilename, ext),
+            foldername: itemType.plural,
+            fullPath: ``,
+        };
+        result.fullPath = `${process.cwd()}${path.sep}${this._confReader.getSrcFolder()}${path.sep}${result.foldername}${path.sep}${result.filename}.${itemType.name}.${ext}`;
+        return result;
+    }
+    extractExtension(rawString, itemTypeName) {
         let extension = this._confReader.getDefaultFilesExt();
         const splittedValueByExtensionDelimiter = rawString.split('.');
         splittedValueByExtensionDelimiter.shift(); // remove the filename
-        if (splittedValueByExtensionDelimiter.length > 1) {
+        if (splittedValueByExtensionDelimiter.length > 1
+            && splittedValueByExtensionDelimiter[splittedValueByExtensionDelimiter.length - 1] !== item_types_enum_1.ItemTypes[item_types_enum_1.ItemTypes[itemTypeName]]) {
             //  Has own extension
             extension = splittedValueByExtensionDelimiter[splittedValueByExtensionDelimiter.length - 1];
         }
@@ -139,13 +154,10 @@ let GenerateCommand = class GenerateCommand {
         });
     }
 };
-__decorate([
-    inversify_1.inject(types_const_1.TYPES.IConfReader),
-    __metadata("design:type", Object)
-], GenerateCommand.prototype, "_confReader", void 0);
 GenerateCommand = __decorate([
     inversify_1.injectable(),
-    __metadata("design:paramtypes", [])
+    __param(0, inversify_1.inject(types_const_1.TYPES.IConfReader)),
+    __metadata("design:paramtypes", [Object])
 ], GenerateCommand);
 exports.GenerateCommand = GenerateCommand;
 //# sourceMappingURL=generate-command.entity.js.map
