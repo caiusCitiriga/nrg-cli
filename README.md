@@ -3,10 +3,6 @@
 ### The problem 
 How much time do you spend on creating files, folders and classes for your projects? Nevertheless how much time takes you to scaffold your projects if you don't have an helper like Angular's CLI?
 
-The last one, you could easily say that it's a ***"una tantum"*** time payment for your project. I don't agree with that 100% anyways.
-
-The first one instead seem the less time consuming one, but you're wrong.
-
 Let's say that you spend 10 seconds on creating a file. (the worst-case scenario)
 
 + create a folder that will contain all those new kinds of files (mkdir) 
@@ -19,8 +15,10 @@ Let's say that you spend 10 seconds on creating a file. (the worst-case scenario
 
 Ah, and we are keeping apart any project specific naming conventions, so you also have to think a bit on how to name your file in a real world scenario. 
 
+Now multiply that ***10s timespan*** for each item you will create... 
+
 ### The solution
-Mostly every project that I've started so far, talking about frontend "JSish" stuff, has one thing in common. 
+Mostly every project that I've started so far, talking about frontend "JSish" stuff, have one thing in common:
 
 You will use DTOs, Interfaces, Enums, Config files, maybe CONSTs files and so on. 
 
@@ -42,7 +40,7 @@ source/
     ...
 ```
 
-This structure is the most commonly used. And **Energy** works with this structure in mind. Every item you will generate through **Energy**, will be placed inside the **source** folder. This folder is customizable, and you can specify its path and name in the configuration. 
+This structure is the most commonly used. But is fully customizable, don't worry. Every item you will generate through **Energy**, will be placed inside the **source** folder. This folder is customizable too, and you can specify its path and name in the configuration, just like for anything else. 
 
 **Energy** can be initialized in practically any project, and is a good tool to have in your ***dev-dependencies*** while developing. 
 
@@ -53,8 +51,10 @@ Note that this package isn't fully ready yet. For this reason it's not yet publi
 
 ***Note:*** Some features may not work or be broken, this is not a stable version.
 
-#### Clone the repository
-```git clone https://www.github.com/caiuscitiriga/nrg-ngx-cli nrg```
+#### Install NRG
+```
+npm i nrg-cli -g
+```
 
 #### CD into nrg and run an install
 ```

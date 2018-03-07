@@ -86,6 +86,6 @@ export class EnergyCLI implements IEnergy {
                         .filter(res => !!res)
                         .subscribe(res => this._cli.UI.out.printInfo('Item generated successfully!'));
                 }
-            });
+            })
     }
 }
