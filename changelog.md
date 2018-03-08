@@ -1,0 +1,1 @@
+* Fixed duplicate help output when issuing nrg with no cmds
