@@ -8,11 +8,21 @@
             "type": "node",
             "request": "launch",
             "name": "NRG help",
-            "program": "${workspaceFolder}/dist/main.js",
+            "program": "${workspaceFolder}/dist/index.js",
             "console": "integratedTerminal",
             "args": [
                 "g",
                 "--interface=test-incode.interface"
+            ],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "NRG init",
+            "program": "${workspaceFolder}/dist/index.js",
+            "console": "integratedTerminal",
+            "args": [
+                "init"
             ],
         },
         {

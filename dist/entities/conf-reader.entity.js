@@ -14,9 +14,9 @@ const fs = require("fs");
 const path = require("path");
 const process = require("process");
 const inversify_1 = require("inversify");
+const cli_defaults_config_1 = require("../config/cli-defaults.config");
 const exceptions_conts_1 = require("../consts/exceptions.conts");
 const nrg_exception_entity_1 = require("./nrg-exception.entity");
-const cli_defaults_config_1 = require("../config/cli-defaults.config");
 let ConfReader = class ConfReader {
     constructor() {
         this._configFile = null;

@@ -4,28 +4,35 @@ import * as process from 'process';
 import { injectable, inject, named } from 'inversify';
 
 import { SmartCLI } from 'smart-cli/dist';
+import { IoCContainer } from './inversify.config';
 import { IFlag } from 'smart-cli/dist/interfaces/plain/flag.interface';
 
-import { TYPES, NAMED_TYPES } from './consts/types.const';
-import { IoCContainer } from './inversify.config';
 import { ItemTypes } from './enums/item-types.enum';
+import { TYPES, NAMED_TYPES } from './consts/types.const';
 
 import { IEnergy } from './interfaces/energy.interface';
 import { IConfReader } from './interfaces/conf-reader.interface';
 import { ICommandRunner } from './interfaces/command-runner.interface';
+import { Subscription } from 'rxjs/Subscription';
 
 @injectable()
 export class EnergyCLI implements IEnergy {
     private _cli: SmartCLI;
+    private _initComand: ICommandRunner;
     private _generateComand: ICommandRunner;
 
     public constructor(
         @inject(TYPES.ICommandRunner)
         @named(NAMED_TYPES.GenerateCommand)
-        generateComand: ICommandRunner
+        generateComand: ICommandRunner,
+
+        @inject(TYPES.ICommandRunner)
+        @named(NAMED_TYPES.InitCommand)
+        initComand: ICommandRunner,
     ) {
         //  Initialization of stuff
         this._cli = new SmartCLI();
+        this._initComand = initComand;
         this._generateComand = generateComand;
 
         // Sets all the commands to SmartCLI
@@ -39,11 +46,25 @@ export class EnergyCLI implements IEnergy {
      * @memberof EnergyCLI
      */
     public runProgram(args: string): void {
-        this, this._cli.run(args);
+        this._cli.run(args);
     }
 
     private setupCLI(): void {
         this._cli
+            .addCommand({
+                flags: [],
+                name: 'init',
+                description: 'Initializes a Energy project inside the current folder',
+                action: (flags: IFlag[]) => {
+                    const sub: Subscription =
+                        this._initComand
+                            .run(flags)
+                            .subscribe(res => {
+                                this._cli.UI.out.printInfo('energy.cli.json file successfully generated');
+                                return sub.unsubscribe();
+                            });
+                }
+            })
             .addCommand({
                 name: 'g',
                 description: 'Generates a new item',
@@ -80,10 +101,14 @@ export class EnergyCLI implements IEnergy {
                     }
                 ],
                 action: (flags: IFlag[]) => {
-                    this._generateComand
-                        .run(flags)
-                        .filter(res => !!res)
-                        .subscribe(res => this._cli.UI.out.printInfo('Item generated successfully!'));
+                    const sub: Subscription =
+                        this._generateComand
+                            .run(flags)
+                            .filter(res => !!res)
+                            .subscribe(res => {
+                                this._cli.UI.out.printInfo('Item generated successfully!')
+                                return sub.unsubscribe();
+                            });
                 }
             })
     }

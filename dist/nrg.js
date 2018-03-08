@@ -18,9 +18,10 @@ const inversify_1 = require("inversify");
 const dist_1 = require("smart-cli/dist");
 const types_const_1 = require("./consts/types.const");
 let EnergyCLI = class EnergyCLI {
-    constructor(generateComand) {
+    constructor(generateComand, initComand) {
         //  Initialization of stuff
         this._cli = new dist_1.SmartCLI();
+        this._initComand = initComand;
         this._generateComand = generateComand;
         // Sets all the commands to SmartCLI
         this.setupCLI();
@@ -32,10 +33,23 @@ let EnergyCLI = class EnergyCLI {
      * @memberof EnergyCLI
      */
     runProgram(args) {
-        this, this._cli.run(args);
+        this._cli.run(args);
     }
     setupCLI() {
         this._cli
+            .addCommand({
+            flags: [],
+            name: 'init',
+            description: 'Initializes a Energy project inside the current folder',
+            action: (flags) => {
+                const sub = this._initComand
+                    .run(flags)
+                    .subscribe(res => {
+                    this._cli.UI.out.printInfo('energy.cli.json file successfully generated');
+                    return sub.unsubscribe();
+                });
+            }
+        })
             .addCommand({
             name: 'g',
             description: 'Generates a new item',
@@ -72,11 +86,13 @@ let EnergyCLI = class EnergyCLI {
                 }
             ],
             action: (flags) => {
-                console.log(JSON.stringify(flags));
-                this._generateComand
+                const sub = this._generateComand
                     .run(flags)
                     .filter(res => !!res)
-                    .subscribe(res => this._cli.UI.out.printInfo('Item generated successfully!'));
+                    .subscribe(res => {
+                    this._cli.UI.out.printInfo('Item generated successfully!');
+                    return sub.unsubscribe();
+                });
             }
         });
     }
@@ -85,7 +101,9 @@ EnergyCLI = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_const_1.TYPES.ICommandRunner)),
     __param(0, inversify_1.named(types_const_1.NAMED_TYPES.GenerateCommand)),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inversify_1.inject(types_const_1.TYPES.ICommandRunner)),
+    __param(1, inversify_1.named(types_const_1.NAMED_TYPES.InitCommand)),
+    __metadata("design:paramtypes", [Object, Object])
 ], EnergyCLI);
 exports.EnergyCLI = EnergyCLI;
 //# sourceMappingURL=nrg.js.map

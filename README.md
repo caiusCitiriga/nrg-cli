@@ -1,5 +1,8 @@
-# Energy CLI ```WIP```
 [![Build Status](https://travis-ci.org/caiusCitiriga/nrg-cli.svg?branch=dev)](https://travis-ci.org/caiusCitiriga/nrg-cli)
+# Energy CLI ```WIP [unstable]```
+***Note:*** Some features may be broken or not work as expected.<br>
+**This is not a stable version yet.**
+
 ### The problem 
 How much time do you spend on creating files, folders and classes for your projects? Nevertheless how much time takes you to scaffold your projects if you don't have an helper like Angular's CLI?
 
@@ -54,15 +57,24 @@ This structure is the most commonly used. But is fully customizable, don't worry
 * [NOT AVAILABLE YET] Configurable NPM package auto init.
 * [NOT AVAILABLE YET] Configurable Git repository auto init.
 
-## Get started ```[unstable]```
-***Note:*** Some features may be broken or not work as expected, this is not a stable version yet.
-
+## Get started
 ```bash
 #  Install Energy
 npm i nrg-cli -g
 
 #  Test if it works
 nrg
+```
+
+***Note:*** In order for the CLI to work, you have to manually create a `energy.cli.conf` inside the folder you want to use nrg. Once created, copy this content:
+```json
+{
+    "$schema": "https://raw.githubusercontent.com/caiusCitiriga/nrg-ngx-cli/583bbb20748582ce78ca2fd943e5a1da7f4916c4/src/config/cli-conf.schema.json",
+    "srcFolder": "src",
+    "defaultExt": "ts",
+    "additionalTypes": [],
+    "dotnetInterfaceStyle": false
+}
 ```
 
 ## **GENERATE**: 
