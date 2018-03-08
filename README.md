@@ -127,3 +127,26 @@ Below, each configuration and effect on the CLI:
 | `defaultExt`             | The default extension used for the newly generated items.                                    |
 | `additionalTypes`        | The additional item-types you want to generate. <br>`{name: string, plural: string}[]`       |
 | `dotnetInterfaceStyle`   | When creating interfaces, decides whether to put or not a `I` in front of the interface name |
+
+---
+### Built With
+* [Chalk](https://github.com/chalk/chalk) - Terminal string styling done right
+* [Inversify](https://github.com/inversify/InversifyJS/) - A powerful and lightweight IoC container
+* [SmartCLI](https://github.com/caiusCitiriga/smart-cli/) - A NodeJS framework for building flexible and powerful console applications.
+* [TypeScript](https://github.com/Microsoft/TypeScript) - TypeScript is a superset of JavaScript that compiles to clean JavaScript output.
+* **Love and passion. For coding, and beautiful code**
+
+### Versioning
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/caiuscitiriga/nrg-cli/tags). 
+
+### Authors
+* [**Caius Citiriga**](https://github.com/caiuscitiriga)
+
+### Testing
+The code is tested with Jasmine on its core parts, and all the possible break points are covered. So each release won't break any existing feature from now.
+
+### License
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+### Acknowledgments
+* [Automattic](https://github.com/Automattic) for the table fonts.
