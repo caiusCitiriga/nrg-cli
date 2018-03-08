@@ -1,0 +1,7 @@
+{
+    "$schema": "https://raw.githubusercontent.com/caiusCitiriga/nrg-ngx-cli/583bbb20748582ce78ca2fd943e5a1da7f4916c4/src/config/cli-conf.schema.json",
+    "srcFolder": "src",
+    "defaultExt": "ts",
+    "additionalTypes": [],
+    "dotnetInterfaceStyle": false
+}

@@ -4,12 +4,13 @@ import * as path from 'path';
 import * as process from 'process';
 import { injectable } from 'inversify';
 
+import { CLI_DEFAULTS } from '../config/cli-defaults.config';
 import { NRG_EXCEPTIONS } from '../consts/exceptions.conts';
+
+import { NRGException } from './nrg-exception.entity';
 
 import { IConfReader } from '../interfaces/conf-reader.interface';
 import { IEnergyAdditionalType, IEnergyCLIConf } from '../interfaces/energy-cli-conf.interface';
-import { NRGException } from './nrg-exception.entity';
-import { CLI_DEFAULTS } from '../config/cli-defaults.config';
 
 @injectable()
 export class ConfReader implements IConfReader {
