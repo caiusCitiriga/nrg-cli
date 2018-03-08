@@ -147,6 +147,3 @@ The code is tested with Jasmine on its core parts, and all the possible break po
 
 ### License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-### Acknowledgments
-* [Automattic](https://github.com/Automattic) for the table fonts.
