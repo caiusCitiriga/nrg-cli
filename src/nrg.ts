@@ -80,7 +80,6 @@ export class EnergyCLI implements IEnergy {
                     }
                 ],
                 action: (flags: IFlag[]) => {
-                    console.log(JSON.stringify(flags));
                     this._generateComand
                         .run(flags)
                         .filter(res => !!res)
