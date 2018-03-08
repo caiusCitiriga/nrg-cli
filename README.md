@@ -127,17 +127,3 @@ Below, each configuration and effect on the CLI:
 | `defaultExt`             | The default extension used for the newly generated items.                                    |
 | `additionalTypes`        | The additional item-types you want to generate. <br>`{name: string, plural: string}[]`       |
 | `dotnetInterfaceStyle`   | When creating interfaces, decides whether to put or not a `I` in front of the interface name |
-
-
-## Upcoming features:
-* Allow the user to specify a different extension when generating the item
-* Implement **new** command to generate a new project
-* Implement **init** command to initialize a project into an existing directory
-* Implement **set** command to set preferences from the CLI
-* Implement **restore** command that will remove *node_modules* and reinstall everything
-* Implement **reset** command that will issue a `git reset --hard` and a `git clean -f-d` to reset all the unstaged changes. 
-* Allow the user to specify file templates for default and custom item types
-* Allow the user to specify more than one **src_outlet**. But one must be set as default one in the config file.
-* Consider implementing **copy** command that will accept several flags, this command will copy items from a place to another of the project. This will require a “project-structure-integrity” system. In order to be able to quickly gather informations and paths from an item type to another.
-* Consider implementing **move** command that will accept several flags, this command will move items from a place to another of the project. This will require a “project-structure-integrity” system. In order to be able to quickly gather informations and paths from an item type to another.
-* Consider implementing **del** command that will accept several flags, this command will delete items from a specific item-type folder. This will require a “project-structure-integrity” system. In order to be able to quickly gather informations and paths from an item type to another. 

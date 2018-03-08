@@ -31,10 +31,7 @@
             "name": "NRG",
             "program": "${workspaceFolder}/dist/index.js",
             "console": "integratedTerminal",
-            "args": [
-                "g",
-                "--item"
-            ],
+            "args": [],
         }
     ]
 }

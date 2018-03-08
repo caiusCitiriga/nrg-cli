@@ -31,12 +31,10 @@ export class EnergyCLI implements IEnergy {
         initComand: ICommandRunner,
     ) {
         //  Initialization of stuff
+        this.initSmartCLI();
         this._cli = new SmartCLI();
         this._initComand = initComand;
         this._generateComand = generateComand;
-
-        // Sets all the commands to SmartCLI
-        this.setupCLI();
     }
 
     /**
@@ -46,7 +44,16 @@ export class EnergyCLI implements IEnergy {
      * @memberof EnergyCLI
      */
     public runProgram(args: string): void {
+        //  To prevent commands duplicates into SmartCLI using the same instance
+        this.initSmartCLI();
+        // Sets all the commands to SmartCLI
+        this.setupCLI();
+
         this._cli.run(args);
+    }
+
+    private initSmartCLI(): void {
+        this._cli = new SmartCLI();
     }
 
     private setupCLI(): void {

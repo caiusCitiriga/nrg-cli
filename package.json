@@ -20,12 +20,12 @@
         "reflect-metadata": "0.1.12"
     },
     "devDependencies": {
-        "@types/jasmine": "^2.8.6",
+        "@types/jasmine": "2.8.6",
         "@types/node": "9.4.6",
-        "@types/rimraf": "^2.0.2",
-        "jasmine": "^3.1.0",
-        "link": "^0.1.5",
-        "rimraf": "^2.6.2",
+        "@types/rimraf": "2.0.2",
+        "jasmine": "3.1.0",
+        "link": "0.1.5",
+        "rimraf": "2.6.2",
         "typescript": "2.7.2"
     },
     "repository": {

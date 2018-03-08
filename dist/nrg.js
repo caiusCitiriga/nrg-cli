@@ -20,11 +20,10 @@ const types_const_1 = require("./consts/types.const");
 let EnergyCLI = class EnergyCLI {
     constructor(generateComand, initComand) {
         //  Initialization of stuff
+        this.initSmartCLI();
         this._cli = new dist_1.SmartCLI();
         this._initComand = initComand;
         this._generateComand = generateComand;
-        // Sets all the commands to SmartCLI
-        this.setupCLI();
     }
     /**
      * Runs the program with the given args
@@ -33,7 +32,14 @@ let EnergyCLI = class EnergyCLI {
      * @memberof EnergyCLI
      */
     runProgram(args) {
+        //  To prevent commands duplicates into SmartCLI using the same instance
+        this.initSmartCLI();
+        // Sets all the commands to SmartCLI
+        this.setupCLI();
         this._cli.run(args);
+    }
+    initSmartCLI() {
+        this._cli = new dist_1.SmartCLI();
     }
     setupCLI() {
         this._cli

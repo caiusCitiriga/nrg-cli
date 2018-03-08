@@ -14,5 +14,6 @@ export declare class EnergyCLI implements IEnergy {
      * @memberof EnergyCLI
      */
     runProgram(args: string): void;
+    private initSmartCLI();
     private setupCLI();
 }
