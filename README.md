@@ -76,6 +76,17 @@ nrg
     "dotnetInterfaceStyle": false
 }
 ```
+## **INIT**: 
+**Usage**: ```nrg init```
+
+**Description**: Initializes a new Energy project inside the current directory
+
+A file called `energy.cli.json` will be created. This is the configuration file for Energy. 
+
+It holds all the project configurations. This file is needed by all the other commands in order to function. 
+
+The commands bases their logic on values stored in this file, some may be optional, but still, the file has to be present.
+
 
 ## **GENERATE**: 
 **Usage**: ```nrg g --item=filename```

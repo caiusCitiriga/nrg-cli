@@ -1,6 +1,6 @@
 {
     "name": "nrg-cli",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "A fully customizable CLI that aims to improve your workflow. It integrates well with Angular but is suited for any project.",
     "author": "Caius Citiriga",
     "license": "MIT",
