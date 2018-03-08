@@ -1,5 +1,5 @@
 # Energy CLI ```WIP```
-
+[![Build Status](https://travis-ci.org/caiusCitiriga/nrg-cli.svg?branch=dev)](https://travis-ci.org/caiusCitiriga/nrg-cli)
 ### The problem 
 How much time do you spend on creating files, folders and classes for your projects? Nevertheless how much time takes you to scaffold your projects if you don't have an helper like Angular's CLI?
 
