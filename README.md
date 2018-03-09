@@ -1,8 +1,8 @@
-# Energy CLI ```WIP [unstable]```
-
-![Travis branch](https://img.shields.io/travis/caiusCitiriga/nrg-cli.svg?branch=dev.svg?style=for-the-badge)
-[![npm](https://img.shields.io/npm/v/npm.svg?style=for-the-badge)](https://www.npmjs.com/package/nrg-cli)
-![License: MIT](https://img.shields.io/github/license/mashape/apistatus)
+# Energy CLI 
+### 0.2.4 - Aelinor [unstable]
+![Travis branch](https://img.shields.io/travis/caiusCitiriga/nrg-cli.svg?branch=dev.svg)
+[![npm](https://img.shields.io/npm/0.2.4/npm.svg)](https://www.npmjs.com/package/nrg-cli)
+![License: MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
 [![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&logo=github&label=Stars)](https://github.com/caiusCitiriga/nrg-cli)
 
 ***Note:*** Some features may be broken or not work as expected.<br>
