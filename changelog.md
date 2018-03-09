@@ -2,11 +2,12 @@
 
 ## 0.2.4
 * Throwing errors for: MissingItemTypeFlagException and unhandled errors.
+* Various tweaks on messages.
 * Refined output for missing filename item for interface from 'int' -> 'interface' only in case of interface-type.
-* Changed `dotnetInterfaceStyle` from false -> true
-* Now the cli conf file is called `.energy.cli.json`
-* Fixed bug on mismatch between `nrg g --int` && `nrg g --interface`
-* Added test `should create the interface item correctly`
+* Changed `dotnetInterfaceStyle` from false -> true.
+* Now the cli conf file is called `.energy.cli.json`.
+* Fixed bug on mismatch between `nrg g --int` && `nrg g --interface`.
+* Added test `should create the interface item correctly`.
 
 ## 0.2.3
 * Intergrated readme with more info
