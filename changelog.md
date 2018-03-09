@@ -1,5 +1,9 @@
 # NRG Changelog
 
+## 0.2.4 - Aelinor
+* Added license badge on Readme
+* Added badges
+
 ## 0.2.4 - Aelene
 * Throwing errors for: MissingItemTypeFlagException and unhandled errors.
 * Various tweaks on messages.
