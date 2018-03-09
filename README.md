@@ -146,4 +146,4 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 The code is tested with Jasmine on its core parts, and all the possible break points are covered. So each release won't break any existing feature from now.
 
 ### License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](https://raw.githubusercontent.com/caiusCitiriga/nrg-cli/dev/LICENSE) file for details
