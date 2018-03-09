@@ -29,7 +29,7 @@ exports.DefaultItemTypes = [
     },
     {
         name: 'interface',
-        plural: 'intefaces',
+        plural: 'interfaces',
         itemType: item_types_enum_1.ItemTypes.interface
     },
 ];

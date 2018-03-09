@@ -51,8 +51,8 @@ let EnergyCLI = class EnergyCLI {
                 const sub = this._initComand
                     .run(flags)
                     .subscribe(res => {
-                    this._cli.UI.out.printInfo('energy.cli.json file successfully generated');
-                    return sub.unsubscribe();
+                    console.log();
+                    this._cli.UI.out.printInfo('.energy.cli.json file successfully generated\n');
                 });
             }
         })

@@ -45,11 +45,14 @@ let GenerateCommand = class GenerateCommand {
                 return this.generateItem(this._availableItemTypes.find(t => t.itemType === item_types_enum_1.ItemTypes.const), flags);
             case this._availableItemTypes.find(t => t.itemType === item_types_enum_1.ItemTypes.entity).name:
                 return this.generateItem(this._availableItemTypes.find(t => t.itemType === item_types_enum_1.ItemTypes.entity), flags);
-            case this._availableItemTypes.find(t => t.itemType === item_types_enum_1.ItemTypes.interface).name:
+            case this._availableItemTypes.find(t => t.itemType === item_types_enum_1.ItemTypes.interface).name.substr(0, 3):
                 return this.generateItem(this._availableItemTypes.find(t => t.itemType === item_types_enum_1.ItemTypes.interface), flags);
-            case this._availableItemTypes.find(t => t.itemType === item_types_enum_1.ItemTypes.custom).name:
-                return this.generateItem(this._availableItemTypes.find(t => t.itemType === item_types_enum_1.ItemTypes.custom), flags);
             default:
+                //  If the user didn't specified any custom item types, this check will fail    
+                if (this._availableItemTypes.find(t => t.itemType === item_types_enum_1.ItemTypes.custom)
+                    && this._availableItemTypes.find(t => t.itemType === item_types_enum_1.ItemTypes.custom).name === flags[0].name) {
+                    return this.generateItem(this._availableItemTypes.find(t => t.itemType === item_types_enum_1.ItemTypes.custom), flags);
+                }
                 throw new nrg_exception_entity_1.NRGException().throw({
                     name: exceptions_conts_1.NRG_EXCEPTIONS.InvalidItemTypeGenerationException.name,
                     message: exceptions_conts_1.NRG_EXCEPTIONS.InvalidItemTypeGenerationException.message(),
@@ -66,7 +69,7 @@ let GenerateCommand = class GenerateCommand {
         if (!flags[0].options || !flags[0].options[0] || !flags[0].options[0].value) {
             throw new nrg_exception_entity_1.NRGException().throw({
                 name: exceptions_conts_1.NRG_EXCEPTIONS.MissingItemNameException.name,
-                message: exceptions_conts_1.NRG_EXCEPTIONS.MissingItemNameException.message(flags[0].name),
+                message: exceptions_conts_1.NRG_EXCEPTIONS.MissingItemNameException.message(flags[0].name === 'int' ? 'interface' : flags[0].name),
             });
         }
     }

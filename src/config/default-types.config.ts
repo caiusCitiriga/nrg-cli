@@ -29,7 +29,7 @@ export const DefaultItemTypes: IEnergyAdditionalType[] = [
     },
     {
         name: 'interface',
-        plural: 'intefaces',
+        plural: 'interfaces',
         itemType: ItemTypes.interface
     },
 ];

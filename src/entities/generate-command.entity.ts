@@ -55,11 +55,17 @@ export class GenerateCommand implements ICommandRunner {
                 return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.const), flags);
             case this._availableItemTypes.find(t => t.itemType === ItemTypes.entity).name:
                 return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.entity), flags);
-            case this._availableItemTypes.find(t => t.itemType === ItemTypes.interface).name:
+            case this._availableItemTypes.find(t => t.itemType === ItemTypes.interface).name.substr(0, 3):
                 return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.interface), flags);
-            case this._availableItemTypes.find(t => t.itemType === ItemTypes.custom).name:
-                return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.custom), flags);
             default:
+                //  If the user didn't specified any custom item types, this check will fail    
+                if (
+                    this._availableItemTypes.find(t => t.itemType === ItemTypes.custom)
+                    && this._availableItemTypes.find(t => t.itemType === ItemTypes.custom).name === flags[0].name
+                ) {
+                    return this.generateItem(this._availableItemTypes.find(t => t.itemType === ItemTypes.custom), flags);
+                }
+
                 throw new NRGException().throw({
                     name: NRG_EXCEPTIONS.InvalidItemTypeGenerationException.name,
                     message: NRG_EXCEPTIONS.InvalidItemTypeGenerationException.message(),
@@ -78,7 +84,7 @@ export class GenerateCommand implements ICommandRunner {
         if (!flags[0].options || !flags[0].options[0] || !flags[0].options[0].value) {
             throw new NRGException().throw({
                 name: NRG_EXCEPTIONS.MissingItemNameException.name,
-                message: NRG_EXCEPTIONS.MissingItemNameException.message(flags[0].name),
+                message: NRG_EXCEPTIONS.MissingItemNameException.message(flags[0].name === 'int' ? 'interface' : flags[0].name),
             });
         }
     }
