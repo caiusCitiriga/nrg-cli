@@ -1,6 +1,9 @@
 import 'reflect-metadata';
 import 'rxjs/add/operator/filter';
+
 import * as process from 'process';
+
+import { Subscription } from 'rxjs/Subscription';
 import { injectable, inject, named } from 'inversify';
 
 import { SmartCLI } from 'smart-cli/dist';
@@ -13,7 +16,6 @@ import { TYPES, NAMED_TYPES } from './consts/types.const';
 import { IEnergy } from './interfaces/energy.interface';
 import { IConfReader } from './interfaces/conf-reader.interface';
 import { ICommandRunner } from './interfaces/command-runner.interface';
-import { Subscription } from 'rxjs/Subscription';
 
 @injectable()
 export class EnergyCLI implements IEnergy {
@@ -67,8 +69,8 @@ export class EnergyCLI implements IEnergy {
                         this._initComand
                             .run(flags)
                             .subscribe(res => {
-                                this._cli.UI.out.printInfo('energy.cli.json file successfully generated');
-                                return sub.unsubscribe();
+                                console.log();
+                                this._cli.UI.out.printInfo('.energy.cli.json file successfully generated\n');
                             });
                 }
             })

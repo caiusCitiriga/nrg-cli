@@ -26,7 +26,7 @@ export const NRG_EXCEPTIONS = {
     InvalidItemTypeGenerationException: {
         name: 'InvalidItemTypeGenerationException',
         message: () => {
-            return `The requested item-type does not exist in the default types, nor in the additional types. Did you add it to the additionalTypes array?`;
+            return `The requested item-type does not exist in the default types, nor in the additional types.`;
         }
     }
 }

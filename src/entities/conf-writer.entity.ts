@@ -7,7 +7,7 @@ import { CLI_DEFAULTS } from '../config/cli-defaults.config';
 @injectable()
 export class ConfWriter implements IConfWriter {
     public initConfFile(): boolean {
-        fs.writeFileSync('./energy.cli.json', JSON.stringify(CLI_DEFAULTS));
+        fs.writeFileSync('./.energy.cli.json', JSON.stringify(CLI_DEFAULTS));
         return true;
     }
 }

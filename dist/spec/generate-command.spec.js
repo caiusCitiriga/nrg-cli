@@ -342,6 +342,30 @@ describe('GenerateCommand integration testing', () => {
             rimraf.sync(confReader.getSrcFolder());
         });
     });
+    it('should create the interface item correctly', () => {
+        //  Arrange
+        const flags = [{
+                name: "int",
+                options: [
+                    {
+                        name: "int",
+                        value: "test-one"
+                    }
+                ]
+            }];
+        //  Act/Assert
+        if (fs.existsSync(confReader.getSrcFolder())) {
+            rimraf.sync(confReader.getSrcFolder());
+        }
+        generateCommand
+            .run(flags)
+            .filter(res => !!res)
+            .subscribe(res => {
+            //  Assert
+            expect(fs.existsSync(process.cwd() + path.sep + confReader.getSrcFolder() + '/interfaces/' + 'test-one.interface.ts')).toBeTruthy();
+            rimraf.sync(confReader.getSrcFolder());
+        });
+    });
     it('should return the item data parsed correctly', () => {
         //  Arrange
         const flags = [{

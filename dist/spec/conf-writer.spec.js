@@ -8,11 +8,11 @@ describe('ConfWriter', () => {
         const confWriter = new conf_writer_entity_1.ConfWriter();
         //  Act
         confWriter.initConfFile();
-        const fileExists = fs.existsSync('./energy.cli.json');
+        const fileExists = fs.existsSync('./.energy.cli.json');
         //  Assert
         expect(fileExists).toBeTruthy();
         if (fileExists) {
-            fs.unlinkSync('./energy.cli.json');
+            fs.unlinkSync('./.energy.cli.json');
         }
     });
 });
