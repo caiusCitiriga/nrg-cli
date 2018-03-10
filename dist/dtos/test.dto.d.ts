@@ -1,2 +1,2 @@
-export declare class Test {
+export declare class DTO {
 }

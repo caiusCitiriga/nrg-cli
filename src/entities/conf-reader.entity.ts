@@ -42,7 +42,8 @@ export class ConfReader implements IConfReader {
     }
 
     public getCustomFileTemplates(): ICustomFileTemplate[] {
-        throw new Error("Method not implemented.");
+        this.readConf();
+        return this._configFile.customFileTemplates;
     }
 
     public useDotnetInterfaceStyle(): boolean {

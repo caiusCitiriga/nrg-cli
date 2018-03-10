@@ -1,5 +1,5 @@
 {
-    "$schema": "https://raw.githubusercontent.com/caiusCitiriga/nrg-cli/7689a94783f7639cadfcd97f1f69cc3e27971173/src/config/cli-conf.schema.json",
+    "$schema": "https://raw.githubusercontent.com/caiusCitiriga/nrg-cli/4324ea9ef7c8e2a3d2a4cab75f6d74b13298d4c0/src/config/cli-conf.schema.json",
     "srcFolder": "src",
     "defaultExt": "ts",
     "additionalTypes": [

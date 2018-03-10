@@ -97,30 +97,9 @@ export class GenerateCommand implements ICommandRunner {
         const jobStatus = new BehaviorSubject(false);
         const itemData = this.extractItemData(flags, itemType);
 
-        const pathItemsToCheck = itemData.fullPath.split(path.sep);
-        pathItemsToCheck.pop(); //      remove the filename
-        pathItemsToCheck.shift(); //    remove the '/' at the beginning
-        this.ensureEveryFolderExistsBeforeWrite(pathItemsToCheck);
+        this.ensureEveryFolderExistsBeforeWrite(itemData);
+        this.writeFile(jobStatus, itemData);
 
-        const exportType = itemType.itemType === ItemTypes.interface
-            ? 'interface'
-            : itemType.itemType === ItemTypes.const
-                ? 'const'
-                : itemType.itemType === ItemTypes.enum
-                    ? 'enum'
-                    : 'class';
-
-        const typescriptItemContent = `export ${exportType} ${itemData.classname} {\n\t\n}\n`;
-        fs.writeFile(itemData.fullPath, itemData.ext === 'ts' ? typescriptItemContent : '', (err) => {
-            if (!!err) {
-                throw new NRGException().throw({
-                    name: NRG_EXCEPTIONS.ItemWriteToDiskException.name,
-                    message: NRG_EXCEPTIONS.ItemWriteToDiskException.message(err.message),
-                });
-            }
-
-            jobStatus.next(true);
-        });
         return jobStatus.asObservable();
     }
 
@@ -139,16 +118,58 @@ export class GenerateCommand implements ICommandRunner {
             filename = extractionResult[0];
         }
 
-        const result = {
+        const result: IItemData = {
             ext: ext,
             filename: filename,
             classname: this.extractClassname(filename, ext, itemType),
             foldername: itemType.plural,
             fullPath: ``,
+            fileContent: '',
         };
 
-        result.fullPath = `${process.cwd()}${path.sep}${this._confReader.getSrcFolder()}${path.sep}${result.foldername}${path.sep}${additionalSubfolders}${result.filename}.${itemType.name}.${ext}`
+        result.fullPath = `${process.cwd()}${path.sep}${this._confReader.getSrcFolder()}${path.sep}${result.foldername}${path.sep}${additionalSubfolders}${result.filename}.${itemType.name}.${ext}`;
+        result.fileContent = this.getFileContent(itemType, result);
+
         return result;
+    }
+
+    private getFileContent(itemType: IAdditionalType, itemData: IItemData): string {
+        let finalResult = '';
+        const customFileTemplates = this._confReader.getCustomFileTemplates();
+
+        if (!customFileTemplates && itemData.ext === 'ts' || itemData.ext === 'tsx') {
+            return this.generateDetaultTSItem(itemType, itemData);
+        }
+
+        if (customFileTemplates.find(cft => cft.itemName === itemType.name)) {
+            const fileTemplateData = customFileTemplates.find(cft => cft.itemName === itemType.name);
+            if (fileTemplateData.templateUrl && !!fileTemplateData.templateUrl.length) {
+                finalResult = fs.readFileSync(fileTemplateData.templateUrl, { encoding: 'utf-8' }).toString();
+            } else {
+                finalResult = fileTemplateData.template;
+            }
+
+            if (!finalResult.length) {
+                new NRGException().throw({
+                    name: NRG_EXCEPTIONS.NoValidFileTemplateForThisItemException.name,
+                    message: NRG_EXCEPTIONS.NoValidFileTemplateForThisItemException.message(itemType.name),
+                });
+            }
+        }
+
+        return finalResult.length ? finalResult : `// Energy couldn't find a valid file template for this item.`;
+    }
+
+    private generateDetaultTSItem(itemType: IAdditionalType, itemData: IItemData): string {
+        const exportType = itemType.itemType === ItemTypes.interface
+            ? 'interface'
+            : itemType.itemType === ItemTypes.const
+                ? 'const'
+                : itemType.itemType === ItemTypes.enum
+                    ? 'enum'
+                    : 'class';
+
+        return `export ${exportType} ${itemData.classname} {\n    \n}\n`;
     }
 
     private extractExtension(rawString: string, itemTypeName: string): string {
@@ -196,7 +217,11 @@ export class GenerateCommand implements ICommandRunner {
             : finalClassName;
     }
 
-    private ensureEveryFolderExistsBeforeWrite(pathItems: string[]): void {
+    private ensureEveryFolderExistsBeforeWrite(itemData: IItemData): void {
+        const pathItems = itemData.fullPath.split(path.sep);
+        pathItems.pop(); //      remove the filename
+        pathItems.shift(); //    remove the '/' at the beginning
+
         let progressivePath = path.sep;
         let directoriesCreated = 0;
 
@@ -206,6 +231,19 @@ export class GenerateCommand implements ICommandRunner {
                 directoriesCreated++;
                 fs.mkdirSync(progressivePath);
             }
+        });
+    }
+
+    private writeFile(jobStatus: BehaviorSubject<boolean>, itemData: IItemData): void {
+        fs.writeFile(itemData.fullPath, itemData.fileContent, (err) => {
+            if (!!err) {
+                throw new NRGException().throw({
+                    name: NRG_EXCEPTIONS.ItemWriteToDiskException.name,
+                    message: NRG_EXCEPTIONS.ItemWriteToDiskException.message(err.message),
+                });
+            }
+
+            jobStatus.next(true);
         });
     }
 }

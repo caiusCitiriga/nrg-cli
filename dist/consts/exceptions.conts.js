@@ -30,6 +30,12 @@ exports.NRG_EXCEPTIONS = {
         message: () => {
             return `The requested item-type does not exist in the default types, nor in the additional types.`;
         }
+    },
+    NoValidFileTemplateForThisItemException: {
+        name: 'NoValidFileTemplateForThisItemException',
+        message: (itemName) => {
+            return `You specified in the configuration that a custom file template should be used for "${itemName}" items, but neither the template field or the templateUrl leads to a valid file, or the file is empty.`;
+        }
     }
 };
 //# sourceMappingURL=exceptions.conts.js.map

@@ -33,7 +33,7 @@
             "console": "integratedTerminal",
             "args": [
                 "g",
-                "--int=test"
+                "--dto=test"
             ],
         }
     ]

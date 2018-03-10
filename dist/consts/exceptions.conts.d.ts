@@ -19,4 +19,8 @@ export declare const NRG_EXCEPTIONS: {
         name: string;
         message: () => string;
     };
+    NoValidFileTemplateForThisItemException: {
+        name: string;
+        message: (itemName: string) => string;
+    };
 };
