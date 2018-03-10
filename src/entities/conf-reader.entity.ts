@@ -79,6 +79,10 @@ export class ConfReader implements IConfReader {
             ? fileContent.additionalTypes
             : CLI_DEFAULTS.additionalTypes;
 
+        fileContent.customFileTemplates = fileContent.customFileTemplates
+            ? fileContent.customFileTemplates
+            : CLI_DEFAULTS.customFileTemplates;
+
         return fileContent;
     }
 }

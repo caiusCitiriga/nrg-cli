@@ -65,6 +65,9 @@ let ConfReader = class ConfReader {
         fileContent.additionalTypes = fileContent.additionalTypes
             ? fileContent.additionalTypes
             : cli_defaults_config_1.CLI_DEFAULTS.additionalTypes;
+        fileContent.customFileTemplates = fileContent.customFileTemplates
+            ? fileContent.customFileTemplates
+            : cli_defaults_config_1.CLI_DEFAULTS.customFileTemplates;
         return fileContent;
     }
 };
