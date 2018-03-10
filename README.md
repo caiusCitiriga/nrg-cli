@@ -1,6 +1,5 @@
 # Energy CLI 
-### 0.2.4 - Aelinor [unstable]
-![Travis branch](https://img.shields.io/travis/caiusCitiriga/nrg-cli.svg?branch=dev.svg)
+[![Travis branch](https://img.shields.io/travis/caiusCitiriga/nrg-cli.svg?branch=dev.svg)](https://travis-ci.org/caiusCitiriga/nrg-cli)
 [![npm version](https://badge.fury.io/js/nrg-cli.svg)](https://badge.fury.io/js/nrg-cli)
 [![License: MIT](https://img.shields.io/github/license/mashape/apistatus.svg)](https://raw.githubusercontent.com/caiusCitiriga/nrg-cli/feature/templates/LICENSE)
 
