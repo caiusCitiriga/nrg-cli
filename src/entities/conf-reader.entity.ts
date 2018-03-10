@@ -51,6 +51,10 @@ export class ConfReader implements IConfReader {
         return this._configFile.dotnetInterfaceStyle;
     }
 
+    public getDefaultProjectStructure(): any {
+
+    }
+
     private ensureIsEnergyProjectFolder(): void {
         if (!fs.existsSync(process.cwd() + path.sep + this._cliConfFilename)) {
             new NRGException().throw({

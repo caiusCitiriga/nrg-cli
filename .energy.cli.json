@@ -9,17 +9,16 @@
             "templateUrl": "templates/dto.template.ts"
         }
     ],
-    "dotnetInterfaceStyle": false
-}
-/*
-{
-        testFolder: {
-            deepFolder: null
-    },
-        testFolderTwo: {
-            deepFolder: {
-                deepDeepFolder: null;
+    "dotnetInterfaceStyle": false,
+    "defaultProjectStructure": {
+        "testFolder": {
+            "deepFolder": null
+        },
+        "testFolderTwo": {
+            "deepFolder": {
+                "deepDeepFolder": null,
+                "deepDeepFolderTwo": null
+            }
         }
     }
 }
-*/

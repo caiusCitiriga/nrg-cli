@@ -6,4 +6,5 @@ export interface IConfReader {
     getAdditionalTypes(): IAdditionalType[];
     getCustomFileTemplates(): ICustomFileTemplate[];
     useDotnetInterfaceStyle(): boolean;
+    getDefaultProjectStructure(): any;
 }

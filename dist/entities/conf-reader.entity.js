@@ -43,6 +43,8 @@ let ConfReader = class ConfReader {
         this.readConf();
         return this._configFile.dotnetInterfaceStyle;
     }
+    getDefaultProjectStructure() {
+    }
     ensureIsEnergyProjectFolder() {
         if (!fs.existsSync(process.cwd() + path.sep + this._cliConfFilename)) {
             new nrg_exception_entity_1.NRGException().throw({

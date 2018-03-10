@@ -11,6 +11,7 @@ export declare class ConfReader implements IConfReader {
     getAdditionalTypes(): IAdditionalType[];
     getCustomFileTemplates(): ICustomFileTemplate[];
     useDotnetInterfaceStyle(): boolean;
+    getDefaultProjectStructure(): any;
     private ensureIsEnergyProjectFolder();
     private readConf();
     private fillMissingConfigurationsWithDefaults();
