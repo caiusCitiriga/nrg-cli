@@ -4,5 +4,6 @@ export const CLI_DEFAULTS: IEnergyCLIConf = {
     srcFolder: 'src',
     defaultExt: 'ts',
     additionalTypes: [],
+    customFileTemplates: [],
     dotnetInterfaceStyle: false,
 }
