@@ -21,14 +21,14 @@ import { NRGException } from './nrg-exception.entity';
 import { IItemData } from '../interfaces/item-data.interface';
 import { IConfReader } from '../interfaces/conf-reader.interface';
 import { ICommandRunner } from '../interfaces/command-runner.interface';
-import { IEnergyAdditionalType } from '../interfaces/energy-cli-conf.interface';
+import { IAdditionalType } from '../interfaces/additional-type.interface';
 
 @injectable()
 export class GenerateCommand implements ICommandRunner {
     private _UI: IUserInterface;
     private _confReader: IConfReader;
     private _subfoldersDelimiter: string;
-    private _availableItemTypes: IEnergyAdditionalType[];
+    private _availableItemTypes: IAdditionalType[];
 
     public constructor(
         @inject(TYPES.IConfReader) confReader: IConfReader
@@ -89,11 +89,11 @@ export class GenerateCommand implements ICommandRunner {
         }
     }
 
-    private mergeAdditionalTypesWithDefaultOnes(): IEnergyAdditionalType[] {
+    private mergeAdditionalTypesWithDefaultOnes(): IAdditionalType[] {
         return DefaultItemTypes.concat(this._confReader.getAdditionalTypes());
     }
 
-    private generateItem(itemType: IEnergyAdditionalType, flags: IFlag[]): Observable<boolean> {
+    private generateItem(itemType: IAdditionalType, flags: IFlag[]): Observable<boolean> {
         const jobStatus = new BehaviorSubject(false);
         const itemData = this.extractItemData(flags, itemType);
 
@@ -124,7 +124,7 @@ export class GenerateCommand implements ICommandRunner {
         return jobStatus.asObservable();
     }
 
-    private extractItemData(flags: IFlag[], itemType: IEnergyAdditionalType): IItemData {
+    private extractItemData(flags: IFlag[], itemType: IAdditionalType): IItemData {
         let filename = '';
         let additionalSubfolders = '';
         const rawFilename = flags[0].options[0].value;
@@ -174,7 +174,7 @@ export class GenerateCommand implements ICommandRunner {
         return splittedValueByExtensionDelimiter.join('.');
     }
 
-    private extractClassname(rawString: string, extension: string, itemType: IEnergyAdditionalType): string {
+    private extractClassname(rawString: string, extension: string, itemType: IAdditionalType): string {
         let finalClassName = '';
         let splittedValueByDot = rawString.split('.');
         splittedValueByDot = splittedValueByDot.filter(val => val !== extension);

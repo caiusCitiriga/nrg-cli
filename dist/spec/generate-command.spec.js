@@ -4,24 +4,27 @@ require("rxjs/add/operator/filter");
 const fs = require("fs");
 const path = require("path");
 const rimraf = require("rimraf");
+const item_types_enum_1 = require("../enums/item-types.enum");
 const generate_command_entity_1 = require("../entities/generate-command.entity");
 const default_types_config_1 = require("../config/default-types.config");
-const item_types_enum_1 = require("../enums/item-types.enum");
 class MockConfReader {
     constructor() {
         this.additionalTypes = [];
+        this.customFileTemplates = [];
         this.useDotnetInterfaces = false;
         this.defaultFilesExtension = 'ts';
         this.srcFolder = 'dist/spec/src_outlet';
     }
     setSrcFolder(val) { this.srcFolder = val; }
-    setUseDotnetInterfaceStyle(val) { this.useDotnetInterfaces = val; }
-    setDefaultFilesExtension(val) { this.defaultFilesExtension = val; }
     setAdditionalTypes(val) { this.additionalTypes = val; }
+    setDefaultFilesExtension(val) { this.defaultFilesExtension = val; }
+    setUseDotnetInterfaceStyle(val) { this.useDotnetInterfaces = val; }
+    setCustomFileTemplates(val) { this.customFileTemplates = val; }
     getSrcFolder() { return this.srcFolder; }
     getDefaultFilesExt() { return this.defaultFilesExtension; }
-    useDotnetInterfaceStyle() { return this.useDotnetInterfaces; }
     getAdditionalTypes() { return this.additionalTypes; }
+    getCustomFileTemplates() { return this.customFileTemplates; }
+    useDotnetInterfaceStyle() { return this.useDotnetInterfaces; }
 }
 exports.MockConfReader = MockConfReader;
 const confReader = new MockConfReader();

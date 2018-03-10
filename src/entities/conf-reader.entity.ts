@@ -11,10 +11,13 @@ import { CLI_CONF_FILENAME } from '../config/cli-defaults.config';
 import { NRGException } from './nrg-exception.entity';
 
 import { IConfReader } from '../interfaces/conf-reader.interface';
-import { IEnergyAdditionalType, IEnergyCLIConf } from '../interfaces/energy-cli-conf.interface';
+import { IEnergyCLIConf } from '../interfaces/energy-cli-conf.interface';
+import { IAdditionalType } from '../interfaces/additional-type.interface';
+import { ICustomFileTemplate } from '../interfaces/custom-file-template.interface';
 
 @injectable()
 export class ConfReader implements IConfReader {
+
     private _cliConfFilename: string;
     private _configFile: IEnergyCLIConf;
 
@@ -33,9 +36,13 @@ export class ConfReader implements IConfReader {
         return this._configFile.defaultExt;
     }
 
-    public getAdditionalTypes(): IEnergyAdditionalType[] {
+    public getAdditionalTypes(): IAdditionalType[] {
         this.readConf();
         return this._configFile.additionalTypes;
+    }
+
+    public getCustomFileTemplates(): ICustomFileTemplate[] {
+        throw new Error("Method not implemented.");
     }
 
     public useDotnetInterfaceStyle(): boolean {

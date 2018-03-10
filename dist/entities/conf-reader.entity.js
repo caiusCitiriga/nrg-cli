@@ -35,6 +35,9 @@ let ConfReader = class ConfReader {
         this.readConf();
         return this._configFile.additionalTypes;
     }
+    getCustomFileTemplates() {
+        throw new Error("Method not implemented.");
+    }
     useDotnetInterfaceStyle() {
         this.readConf();
         return this._configFile.dotnetInterfaceStyle;

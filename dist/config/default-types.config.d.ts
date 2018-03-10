@@ -1,2 +1,2 @@
-import { IEnergyAdditionalType } from '../interfaces/energy-cli-conf.interface';
-export declare const DefaultItemTypes: IEnergyAdditionalType[];
+import { IAdditionalType } from '../interfaces/additional-type.interface';
+export declare const DefaultItemTypes: IAdditionalType[];

@@ -1,17 +1,21 @@
 import 'rxjs/add/operator/filter';
 import { IConfReader } from "../interfaces/conf-reader.interface";
-import { IEnergyAdditionalType } from "../interfaces/energy-cli-conf.interface";
+import { IAdditionalType } from '../interfaces/additional-type.interface';
+import { ICustomFileTemplate } from '../interfaces/custom-file-template.interface';
 export declare class MockConfReader implements IConfReader {
     private additionalTypes;
+    private customFileTemplates;
     private useDotnetInterfaces;
     private defaultFilesExtension;
     private srcFolder;
     setSrcFolder(val: string): void;
-    setUseDotnetInterfaceStyle(val: boolean): void;
+    setAdditionalTypes(val: IAdditionalType[]): void;
     setDefaultFilesExtension(val: string): void;
-    setAdditionalTypes(val: IEnergyAdditionalType[]): void;
+    setUseDotnetInterfaceStyle(val: boolean): void;
+    setCustomFileTemplates(val: ICustomFileTemplate[]): void;
     getSrcFolder(): string;
     getDefaultFilesExt(): string;
+    getAdditionalTypes(): IAdditionalType[];
+    getCustomFileTemplates(): ICustomFileTemplate[];
     useDotnetInterfaceStyle(): boolean;
-    getAdditionalTypes(): IEnergyAdditionalType[];
 }

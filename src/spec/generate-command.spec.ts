@@ -5,30 +5,35 @@ import * as path from 'path';
 import * as rimraf from 'rimraf';
 import * as child_process from 'child_process';
 
+import { ItemTypes } from "../enums/item-types.enum";
+
 import { IFlag } from "smart-cli/dist/interfaces/plain/flag.interface";
+import { IItemData } from '../interfaces/item-data.interface';
 import { IConfReader } from "../interfaces/conf-reader.interface";
-import { IEnergyAdditionalType } from "../interfaces/energy-cli-conf.interface";
+import { IAdditionalType } from '../interfaces/additional-type.interface';
+import { ICustomFileTemplate } from '../interfaces/custom-file-template.interface';
 
 import { GenerateCommand } from "../entities/generate-command.entity";
 import { DefaultItemTypes } from "../config/default-types.config";
-import { ItemTypes } from "../enums/item-types.enum";
-import { IItemData } from '../interfaces/item-data.interface';
 
 export class MockConfReader implements IConfReader {
     private additionalTypes = [];
+    private customFileTemplates = [];
     private useDotnetInterfaces = false;
     private defaultFilesExtension = 'ts';
     private srcFolder = 'dist/spec/src_outlet';
 
     public setSrcFolder(val: string): void { this.srcFolder = val; }
-    public setUseDotnetInterfaceStyle(val: boolean) { this.useDotnetInterfaces = val; }
+    public setAdditionalTypes(val: IAdditionalType[]): void { this.additionalTypes = val; }
     public setDefaultFilesExtension(val: string): void { this.defaultFilesExtension = val; }
-    public setAdditionalTypes(val: IEnergyAdditionalType[]): void { this.additionalTypes = val; }
+    public setUseDotnetInterfaceStyle(val: boolean) { this.useDotnetInterfaces = val; }
+    public setCustomFileTemplates(val: ICustomFileTemplate[]): void { this.customFileTemplates = val; }
 
     public getSrcFolder(): string { return this.srcFolder; }
     public getDefaultFilesExt(): string { return this.defaultFilesExtension; }
+    public getAdditionalTypes(): IAdditionalType[] { return this.additionalTypes; }
+    public getCustomFileTemplates(): ICustomFileTemplate[] { return this.customFileTemplates; }
     public useDotnetInterfaceStyle(): boolean { return this.useDotnetInterfaces; }
-    public getAdditionalTypes(): IEnergyAdditionalType[] { return this.additionalTypes; }
 }
 
 const confReader = new MockConfReader();
