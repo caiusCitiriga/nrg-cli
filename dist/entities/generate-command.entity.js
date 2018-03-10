@@ -112,7 +112,7 @@ let GenerateCommand = class GenerateCommand {
     getFileContent(itemType, itemData) {
         let finalResult = '';
         const customFileTemplates = this._confReader.getCustomFileTemplates();
-        if (!customFileTemplates && itemData.ext === 'ts' || itemData.ext === 'tsx') {
+        if (!customFileTemplates.find(cft => cft.itemName === itemType.name) && itemData.ext === 'ts' || itemData.ext === 'tsx') {
             return this.generateDetaultTSItem(itemType, itemData);
         }
         if (customFileTemplates.find(cft => cft.itemName === itemType.name)) {

@@ -9,5 +9,5 @@
             "template": "export class DTO{\n\n}\n"
         }
     ],
-    "dotnetInterfaceStyle": false
+    "dotnetInterfaceStyle": true
 }
