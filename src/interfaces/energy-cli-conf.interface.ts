@@ -1,6 +1,7 @@
 import { ItemTypes } from '../enums/item-types.enum';
 
 export interface IEnergyCLIConf {
+    $schema: string;
     srcFolder: string;
     defaultExt: string;
     dotnetInterfaceStyle: boolean;
