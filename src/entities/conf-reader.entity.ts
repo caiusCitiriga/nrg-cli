@@ -6,6 +6,7 @@ import { injectable } from 'inversify';
 
 import { CLI_DEFAULTS } from '../config/cli-defaults.config';
 import { NRG_EXCEPTIONS } from '../consts/exceptions.conts';
+import { CLI_CONF_FILENAME } from '../config/cli-defaults.config';
 
 import { NRGException } from './nrg-exception.entity';
 
@@ -19,7 +20,7 @@ export class ConfReader implements IConfReader {
 
     public constructor() {
         this._configFile = null as any;
-        this._cliConfFilename = 'energy.cli.json';
+        this._cliConfFilename = CLI_CONF_FILENAME;
     }
 
     public getSrcFolder(): string {

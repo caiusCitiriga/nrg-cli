@@ -10,9 +10,10 @@ require("reflect-metadata");
 const fs = require("fs");
 const inversify_1 = require("inversify");
 const cli_defaults_config_1 = require("../config/cli-defaults.config");
+const cli_defaults_config_2 = require("../config/cli-defaults.config");
 let ConfWriter = class ConfWriter {
     initConfFile() {
-        fs.writeFileSync('./.energy.cli.json', JSON.stringify(cli_defaults_config_1.CLI_DEFAULTS));
+        fs.writeFileSync(`./${cli_defaults_config_2.CLI_CONF_FILENAME}`, JSON.stringify(cli_defaults_config_1.CLI_DEFAULTS));
         return true;
     }
 };

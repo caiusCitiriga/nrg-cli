@@ -78,8 +78,8 @@
                     "template": {
                         "$id": "/properties/customFileTemplates/items/properties/template",
                         "type": "string",
-                        "title": "The Template Schema ",
-                        "default": "A string containing escape charaters that will be the template for that item type.",
+                        "title": "A string containing escape charaters that will be the template for that item type.",
+                        "default": "",
                         "examples": [
                             "export enum #name# {\n};\n",
                             "export class #name# {\n    public constructor(){}\n}\n",
@@ -90,6 +90,13 @@
                             "const #name# = {\n};\n",
                             "interface #name# {\n\n}\n"
                         ]
+                    },
+                    "templateUrl": {
+                        "$id": "/properties/customFileTemplates/items/properties/templateUrl",
+                        "type": "string",
+                        "title": "The url for a more complex template file. A relative path from the root of your project",
+                        "default": "",
+                        "examples": []
                     }
                 }
             }

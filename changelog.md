@@ -1,11 +1,12 @@
 # NRG Changelog
 
 ## 0.2.5 - Aelinor
-* Added license badge on Readme
-* Added badges
+* Added badges on readme
 * Updated package repo data
 * Updated json schema (added customFileTemplates)
+* Updated json schema (added description for fields and examples)
 * Updated json schema TS types
+* Updated json schema TS types (added $schema entry)
 
 ## 0.2.4 - Aelene
 * Throwing errors for: MissingItemTypeFlagException and unhandled errors.

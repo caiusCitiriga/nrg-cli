@@ -17,6 +17,7 @@ require("rxjs/add/operator/filter");
 const inversify_1 = require("inversify");
 const dist_1 = require("smart-cli/dist");
 const types_const_1 = require("./consts/types.const");
+const cli_defaults_config_1 = require("./config/cli-defaults.config");
 let EnergyCLI = class EnergyCLI {
     constructor(generateComand, initComand) {
         //  Initialization of stuff
@@ -52,7 +53,7 @@ let EnergyCLI = class EnergyCLI {
                     .run(flags)
                     .subscribe(res => {
                     console.log();
-                    this._cli.UI.out.printInfo('.energy.cli.json file successfully generated\n');
+                    this._cli.UI.out.printInfo(`${cli_defaults_config_1.CLI_CONF_FILENAME} file successfully generated\n`);
                 });
             }
         })

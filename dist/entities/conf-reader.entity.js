@@ -16,11 +16,12 @@ const process = require("process");
 const inversify_1 = require("inversify");
 const cli_defaults_config_1 = require("../config/cli-defaults.config");
 const exceptions_conts_1 = require("../consts/exceptions.conts");
+const cli_defaults_config_2 = require("../config/cli-defaults.config");
 const nrg_exception_entity_1 = require("./nrg-exception.entity");
 let ConfReader = class ConfReader {
     constructor() {
         this._configFile = null;
-        this._cliConfFilename = 'energy.cli.json';
+        this._cliConfFilename = cli_defaults_config_2.CLI_CONF_FILENAME;
     }
     getSrcFolder() {
         this.readConf();

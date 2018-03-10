@@ -11,10 +11,12 @@
     "customFileTemplates": [
         {
             "itemName": "dto",
+            "templateUrl": "./templates/dto.template.ts",
             "template": "export class #classname# {\n\n}\n"
         },
         {
             "itemName": "test",
+            "templateUrl": "./templates/test.template.ts",
             "template": "export class #classname# {\n\n}\n"
         }
     ],

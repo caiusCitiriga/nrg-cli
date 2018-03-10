@@ -16,6 +16,7 @@ import { TYPES, NAMED_TYPES } from './consts/types.const';
 import { IEnergy } from './interfaces/energy.interface';
 import { IConfReader } from './interfaces/conf-reader.interface';
 import { ICommandRunner } from './interfaces/command-runner.interface';
+import { CLI_CONF_FILENAME } from './config/cli-defaults.config';
 
 @injectable()
 export class EnergyCLI implements IEnergy {
@@ -70,7 +71,7 @@ export class EnergyCLI implements IEnergy {
                             .run(flags)
                             .subscribe(res => {
                                 console.log();
-                                this._cli.UI.out.printInfo('.energy.cli.json file successfully generated\n');
+                                this._cli.UI.out.printInfo(`${CLI_CONF_FILENAME} file successfully generated\n`);
                             });
                 }
             })
