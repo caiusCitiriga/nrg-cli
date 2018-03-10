@@ -8,5 +8,6 @@ exports.CLI_DEFAULTS = {
     additionalTypes: [],
     customFileTemplates: [],
     dotnetInterfaceStyle: false,
+    defaultProjectStructure: {}
 };
 //# sourceMappingURL=cli-defaults.config.js.map

@@ -9,4 +9,5 @@ export const CLI_DEFAULTS: IEnergyCLIConf = {
     additionalTypes: [],
     customFileTemplates: [],
     dotnetInterfaceStyle: false,
+    defaultProjectStructure: {}
 }

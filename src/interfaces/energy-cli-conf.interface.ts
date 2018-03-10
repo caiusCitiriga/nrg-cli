@@ -8,4 +8,5 @@ export interface IEnergyCLIConf {
     dotnetInterfaceStyle: boolean;
     additionalTypes: IAdditionalType[];
     customFileTemplates: ICustomFileTemplate[];
+    defaultProjectStructure: any;
 }

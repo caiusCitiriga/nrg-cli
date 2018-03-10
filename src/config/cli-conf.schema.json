@@ -110,6 +110,13 @@
                 true,
                 false
             ]
+        },
+        "defaultProjectStructure": {
+            "$id": "/properties/defaultProjectStructure",
+            "type": "object",
+            "title": "Auto scaffolds this structure inside the folder. The files existing in the current folders, will be left untouched.",
+            "default": "",
+            "examples": []
         }
     }
 }
