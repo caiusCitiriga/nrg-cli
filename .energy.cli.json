@@ -6,8 +6,8 @@
     "customFileTemplates": [
         {
             "itemName": "dto",
-            "template": "export class DTO{\n\n}\n"
+            "templateUrl": "templates/dto.template.ts"
         }
     ],
-    "dotnetInterfaceStyle": true
+    "dotnetInterfaceStyle": false
 }
