@@ -1,4 +1,5 @@
 {
+    "$id": "http://example.com/example.json",
     "type": "object",
     "definitions": {},
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -9,7 +10,7 @@
             "title": "The Srcfolder Schema ",
             "default": "",
             "examples": [
-                "test_src"
+                "src"
             ]
         },
         "defaultExt": {
@@ -18,7 +19,8 @@
             "title": "The Defaultext Schema ",
             "default": "",
             "examples": [
-                "ts"
+                "ts",
+                "js"
             ]
         },
         "additionalTypes": {
@@ -34,7 +36,7 @@
                         "title": "The Name Schema ",
                         "default": "",
                         "examples": [
-                            "rumble"
+                            ""
                         ]
                     },
                     "plural": {
@@ -43,7 +45,41 @@
                         "title": "The Plural Schema ",
                         "default": "",
                         "examples": [
-                            "rumbles"
+                            ""
+                        ]
+                    }
+                }
+            }
+        },
+        "customFileTemplates": {
+            "$id": "/properties/customFileTemplates",
+            "type": "array",
+            "items": {
+                "$id": "/properties/customFileTemplates/items",
+                "type": "object",
+                "properties": {
+                    "itemName": {
+                        "$id": "/properties/customFileTemplates/items/properties/itemName",
+                        "type": "string",
+                        "title": "The Itemname Schema ",
+                        "default": "",
+                        "examples": [
+                            "dto",
+                            "enum",
+                            "model",
+                            "const",
+                            "custom",
+                            "entity",
+                            "interface"
+                        ]
+                    },
+                    "template": {
+                        "$id": "/properties/customFileTemplates/items/properties/template",
+                        "type": "string",
+                        "title": "The Template Schema ",
+                        "default": "",
+                        "examples": [
+                            "export class #classname# {\n\n}\n"
                         ]
                     }
                 }
@@ -55,7 +91,8 @@
             "title": "The Dotnetinterfacestyle Schema ",
             "default": false,
             "examples": [
-                true
+                true,
+                false
             ]
         }
     }

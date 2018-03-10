@@ -4,6 +4,7 @@
 * Added license badge on Readme
 * Added badges
 * Updated package repo data
+* Updated json schema (added customFileTemplates)
 
 ## 0.2.4 - Aelene
 * Throwing errors for: MissingItemTypeFlagException and unhandled errors.
