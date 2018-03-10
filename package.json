@@ -30,11 +30,11 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/caiusCitiriga/nrg-ngx-cli.git"
+        "url": "git+https://github.com/caiusCitiriga/nrg-cli.git"
     },
-    "homepage": "https://github.com/caiusCitiriga/nrg-ngx-cli#readme",
+    "homepage": "https://github.com/caiusCitiriga/nrg-cli#readme",
     "bugs": {
-        "url": "https://github.com/caiusCitiriga/nrg-ngx-cli/issues"
+        "url": "https://github.com/caiusCitiriga/nrg-cli/issues"
     },
     "keywords": [
         "angular",
