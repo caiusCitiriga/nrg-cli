@@ -1,9 +1,11 @@
 # NRG Changelog
 
-## 0.2.5 - Aelinor
+## 0.3.0 - Aelinor
+* Solved init bug
 * Added badges on readme
 * Updated package repo data
 * Updated json schema (added customFileTemplates)
+* Updated json schema (added templateUrl to customFileTemplates)
 * Updated json schema (added description for fields and examples)
 * Updated json schema TS types
 * Updated json schema TS types (added $schema entry)
