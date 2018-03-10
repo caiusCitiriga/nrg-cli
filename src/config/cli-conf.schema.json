@@ -26,6 +26,7 @@
         "additionalTypes": {
             "$id": "/properties/additionalTypes",
             "type": "array",
+            "title": "Any additional item types you want to use in your project.",
             "items": {
                 "$id": "/properties/additionalTypes/items",
                 "type": "object",
@@ -54,6 +55,7 @@
         "customFileTemplates": {
             "$id": "/properties/customFileTemplates",
             "type": "array",
+            "title": "The file templates for the generated item types.",
             "items": {
                 "$id": "/properties/customFileTemplates/items",
                 "type": "object",
