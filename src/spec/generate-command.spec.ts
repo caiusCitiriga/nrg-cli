@@ -21,6 +21,7 @@ export class MockConfReader implements IConfReader {
     private customFileTemplates = [];
     private useDotnetInterfaces = false;
     private defaultFilesExtension = 'ts';
+    private defaultProjectStructure = {};
     private srcFolder = 'dist/spec/src_outlet';
 
     public setSrcFolder(val: string): void { this.srcFolder = val; }
@@ -28,12 +29,14 @@ export class MockConfReader implements IConfReader {
     public setDefaultFilesExtension(val: string): void { this.defaultFilesExtension = val; }
     public setUseDotnetInterfaceStyle(val: boolean) { this.useDotnetInterfaces = val; }
     public setCustomFileTemplates(val: ICustomFileTemplate[]): void { this.customFileTemplates = val; }
+    public setDefaultProjectStructure(val: any): void { this.defaultProjectStructure = val; }
 
     public getSrcFolder(): string { return this.srcFolder; }
     public getDefaultFilesExt(): string { return this.defaultFilesExtension; }
     public getAdditionalTypes(): IAdditionalType[] { return this.additionalTypes; }
     public getCustomFileTemplates(): ICustomFileTemplate[] { return this.customFileTemplates; }
     public useDotnetInterfaceStyle(): boolean { return this.useDotnetInterfaces; }
+    public getDefaultProjectStructure(): any { return this.getDefaultProjectStructure; }
 }
 
 const confReader = new MockConfReader();

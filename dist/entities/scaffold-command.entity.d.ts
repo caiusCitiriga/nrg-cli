@@ -6,6 +6,6 @@ export declare class ScaffoldCommand implements ICommandRunner {
     private _confReader;
     constructor(confReader: IConfReader);
     run(flags: IFlag[]): Observable<boolean>;
-    private scaffoldStructure();
+    private scaffoldStructure(opts);
     private createFoldersRecursively(folders, struct, startPath);
 }

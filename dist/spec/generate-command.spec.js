@@ -13,6 +13,7 @@ class MockConfReader {
         this.customFileTemplates = [];
         this.useDotnetInterfaces = false;
         this.defaultFilesExtension = 'ts';
+        this.defaultProjectStructure = {};
         this.srcFolder = 'dist/spec/src_outlet';
     }
     setSrcFolder(val) { this.srcFolder = val; }
@@ -20,11 +21,13 @@ class MockConfReader {
     setDefaultFilesExtension(val) { this.defaultFilesExtension = val; }
     setUseDotnetInterfaceStyle(val) { this.useDotnetInterfaces = val; }
     setCustomFileTemplates(val) { this.customFileTemplates = val; }
+    setDefaultProjectStructure(val) { this.defaultProjectStructure = val; }
     getSrcFolder() { return this.srcFolder; }
     getDefaultFilesExt() { return this.defaultFilesExtension; }
     getAdditionalTypes() { return this.additionalTypes; }
     getCustomFileTemplates() { return this.customFileTemplates; }
     useDotnetInterfaceStyle() { return this.useDotnetInterfaces; }
+    getDefaultProjectStructure() { return this.getDefaultProjectStructure; }
 }
 exports.MockConfReader = MockConfReader;
 const confReader = new MockConfReader();

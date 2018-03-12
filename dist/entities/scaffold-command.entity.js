@@ -16,20 +16,30 @@ const fs = require("fs");
 const path = require("path");
 const inversify_1 = require("inversify");
 const inversify_2 = require("inversify");
-const Observable_1 = require("rxjs/Observable");
+const BehaviorSubject_1 = require("rxjs/BehaviorSubject");
 const types_const_1 = require("../consts/types.const");
 let ScaffoldCommand = class ScaffoldCommand {
     constructor(confReader) {
         this._confReader = confReader;
     }
     run(flags) {
-        this.scaffoldStructure();
-        return Observable_1.Observable.of(true);
+        const jobStatus = new BehaviorSubject_1.BehaviorSubject(false);
+        if (flags[0] && flags[0].name === 'root' && flags[0].options[0].value) {
+            this.scaffoldStructure({
+                rootPath: flags[0].options[0].value.substr(-1, 1) === path.sep ? flags[0].options[0].value : flags[0].options[0].value + path.sep,
+                jobStat: jobStatus
+            });
+            return jobStatus.asObservable();
+        }
+        this.scaffoldStructure({ rootPath: null, jobStat: jobStatus });
+        return jobStatus.asObservable();
     }
-    scaffoldStructure() {
+    scaffoldStructure(opts) {
+        const startPath = opts.rootPath ? opts.rootPath : '.' + path.sep;
         const struct = this._confReader.getDefaultProjectStructure();
         const firstLevelFolders = Object.keys(struct);
-        this.createFoldersRecursively(firstLevelFolders, struct, '.' + path.sep);
+        this.createFoldersRecursively(firstLevelFolders, struct, startPath);
+        opts.jobStat.next(true);
     }
     createFoldersRecursively(folders, struct, startPath) {
         folders.forEach(folder => {

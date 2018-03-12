@@ -78,6 +78,27 @@ export class EnergyCLI implements IEnergy {
             })
             //  TODO REMOVE
             .addCommand({
+                name: 'scaffold',
+                flags: [
+                    {
+                        name: 'root',
+                        description: 'The relative path to use as root folder for the structure to scaffold',
+                        options: []
+                    }
+                ],
+                description: 'Scaffolds the structure defined in the CLI config file.',
+                action: (flags: IFlag[]) => {
+                    this._scaffoldComand
+                        .run(flags)
+                        .subscribe(res => {
+                            if (!!res) {
+                                console.log();
+                                this._cli.UI.out.printInfo('Structure successfully scaffolded.\n');
+                            }
+                        });
+                }
+            })
+            .addCommand({
                 flags: [],
                 name: 'init',
                 description: 'Initializes a Energy project inside the current folder',

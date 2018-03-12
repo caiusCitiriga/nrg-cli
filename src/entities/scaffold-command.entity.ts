@@ -5,6 +5,7 @@ import * as process from 'process';
 import { inject } from "inversify";
 import { injectable } from "inversify";
 import { Observable } from "rxjs/Observable";
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { TYPES } from "../consts/types.const";
 
@@ -24,15 +25,26 @@ export class ScaffoldCommand implements ICommandRunner {
     }
 
     public run(flags: IFlag[]): Observable<boolean> {
-        this.scaffoldStructure();
-        return Observable.of(true);
+        const jobStatus = new BehaviorSubject(false);
+        if (flags[0] && flags[0].name === 'root' && flags[0].options[0].value) {
+            this.scaffoldStructure({
+                rootPath: flags[0].options[0].value.substr(-1, 1) === path.sep ? flags[0].options[0].value : flags[0].options[0].value + path.sep,
+                jobStat: jobStatus
+            });
+            return jobStatus.asObservable();
+        }
+
+        this.scaffoldStructure({ rootPath: null, jobStat: jobStatus });
+        return jobStatus.asObservable();
     }
 
-    private scaffoldStructure(): any {
+    private scaffoldStructure(opts: { rootPath: string; jobStat: BehaviorSubject<boolean> }): any {
+        const startPath = opts.rootPath ? opts.rootPath : '.' + path.sep;
         const struct = this._confReader.getDefaultProjectStructure();
 
         const firstLevelFolders = Object.keys(struct);
-        this.createFoldersRecursively(firstLevelFolders, struct, '.' + path.sep);
+        this.createFoldersRecursively(firstLevelFolders, struct, startPath);
+        opts.jobStat.next(true);
     }
 
     private createFoldersRecursively(folders: string[], struct: any, startPath: string) {
