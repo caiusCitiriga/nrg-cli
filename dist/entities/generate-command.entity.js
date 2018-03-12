@@ -190,7 +190,7 @@ let GenerateCommand = class GenerateCommand {
         });
     }
     writeFile(jobStatus, itemData) {
-        fs.writeFile(itemData.fullPath, itemData.fileContent, (err) => {
+        fs.writeFile(itemData.fullPath, itemData.fileContent.replace('{{classname}}', itemData.classname), (err) => {
             if (!!err) {
                 throw new nrg_exception_entity_1.NRGException().throw({
                     name: exceptions_conts_1.NRG_EXCEPTIONS.ItemWriteToDiskException.name,

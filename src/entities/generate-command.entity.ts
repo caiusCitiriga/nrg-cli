@@ -235,7 +235,7 @@ export class GenerateCommand implements ICommandRunner {
     }
 
     private writeFile(jobStatus: BehaviorSubject<boolean>, itemData: IItemData): void {
-        fs.writeFile(itemData.fullPath, itemData.fileContent, (err) => {
+        fs.writeFile(itemData.fullPath, itemData.fileContent.replace('{{classname}}', itemData.classname), (err) => {
             if (!!err) {
                 throw new NRGException().throw({
                     name: NRG_EXCEPTIONS.ItemWriteToDiskException.name,
