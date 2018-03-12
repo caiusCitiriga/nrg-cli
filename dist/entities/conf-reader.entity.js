@@ -44,6 +44,8 @@ let ConfReader = class ConfReader {
         return this._configFile.dotnetInterfaceStyle;
     }
     getDefaultProjectStructure() {
+        this.readConf();
+        return this._configFile.defaultProjectStructure;
     }
     ensureIsEnergyProjectFolder() {
         if (!fs.existsSync(process.cwd() + path.sep + this._cliConfFilename)) {

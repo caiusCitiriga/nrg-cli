@@ -28,12 +28,11 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "NRG",
+            "name": "NRG TEST",
             "program": "${workspaceFolder}/dist/index.js",
             "console": "integratedTerminal",
             "args": [
-                "g",
-                "--dto=test"
+                "test"
             ],
         }
     ]

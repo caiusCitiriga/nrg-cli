@@ -8,6 +8,30 @@ exports.CLI_DEFAULTS = {
     additionalTypes: [],
     customFileTemplates: [],
     dotnetInterfaceStyle: false,
-    defaultProjectStructure: {}
+    defaultProjectStructure: {
+        "default": {
+            "folder-one": {
+                "deep-one": null,
+                "deep-two": {
+                    "deep-deep-one": null,
+                    "deep-deep-two": null
+                }
+            },
+            "folder-two": {
+                "deep-one": null,
+                "deep-two": null,
+                "deep-three": null
+            },
+            "interfaces": null,
+            "dtos": null,
+            "enums": null,
+            "customs": null,
+            "models": null,
+            "entities": {
+                "plain": null,
+                "complex": null
+            }
+        }
+    }
 };
 //# sourceMappingURL=cli-defaults.config.js.map

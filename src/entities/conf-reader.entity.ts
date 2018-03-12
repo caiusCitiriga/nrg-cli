@@ -52,7 +52,8 @@ export class ConfReader implements IConfReader {
     }
 
     public getDefaultProjectStructure(): any {
-
+        this.readConf();
+        return this._configFile.defaultProjectStructure;
     }
 
     private ensureIsEnergyProjectFolder(): void {

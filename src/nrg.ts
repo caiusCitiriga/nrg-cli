@@ -22,9 +22,14 @@ import { CLI_CONF_FILENAME } from './config/cli-defaults.config';
 export class EnergyCLI implements IEnergy {
     private _cli: SmartCLI;
     private _initComand: ICommandRunner;
+    private _scaffoldComand: ICommandRunner;
     private _generateComand: ICommandRunner;
 
     public constructor(
+        @inject(TYPES.ICommandRunner)
+        @named(NAMED_TYPES.ScaffoldCommand)
+        scaffoldComand: ICommandRunner,
+
         @inject(TYPES.ICommandRunner)
         @named(NAMED_TYPES.GenerateCommand)
         generateComand: ICommandRunner,
@@ -37,6 +42,7 @@ export class EnergyCLI implements IEnergy {
         this.initSmartCLI();
         this._cli = new SmartCLI();
         this._initComand = initComand;
+        this._scaffoldComand = scaffoldComand;
         this._generateComand = generateComand;
     }
 
@@ -61,6 +67,16 @@ export class EnergyCLI implements IEnergy {
 
     private setupCLI(): void {
         this._cli
+            //  TODO REMOVE
+            .addCommand({
+                name: 'test',
+                flags: [],
+                description: 'Test command',
+                action: (flags: IFlag[]) => {
+                    this._scaffoldComand.run(flags);
+                }
+            })
+            //  TODO REMOVE
             .addCommand({
                 flags: [],
                 name: 'init',

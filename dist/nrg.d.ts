@@ -5,8 +5,9 @@ import { ICommandRunner } from './interfaces/command-runner.interface';
 export declare class EnergyCLI implements IEnergy {
     private _cli;
     private _initComand;
+    private _scaffoldComand;
     private _generateComand;
-    constructor(generateComand: ICommandRunner, initComand: ICommandRunner);
+    constructor(scaffoldComand: ICommandRunner, generateComand: ICommandRunner, initComand: ICommandRunner);
     /**
      * Runs the program with the given args
      *
