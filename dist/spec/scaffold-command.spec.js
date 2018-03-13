@@ -30,41 +30,43 @@ class MockConfReader {
 exports.MockConfReader = MockConfReader;
 const confReader = new MockConfReader();
 const scaffoldCommand = new scaffold_command_entity_1.ScaffoldCommand(confReader);
-beforeEach(() => {
-    rimraf(confReader.getSrcFolder(), err => {
-        if (!!err) {
-            console.log(`There was an error deleting the srcFolder:\n${err.message}`);
-        }
-    });
-    confReader.setDefaultProjectStructure({
-        folderOne: null,
-        folderTwo: {
-            folderDeep: null
-        }
-    });
-    fs.mkdirSync(confReader.getSrcFolder());
-});
-afterEach(() => {
-    rimraf(confReader.getSrcFolder(), err => {
-        if (!!err) {
-            console.log(`There was an error deleting the srcFolder:\n${err.message}`);
-        }
-    });
-});
 describe('ScaffoldCommand', () => {
-    it('should scaffold correctly the structure', () => {
+    beforeEach((done) => {
+        rimraf(confReader.getSrcFolder(), err => {
+            if (!!err) {
+                console.log(`There was an error deleting the srcFolder:\n${err.message}`);
+            }
+        });
+        confReader.setDefaultProjectStructure({
+            folderOne: null,
+            folderTwo: {
+                folderDeep: null
+            }
+        });
+        fs.mkdirSync(confReader.getSrcFolder());
+        done();
+    });
+    afterEach((done) => {
+        rimraf(confReader.getSrcFolder(), err => {
+            if (!!err) {
+                console.log(`There was an error deleting the srcFolder:\n${err.message}`);
+            }
+        });
+        done();
+    });
+    it('should scaffold correctly the structure', (done) => {
         //  Arrange
         const flags = [];
         const expectedExtension = 'ts';
-        //  Act/Assert
+        //  Act
         scaffoldCommand
             .run(flags)
             .filter(res => !!res)
-            .subscribe(res => {
-            expect(fs.existsSync(confReader.getSrcFolder() + path.sep + 'folderOne')).toEqual(true);
-            expect(fs.existsSync(confReader.getSrcFolder() + path.sep + 'folderTwo')).toEqual(true);
-            expect(fs.existsSync(confReader.getSrcFolder() + path.sep + 'folderTwo' + path.sep + 'folderDeep')).toEqual(true);
-        });
+            .subscribe(res => done());
+        //  Assert
+        expect(fs.existsSync(confReader.getSrcFolder() + path.sep + 'folderOne')).toEqual(true);
+        expect(fs.existsSync(confReader.getSrcFolder() + path.sep + 'folderTwo')).toEqual(true);
+        expect(fs.existsSync(confReader.getSrcFolder() + path.sep + 'folderTwo' + path.sep + 'folderDeep')).toEqual(true);
     });
 });
 //# sourceMappingURL=scaffold-command.spec.js.map

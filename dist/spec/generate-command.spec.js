@@ -32,13 +32,21 @@ class MockConfReader {
 exports.MockConfReader = MockConfReader;
 const confReader = new MockConfReader();
 const generateCommand = new generate_command_entity_1.GenerateCommand(confReader);
-beforeAll(() => {
-    const defTypes = default_types_config_1.DefaultItemTypes.concat(confReader.getAdditionalTypes());
-    generateCommand._availableItemTypes = defTypes;
-    generateCommand._availableItemTypes
-        .forEach((t, idx) => !!t.itemType ? null : generateCommand._availableItemTypes[idx].itemType = item_types_enum_1.ItemTypes.custom);
-});
 describe('GenerateCommand with case "g --dto=test-one.dto"', () => {
+    beforeAll(() => {
+        const defTypes = default_types_config_1.DefaultItemTypes.concat(confReader.getAdditionalTypes());
+        generateCommand._availableItemTypes = defTypes;
+        generateCommand._availableItemTypes
+            .forEach((t, idx) => !!t.itemType ? null : generateCommand._availableItemTypes[idx].itemType = item_types_enum_1.ItemTypes.custom);
+    });
+    beforeEach((done) => {
+        rimraf(confReader.getSrcFolder(), err => {
+            if (!!err) {
+                console.log(`There was an error deleting the SRC folder:\n${err.message}`);
+            }
+            done();
+        });
+    });
     it('should parse the extension correctly', () => {
         //  Arrange
         const flags = [{
@@ -324,7 +332,7 @@ describe('GenerateCommand with case "g --dto=test-one.special.dto.ts"', () => {
     });
 });
 describe('GenerateCommand integration testing', () => {
-    it('should create the item correctly without the deep folder path', () => {
+    it('should create the item correctly without the deep folder path', (done) => {
         //  Arrange
         const flags = [{
                 name: "dto",
@@ -335,20 +343,19 @@ describe('GenerateCommand integration testing', () => {
                     }
                 ]
             }];
-        //  Act/Assert
+        //  Act
         if (fs.existsSync(confReader.getSrcFolder())) {
             rimraf.sync(confReader.getSrcFolder());
         }
         generateCommand
             .run(flags)
             .filter(res => !!res)
-            .subscribe(res => {
-            //  Assert
-            expect(fs.existsSync(process.cwd() + path.sep + confReader.getSrcFolder() + '/dtos/' + 'test-one.special.dto.ts')).toBeTruthy();
-            rimraf.sync(confReader.getSrcFolder());
-        });
+            .subscribe(res => done());
+        //  Assert
+        expect(fs.existsSync(process.cwd() + path.sep + confReader.getSrcFolder() + '/dtos/' + 'test-one.special.dto.ts')).toBeTruthy();
+        rimraf.sync(confReader.getSrcFolder());
     });
-    it('should create the interface item correctly', () => {
+    it('should create the interface item correctly', (done) => {
         //  Arrange
         const flags = [{
                 name: "int",
@@ -359,18 +366,17 @@ describe('GenerateCommand integration testing', () => {
                     }
                 ]
             }];
-        //  Act/Assert
+        //  Act
         if (fs.existsSync(confReader.getSrcFolder())) {
             rimraf.sync(confReader.getSrcFolder());
         }
         generateCommand
             .run(flags)
             .filter(res => !!res)
-            .subscribe(res => {
-            //  Assert
-            expect(fs.existsSync(process.cwd() + path.sep + confReader.getSrcFolder() + '/interfaces/' + 'test-one.interface.ts')).toBeTruthy();
-            rimraf.sync(confReader.getSrcFolder());
-        });
+            .subscribe(res => done());
+        //  Assert
+        expect(fs.existsSync(process.cwd() + path.sep + confReader.getSrcFolder() + '/interfaces/' + 'test-one.interface.ts')).toBeTruthy();
+        rimraf.sync(confReader.getSrcFolder());
     });
     it('should return the item data parsed correctly', () => {
         //  Arrange
