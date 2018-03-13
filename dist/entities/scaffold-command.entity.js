@@ -35,7 +35,7 @@ let ScaffoldCommand = class ScaffoldCommand {
         return jobStatus.asObservable();
     }
     scaffoldStructure(opts) {
-        const startPath = opts.rootPath ? opts.rootPath : '.' + path.sep;
+        const startPath = opts.rootPath ? opts.rootPath : this._confReader.getSrcFolder() + path.sep;
         const struct = this._confReader.getDefaultProjectStructure();
         const firstLevelFolders = Object.keys(struct);
         this.createFoldersRecursively(firstLevelFolders, struct, startPath);
