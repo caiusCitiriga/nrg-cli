@@ -17,6 +17,8 @@ require("rxjs/add/operator/filter");
 const inversify_1 = require("inversify");
 const dist_1 = require("smart-cli/dist");
 const types_const_1 = require("./consts/types.const");
+const types_const_2 = require("./consts/types.const");
+const package_info_1 = require("./config/package.info");
 const cli_defaults_config_1 = require("./config/cli-defaults.config");
 let EnergyCLI = class EnergyCLI {
     constructor(scaffoldComand, generateComand, initComand) {
@@ -51,6 +53,39 @@ let EnergyCLI = class EnergyCLI {
             description: 'Test command',
             action: (flags) => {
                 this._scaffoldComand.run(flags);
+            }
+        })
+            .addCommand({
+            name: 'info',
+            flags: [],
+            description: 'Prints the current Energy version information',
+            action: (flags) => {
+                this._cli.UI.out.printBoxTitle('ENERGY CLI PACKAGE INFORMATION');
+                this._cli.UI.out.printMessage('Made with love and passion. For coding, and beautiful code\n');
+                this._cli.UI.out.printKeyValues({
+                    set: [
+                        {
+                            k: 'Version',
+                            v: package_info_1.PACKAGE_INFO.version
+                        },
+                        {
+                            k: 'Release name',
+                            v: package_info_1.PACKAGE_INFO.name
+                        },
+                        {
+                            k: 'License',
+                            v: 'MIT'
+                        },
+                        {
+                            k: 'Designed and developed by',
+                            v: 'Caius Citiriga'
+                        },
+                        {
+                            k: 'Bugs and features reaquests',
+                            v: 'https://www.github.com/caiuscitiriga/nrg-cli/issues'
+                        },
+                    ]
+                });
             }
         })
             .addCommand({
@@ -137,11 +172,11 @@ let EnergyCLI = class EnergyCLI {
 EnergyCLI = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_const_1.TYPES.ICommandRunner)),
-    __param(0, inversify_1.named(types_const_1.NAMED_TYPES.ScaffoldCommand)),
+    __param(0, inversify_1.named(types_const_2.NAMED_TYPES.ScaffoldCommand)),
     __param(1, inversify_1.inject(types_const_1.TYPES.ICommandRunner)),
-    __param(1, inversify_1.named(types_const_1.NAMED_TYPES.GenerateCommand)),
+    __param(1, inversify_1.named(types_const_2.NAMED_TYPES.GenerateCommand)),
     __param(2, inversify_1.inject(types_const_1.TYPES.ICommandRunner)),
-    __param(2, inversify_1.named(types_const_1.NAMED_TYPES.InitCommand)),
+    __param(2, inversify_1.named(types_const_2.NAMED_TYPES.InitCommand)),
     __metadata("design:paramtypes", [Object, Object, Object])
 ], EnergyCLI);
 exports.EnergyCLI = EnergyCLI;

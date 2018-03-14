@@ -70,26 +70,16 @@ npm i nrg-cli -g
 nrg
 ```
 
-***Note:*** In order for the CLI to work, you have to manually create a `energy.cli.conf` inside the folder you want to use nrg. Once created, copy this content:
-```json
-{
-    "$schema": "https://raw.githubusercontent.com/caiusCitiriga/nrg-ngx-cli/583bbb20748582ce78ca2fd943e5a1da7f4916c4/src/config/cli-conf.schema.json",
-    "srcFolder": "src",
-    "defaultExt": "ts",
-    "additionalTypes": [],
-    "dotnetInterfaceStyle": false
-}
-```
 ## **INIT**: 
 **Usage**: ```nrg init```
 
 **Description**: Initializes a new Energy project inside the current directory
 
-A file called `energy.cli.json` will be created. This is the configuration file for Energy. 
+A file called `.energy.cli.json` will be created. This is the configuration file for Energy. 
 
 It holds all the project configurations. This file is needed by all the other commands in order to function. 
 
-The commands bases their logic on values stored in this file, some may be optional, but still, the file has to be present.
+The commands bases their logic on values stored in this file, some may be optional, but still, the file has to be present in the directory.
 
 
 ## **GENERATE**: 

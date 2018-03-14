@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import 'rxjs/add/operator/filter';
 
+import * as fs from 'fs';
 import * as process from 'process';
 
 import { Subscription } from 'rxjs/Subscription';
@@ -11,12 +12,15 @@ import { IoCContainer } from './inversify.config';
 import { IFlag } from 'smart-cli/dist/interfaces/plain/flag.interface';
 
 import { ItemTypes } from './enums/item-types.enum';
-import { TYPES, NAMED_TYPES } from './consts/types.const';
+
+import { TYPES } from './consts/types.const';
+import { NAMED_TYPES } from './consts/types.const';
+import { PACKAGE_INFO } from './config/package.info';
+import { CLI_CONF_FILENAME } from './config/cli-defaults.config';
 
 import { IEnergy } from './interfaces/energy.interface';
 import { IConfReader } from './interfaces/conf-reader.interface';
 import { ICommandRunner } from './interfaces/command-runner.interface';
-import { CLI_CONF_FILENAME } from './config/cli-defaults.config';
 
 @injectable()
 export class EnergyCLI implements IEnergy {
@@ -77,6 +81,40 @@ export class EnergyCLI implements IEnergy {
                 }
             })
             //  TODO REMOVE
+            .addCommand({
+                name: 'info',
+                flags: [],
+                description: 'Prints the current Energy version information',
+                action: (flags: IFlag[]) => {
+                    this._cli.UI.out.printBoxTitle('ENERGY CLI PACKAGE INFORMATION');
+                    this._cli.UI.out.printMessage('Made with love and passion. For coding, and beautiful code\n');
+                    this._cli.UI.out.printKeyValues({
+                        set: [
+                            {
+                                k: 'Version',
+                                v: PACKAGE_INFO.version
+                            },
+                            {
+                                k: 'Release name',
+                                v: PACKAGE_INFO.name
+                            },
+                            {
+                                k: 'License',
+                                v: 'MIT'
+                            },
+                            {
+                                k: 'Designed and developed by',
+                                v: 'Caius Citiriga'
+                            },
+                            {
+                                k: 'Bugs and features reaquests',
+                                v: 'https://www.github.com/caiuscitiriga/nrg-cli/issues'
+                            },
+                        ]
+                    });
+
+                }
+            })
             .addCommand({
                 name: 'scaffold',
                 flags: [

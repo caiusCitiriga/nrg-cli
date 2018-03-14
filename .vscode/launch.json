@@ -32,7 +32,8 @@
             "program": "${workspaceFolder}/dist/index.js",
             "console": "integratedTerminal",
             "args": [
-                "test"
+                "scaffold",
+                "--root=mooble"
             ],
         }
     ]

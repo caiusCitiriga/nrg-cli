@@ -18,6 +18,8 @@ const inversify_1 = require("inversify");
 const inversify_2 = require("inversify");
 const BehaviorSubject_1 = require("rxjs/BehaviorSubject");
 const types_const_1 = require("../consts/types.const");
+const nrg_exception_entity_1 = require("./nrg-exception.entity");
+const exceptions_conts_1 = require("../consts/exceptions.conts");
 let ScaffoldCommand = class ScaffoldCommand {
     constructor(confReader) {
         this._confReader = confReader;
@@ -42,8 +44,20 @@ let ScaffoldCommand = class ScaffoldCommand {
         opts.jobStat.next(true);
     }
     createFoldersRecursively(folders, struct, startPath) {
+        if (startPath.length && !fs.existsSync(startPath)) {
+            fs.mkdir(startPath, err => {
+                if (err) {
+                    new nrg_exception_entity_1.NRGException().throw({
+                        name: exceptions_conts_1.NRG_EXCEPTIONS.InvalidRootFolderForScaffoldException.name,
+                        message: exceptions_conts_1.NRG_EXCEPTIONS.InvalidRootFolderForScaffoldException.message(startPath),
+                    });
+                }
+            });
+        }
         folders.forEach(folder => {
-            fs.mkdirSync(startPath + folder);
+            if (!fs.existsSync(startPath + folder)) {
+                fs.mkdirSync(startPath + folder);
+            }
             if (!!struct[folder]) {
                 const recStartPath = startPath + folder + path.sep;
                 this.createFoldersRecursively(Object.keys(struct[folder]), struct[folder], recStartPath);

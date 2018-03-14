@@ -23,4 +23,8 @@ export declare const NRG_EXCEPTIONS: {
         name: string;
         message: (itemName: string) => string;
     };
+    InvalidRootFolderForScaffoldException: {
+        name: string;
+        message: (rootFolder: string) => string;
+    };
 };
