@@ -1,5 +1,9 @@
 ### NRG Changelog
 ---
+### 0.3.1 - Akash
+#### Bugfixes
+
+
 ### 0.3.0 - Aelinor
 #### New features:
 * You can now define a default folders structure to scaffold
