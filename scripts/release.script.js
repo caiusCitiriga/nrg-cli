@@ -175,7 +175,7 @@ function publish() {
             }
 
             const publishDone = new BehaviorSubject(false);
-            exec(`npm publish ${newVersion.number}`, (err, std, stde) => {
+            exec(`npm publish`, (err, std, stde) => {
                 if (!!err || stde) {
                     cli.UI.out.printError(err ? err.message : stde);
                     abort();
@@ -196,9 +196,6 @@ function publish() {
                 .subscribe(res => {
                     if (!res) { return; }
                     exec(`git checkout -b release/${newVersion.number}-${newVersion.name}`);
-                    exec('git add .');
-                    exec('git commit -m \'realease auto commit\' ');
-                    exec(`git push origin release/${newVersion.number}-${newVersion.name}`);
                     cli.UI.out.printInfo('Release branch generated and pushed successfully.');
                     console.log();
                     cli.UI.out.printInfo('RELEASE PROCESS COMPLETED SUCCESSFULLY!\n');
