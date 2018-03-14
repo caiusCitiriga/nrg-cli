@@ -174,7 +174,7 @@ function publish() {
             }
 
             console.log();
-            cli.UI.out.printInfo('PRE RELEASE PROCESS COMPLETED SUCCESSFULLY!\n');
+            cli.UI.out.printInfo('PRE-RELEASE PROCESS COMPLETED SUCCESSFULLY!\n');
 
             sub.unsubscribe();
             tsub.unsubscribe();
@@ -185,9 +185,9 @@ function publish() {
 
 function abort() {
     console.log();
-    cli.UI.out.printWarning('Release process aborted\n');
+    cli.UI.out.printWarning('Pre-Release process aborted\n');
 }
 
 //  Start
-cli.UI.out.printBoxTitle('Release process started');
+cli.UI.out.printBoxTitle('Pre-Release process started');
 askReleaseVersion();
