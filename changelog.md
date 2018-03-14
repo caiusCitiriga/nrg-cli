@@ -11,7 +11,7 @@
 * Updated json schema TS types (added $schema entry)
 
 #### Bugfixes
-* Solved init bug that were creating the .energy.cli.json, but when using generate command throws error.
+* Solved init bug that were creating the .energy.cli.json, but when using the generate command was throwing error.
 
 #### Minor changes
 * Added badges on readme

@@ -56,9 +56,16 @@
         "components",
         "services",
         "pipes",
+        "node",
         "modules",
         "directives",
         "crud",
+        "generate",
+        "generator",
+        "initialize",
+        "init",
+        "project",
+        "workflow",
         "default",
         "basic"
     ]
