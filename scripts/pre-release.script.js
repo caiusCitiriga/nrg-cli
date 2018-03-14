@@ -92,9 +92,13 @@ function publish() {
     const package = JSON.parse(fs.readFileSync('./package.json').toString());
     package.version = newVersion.number;
     fs.writeFileSync('./package.json', JSON.stringify(package), { encoding: 'utf-8' });
-
-    console.log();
     cli.UI.out.printInfo('Package version updated successfully');
+
+    const infoFile = JSON.parse(fs.readFileSync('./src/config/package.info.json').toString());
+    infoFile.name = newVersion.name;
+    infoFile.version = newVersion.number;
+    fs.writeFileSync('./src/config/package.info.json', JSON.stringify(infoFile), { encoding: 'utf-8' });
+    cli.UI.out.printInfo('CLI info version updated successfully');
 
     rimraf('./dist', err => {
         if (!!err) {
@@ -168,11 +172,6 @@ function publish() {
             if (!res) {
                 return;
             }
-
-            const infoFile = JSON.parse(fs.readFileSync('./src/config/package.info.json').toString());
-            infoFile.name = newVersion.name;
-            infoFile.version = newVersion.number;
-            fs.writeFileSync('./src/config/package.info.json', JSON.stringify(infoFile), { encoding: 'utf-8' });
 
             console.log();
             cli.UI.out.printInfo('PRE RELEASE PROCESS COMPLETED SUCCESSFULLY!\n');
