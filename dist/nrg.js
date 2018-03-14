@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 require("rxjs/add/operator/filter");
+const fs = require("fs");
 const inversify_1 = require("inversify");
 const dist_1 = require("smart-cli/dist");
 const types_const_1 = require("./consts/types.const");
@@ -51,6 +52,25 @@ let EnergyCLI = class EnergyCLI {
             description: 'Test command',
             action: (flags) => {
                 this._scaffoldComand.run(flags);
+            }
+        })
+            .addCommand({
+            name: 'info',
+            flags: [],
+            description: 'Prints the current Energy version information',
+            action: (flags) => {
+                console.log(fs.readdirSync('.'));
+                throw new Error();
+                // const versionInfo = fs.readFileSync('');
+                // this._cli.UI.out.printBoxTitle('ENERGY CLI');
+                // this._cli.UI.out.printKeyValues({
+                //     set: [
+                //         {
+                //             k: 'Version number',
+                //             v: '1'
+                //         }
+                //     ]
+                // })
             }
         })
             .addCommand({

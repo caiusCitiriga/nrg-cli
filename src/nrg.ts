@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import 'rxjs/add/operator/filter';
 
+import * as fs from 'fs';
 import * as process from 'process';
 
 import { Subscription } from 'rxjs/Subscription';
@@ -77,6 +78,25 @@ export class EnergyCLI implements IEnergy {
                 }
             })
             //  TODO REMOVE
+            .addCommand({
+                name: 'info',
+                flags: [],
+                description: 'Prints the current Energy version information',
+                action: (flags: IFlag[]) => {
+                    console.log(fs.readdirSync('.'));
+                    throw new Error();
+                    // const versionInfo = fs.readFileSync('');
+                    // this._cli.UI.out.printBoxTitle('ENERGY CLI');
+                    // this._cli.UI.out.printKeyValues({
+                    //     set: [
+                    //         {
+                    //             k: 'Version number',
+                    //             v: '1'
+                    //         }
+                    //     ]
+                    // })
+                }
+            })
             .addCommand({
                 name: 'scaffold',
                 flags: [
