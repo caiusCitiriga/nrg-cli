@@ -5,7 +5,7 @@
 * You can now define a default folders structure to scaffold
 * You can now specify a custom templates for default items and custom items 
 * Updated json schema (added customFileTemplates)
-* Updated json schema (added templateUrl to customFileTemplates)
+* Updated json schema (added templateFile to customFileTemplates)
 * Updated json schema (added description for fields and examples)
 * Updated json schema TS types
 * Updated json schema TS types (added $schema entry)

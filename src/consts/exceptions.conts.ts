@@ -32,7 +32,7 @@ export const NRG_EXCEPTIONS = {
     NoValidFileTemplateForThisItemException: {
         name: 'NoValidFileTemplateForThisItemException',
         message: (itemName: string) => {
-            return `You specified in the configuration that a custom file template should be used for "${itemName}" items, but neither the template field or the templateUrl leads to a valid file, or the file is empty.`;
+            return `You specified in the configuration that a custom file template should be used for "${itemName}" items, but neither the template field or the templateFile leads to a valid file, or the file is empty.`;
         }
     }
 }

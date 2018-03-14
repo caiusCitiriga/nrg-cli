@@ -117,8 +117,8 @@ let GenerateCommand = class GenerateCommand {
         }
         if (customFileTemplates.find(cft => cft.itemName === itemType.name)) {
             const fileTemplateData = customFileTemplates.find(cft => cft.itemName === itemType.name);
-            if (fileTemplateData.templateUrl && !!fileTemplateData.templateUrl.length) {
-                finalResult = fs.readFileSync(fileTemplateData.templateUrl, { encoding: 'utf-8' }).toString();
+            if (fileTemplateData.templateFile && !!fileTemplateData.templateFile.length) {
+                finalResult = fs.readFileSync(fileTemplateData.templateFile, { encoding: 'utf-8' }).toString();
             }
             else {
                 finalResult = fileTemplateData.template;

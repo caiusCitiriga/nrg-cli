@@ -91,8 +91,8 @@
                             "interface #name# {\n\n}\n"
                         ]
                     },
-                    "templateUrl": {
-                        "$id": "/properties/customFileTemplates/items/properties/templateUrl",
+                    "templateFile": {
+                        "$id": "/properties/customFileTemplates/items/properties/templateFile",
                         "type": "string",
                         "title": "The url for a more complex template file. A relative path from the root of your project",
                         "default": "",
