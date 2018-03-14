@@ -1,6 +1,9 @@
 ### NRG Changelog
 ---
-### 0.3.1 - Akash
+### 0.4.0 - Akash
+#### New features:
+* info command
+
 #### Bugfixes
 
 
