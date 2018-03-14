@@ -153,13 +153,13 @@ Some of the powers of *Energy* resides in its configuration file. Settings that 
 
 *Energy* features a templating system for your files, it was originally meant for TypeScript files, but *Energy* fits in any project, of any language. 
 
-For this purpose you can override the default behavior of the templating system, specifying a custom template to use for a certain item type, or to override a default item type.
+For this purpose you can override the default behavior of the templating system, specifying a custom template to use for a certain item type, or to override a default one.
 
 So when you will generate an item of that kind, the new template defined by you will be used instead the default one.
 
-The templates can be defined inline, in the cli configuration, or you can link for each item a template url. This url will be relative, and will match a template file.
+The templates can be defined inline in the cli configuration, or you can link for each item a template path. This path will be relative, and it will match a template file.
 
-The template must contain a `{{classname}}` placeholder, this placeholder will be swapped at generation time with the real Class/Interface/Enum name.
+The template must contain a `{{classname}}` placeholder, which will be swapped at generation time with the real Class/Interface/Enum name.
 
 In order to successfully define a custom item template, you have to specify two properties. The item type **name** you want to override, and the **template** or **templateFile**, but one of this two has to be defined. Otherwise an error will be thrown.
 
