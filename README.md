@@ -54,12 +54,12 @@ This structure is the most commonly used. But is fully customizable, don't worry
 *Energy* can be initialized in practically any project, and is a good tool to have in your *dev-dependencies* while developing. 
 
 ## Features
-* Fully customizable behaviour and structure.
+* Custom additional item types.
+* Customizable item file templates.
+* Works in any project of any language.
 * Most commonly used item types are built in. 
-* Allows you to add custom additional item types.
 * Folders auto scaffolding during an item generation.
-* [NOT AVAILABLE YET] Configurable NPM package auto init.
-* [NOT AVAILABLE YET] Configurable Git repository auto init.
+* One shot project folders scaffolding by JSON structure.
 
 ## Get started
 ```bash
