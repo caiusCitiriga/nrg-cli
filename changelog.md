@@ -5,7 +5,7 @@
 * info command
 
 #### Bugfixes
-
+* fixed scaffold command root folder. When the root folder wasn't present, the command were throwing an exception. Now it creates just the folder. ***Note***: you cannot specify nested unexistent folders for the rootPath. That will still throw an exception.
 
 ### 0.3.0 - Aelinor
 #### New features:

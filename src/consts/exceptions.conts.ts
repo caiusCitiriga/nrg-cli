@@ -34,5 +34,11 @@ export const NRG_EXCEPTIONS = {
         message: (itemName: string) => {
             return `You specified in the configuration that a custom file template should be used for "${itemName}" items, but neither the template field or the templateFile leads to a valid file, or the file is empty.`;
         }
+    },
+    InvalidRootFolderForScaffoldException: {
+        name: 'InvalidRootFolderForScaffoldException',
+        message: (rootFolder: string) => {
+            return `Invalid root folder provided. This may happen when the folder is inside a folder that does not exists. In this stage, the root folder needs to be a single folder that can be created. Your root folder was: ${rootFolder}`;
+        }
     }
 }

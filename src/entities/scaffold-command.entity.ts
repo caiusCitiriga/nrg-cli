@@ -9,9 +9,12 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { TYPES } from "../consts/types.const";
 
+import { NRGException } from './nrg-exception.entity';
+
 import { IFlag } from "smart-cli/dist/interfaces/plain/flag.interface";
 import { IConfReader } from "../interfaces/conf-reader.interface";
 import { ICommandRunner } from "../interfaces/command-runner.interface";
+import { NRG_EXCEPTIONS } from '../consts/exceptions.conts';
 
 @injectable()
 export class ScaffoldCommand implements ICommandRunner {
@@ -48,8 +51,22 @@ export class ScaffoldCommand implements ICommandRunner {
     }
 
     private createFoldersRecursively(folders: string[], struct: any, startPath: string) {
+        if (startPath.length && !fs.existsSync(startPath)) {
+            fs.mkdir(startPath, err => {
+                if (err) {
+                    new NRGException().throw({
+                        name: NRG_EXCEPTIONS.InvalidRootFolderForScaffoldException.name,
+                        message: NRG_EXCEPTIONS.InvalidRootFolderForScaffoldException.message(startPath),
+                    });
+                }
+            });
+        }
+
         folders.forEach(folder => {
-            fs.mkdirSync(startPath + folder);
+            if (!fs.existsSync(startPath + folder)) {
+                fs.mkdirSync(startPath + folder);
+            }
+
             if (!!struct[folder]) {
                 const recStartPath = startPath + folder + path.sep;
                 this.createFoldersRecursively(Object.keys(struct[folder]), struct[folder], recStartPath);
