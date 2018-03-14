@@ -17,12 +17,14 @@ require("rxjs/add/operator/filter");
 const inversify_1 = require("inversify");
 const dist_1 = require("smart-cli/dist");
 const types_const_1 = require("./consts/types.const");
+const cli_defaults_config_1 = require("./config/cli-defaults.config");
 let EnergyCLI = class EnergyCLI {
-    constructor(generateComand, initComand) {
+    constructor(scaffoldComand, generateComand, initComand) {
         //  Initialization of stuff
         this.initSmartCLI();
         this._cli = new dist_1.SmartCLI();
         this._initComand = initComand;
+        this._scaffoldComand = scaffoldComand;
         this._generateComand = generateComand;
     }
     /**
@@ -44,6 +46,35 @@ let EnergyCLI = class EnergyCLI {
     setupCLI() {
         this._cli
             .addCommand({
+            name: 'test',
+            flags: [],
+            description: 'Test command',
+            action: (flags) => {
+                this._scaffoldComand.run(flags);
+            }
+        })
+            .addCommand({
+            name: 'scaffold',
+            flags: [
+                {
+                    name: 'root',
+                    description: 'The relative path to use as root folder for the structure to scaffold',
+                    options: []
+                }
+            ],
+            description: 'Scaffolds the structure defined in the CLI config file.',
+            action: (flags) => {
+                this._scaffoldComand
+                    .run(flags)
+                    .subscribe(res => {
+                    if (!!res) {
+                        console.log();
+                        this._cli.UI.out.printInfo('Structure successfully scaffolded.\n');
+                    }
+                });
+            }
+        })
+            .addCommand({
             flags: [],
             name: 'init',
             description: 'Initializes a Energy project inside the current folder',
@@ -52,7 +83,7 @@ let EnergyCLI = class EnergyCLI {
                     .run(flags)
                     .subscribe(res => {
                     console.log();
-                    this._cli.UI.out.printInfo('.energy.cli.json file successfully generated\n');
+                    this._cli.UI.out.printInfo(`${cli_defaults_config_1.CLI_CONF_FILENAME} file successfully generated\n`);
                 });
             }
         })
@@ -106,10 +137,12 @@ let EnergyCLI = class EnergyCLI {
 EnergyCLI = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_const_1.TYPES.ICommandRunner)),
-    __param(0, inversify_1.named(types_const_1.NAMED_TYPES.GenerateCommand)),
+    __param(0, inversify_1.named(types_const_1.NAMED_TYPES.ScaffoldCommand)),
     __param(1, inversify_1.inject(types_const_1.TYPES.ICommandRunner)),
-    __param(1, inversify_1.named(types_const_1.NAMED_TYPES.InitCommand)),
-    __metadata("design:paramtypes", [Object, Object])
+    __param(1, inversify_1.named(types_const_1.NAMED_TYPES.GenerateCommand)),
+    __param(2, inversify_1.inject(types_const_1.TYPES.ICommandRunner)),
+    __param(2, inversify_1.named(types_const_1.NAMED_TYPES.InitCommand)),
+    __metadata("design:paramtypes", [Object, Object, Object])
 ], EnergyCLI);
 exports.EnergyCLI = EnergyCLI;
 //# sourceMappingURL=nrg.js.map

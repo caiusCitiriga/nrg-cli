@@ -16,14 +16,20 @@ import { TYPES, NAMED_TYPES } from './consts/types.const';
 import { IEnergy } from './interfaces/energy.interface';
 import { IConfReader } from './interfaces/conf-reader.interface';
 import { ICommandRunner } from './interfaces/command-runner.interface';
+import { CLI_CONF_FILENAME } from './config/cli-defaults.config';
 
 @injectable()
 export class EnergyCLI implements IEnergy {
     private _cli: SmartCLI;
     private _initComand: ICommandRunner;
+    private _scaffoldComand: ICommandRunner;
     private _generateComand: ICommandRunner;
 
     public constructor(
+        @inject(TYPES.ICommandRunner)
+        @named(NAMED_TYPES.ScaffoldCommand)
+        scaffoldComand: ICommandRunner,
+
         @inject(TYPES.ICommandRunner)
         @named(NAMED_TYPES.GenerateCommand)
         generateComand: ICommandRunner,
@@ -36,6 +42,7 @@ export class EnergyCLI implements IEnergy {
         this.initSmartCLI();
         this._cli = new SmartCLI();
         this._initComand = initComand;
+        this._scaffoldComand = scaffoldComand;
         this._generateComand = generateComand;
     }
 
@@ -60,6 +67,37 @@ export class EnergyCLI implements IEnergy {
 
     private setupCLI(): void {
         this._cli
+            //  TODO REMOVE
+            .addCommand({
+                name: 'test',
+                flags: [],
+                description: 'Test command',
+                action: (flags: IFlag[]) => {
+                    this._scaffoldComand.run(flags);
+                }
+            })
+            //  TODO REMOVE
+            .addCommand({
+                name: 'scaffold',
+                flags: [
+                    {
+                        name: 'root',
+                        description: 'The relative path to use as root folder for the structure to scaffold',
+                        options: []
+                    }
+                ],
+                description: 'Scaffolds the structure defined in the CLI config file.',
+                action: (flags: IFlag[]) => {
+                    this._scaffoldComand
+                        .run(flags)
+                        .subscribe(res => {
+                            if (!!res) {
+                                console.log();
+                                this._cli.UI.out.printInfo('Structure successfully scaffolded.\n');
+                            }
+                        });
+                }
+            })
             .addCommand({
                 flags: [],
                 name: 'init',
@@ -70,7 +108,7 @@ export class EnergyCLI implements IEnergy {
                             .run(flags)
                             .subscribe(res => {
                                 console.log();
-                                this._cli.UI.out.printInfo('.energy.cli.json file successfully generated\n');
+                                this._cli.UI.out.printInfo(`${CLI_CONF_FILENAME} file successfully generated\n`);
                             });
                 }
             })

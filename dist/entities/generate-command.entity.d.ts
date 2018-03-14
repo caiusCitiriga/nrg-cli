@@ -13,8 +13,11 @@ export declare class GenerateCommand implements ICommandRunner {
     private mergeAdditionalTypesWithDefaultOnes();
     private generateItem(itemType, flags);
     private extractItemData(flags, itemType);
+    private getFileContent(itemType, itemData);
+    private generateDetaultTSItem(itemType, itemData);
     private extractExtension(rawString, itemTypeName);
     private extractFilename(rawString, extension);
     private extractClassname(rawString, extension, itemType);
-    private ensureEveryFolderExistsBeforeWrite(pathItems);
+    private ensureEveryFolderExistsBeforeWrite(itemData);
+    private writeFile(jobStatus, itemData);
 }

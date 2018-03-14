@@ -1,4 +1,5 @@
 {
+    "$id": "http://example.com/example.json",
     "type": "object",
     "definitions": {},
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -6,24 +7,26 @@
         "srcFolder": {
             "$id": "/properties/srcFolder",
             "type": "string",
-            "title": "The Srcfolder Schema ",
+            "title": "The source folder where NRG will generate all the item types",
             "default": "",
             "examples": [
-                "test_src"
+                "src"
             ]
         },
         "defaultExt": {
             "$id": "/properties/defaultExt",
             "type": "string",
-            "title": "The Defaultext Schema ",
+            "title": "The default extension for the generated items. Any extension is accepted. Without the dot.",
             "default": "",
             "examples": [
-                "ts"
+                "ts",
+                "js"
             ]
         },
         "additionalTypes": {
             "$id": "/properties/additionalTypes",
             "type": "array",
+            "title": "Any additional item types you want to use in your project.",
             "items": {
                 "$id": "/properties/additionalTypes/items",
                 "type": "object",
@@ -31,20 +34,69 @@
                     "name": {
                         "$id": "/properties/additionalTypes/items/properties/name",
                         "type": "string",
-                        "title": "The Name Schema ",
+                        "title": "The singular name for the item type. The same name will be used for the flag",
                         "default": "",
                         "examples": [
-                            "rumble"
+                            ""
                         ]
                     },
                     "plural": {
                         "$id": "/properties/additionalTypes/items/properties/plural",
                         "type": "string",
-                        "title": "The Plural Schema ",
+                        "title": "The plural name for this item. This name will be used for the folder name.",
                         "default": "",
                         "examples": [
-                            "rumbles"
+                            ""
                         ]
+                    }
+                }
+            }
+        },
+        "customFileTemplates": {
+            "$id": "/properties/customFileTemplates",
+            "type": "array",
+            "title": "The file templates for the generated item types.",
+            "items": {
+                "$id": "/properties/customFileTemplates/items",
+                "type": "object",
+                "properties": {
+                    "itemName": {
+                        "$id": "/properties/customFileTemplates/items/properties/itemName",
+                        "type": "string",
+                        "title": "The name of the item type you want to define a template for. If you want to define templates for your own types, use the singular name.",
+                        "default": "",
+                        "examples": [
+                            "dto",
+                            "enum",
+                            "model",
+                            "const",
+                            "custom",
+                            "entity",
+                            "interface"
+                        ]
+                    },
+                    "template": {
+                        "$id": "/properties/customFileTemplates/items/properties/template",
+                        "type": "string",
+                        "title": "A string containing escape charaters that will be the template for that item type.",
+                        "default": "",
+                        "examples": [
+                            "export enum #name# {\n};\n",
+                            "export class #name# {\n    public constructor(){}\n}\n",
+                            "export const #name# = {\n};\n",
+                            "export interface #name# {\n\n}\n",
+                            "enum #name# {\n};\n",
+                            "class #name# {\n    public constructor(){}\n}\n",
+                            "const #name# = {\n};\n",
+                            "interface #name# {\n\n}\n"
+                        ]
+                    },
+                    "templateFile": {
+                        "$id": "/properties/customFileTemplates/items/properties/templateFile",
+                        "type": "string",
+                        "title": "The url for a more complex template file. A relative path from the root of your project",
+                        "default": "",
+                        "examples": []
                     }
                 }
             }
@@ -52,11 +104,19 @@
         "dotnetInterfaceStyle": {
             "$id": "/properties/dotnetInterfaceStyle",
             "type": "boolean",
-            "title": "The Dotnetinterfacestyle Schema ",
+            "title": "Decides whether to put or not a 'I' in front of the interfaces.",
             "default": false,
             "examples": [
-                true
+                true,
+                false
             ]
+        },
+        "defaultProjectStructure": {
+            "$id": "/properties/defaultProjectStructure",
+            "type": "object",
+            "title": "Auto scaffolds this structure inside the folder. The files existing in the current folders, will be left untouched.",
+            "default": "",
+            "examples": []
         }
     }
 }

@@ -1,5 +1,9 @@
-[![Build Status](https://travis-ci.org/caiusCitiriga/nrg-cli.svg?branch=dev)](https://travis-ci.org/caiusCitiriga/nrg-cli)
-# Energy CLI ```WIP [unstable]```
+# Energy CLI 
+[![Travis branch](https://img.shields.io/travis/caiusCitiriga/nrg-cli.svg?branch=dev.svg)](https://travis-ci.org/caiusCitiriga/nrg-cli)
+[![npm version](https://badge.fury.io/js/nrg-cli.svg)](https://badge.fury.io/js/nrg-cli)
+[![License: MIT](https://img.shields.io/github/license/mashape/apistatus.svg)](https://raw.githubusercontent.com/caiusCitiriga/nrg-cli/feature/templates/LICENSE)
+
+
 ***Note:*** Some features may be broken or not work as expected.<br>
 **This is not a stable version yet.**
 
@@ -50,12 +54,12 @@ This structure is the most commonly used. But is fully customizable, don't worry
 *Energy* can be initialized in practically any project, and is a good tool to have in your *dev-dependencies* while developing. 
 
 ## Features
-* Fully customizable behaviour and structure.
+* Custom additional item types.
+* Customizable item file templates.
+* Works in any project of any language.
 * Most commonly used item types are built in. 
-* Allows you to add custom additional item types.
 * Folders auto scaffolding during an item generation.
-* [NOT AVAILABLE YET] Configurable NPM package auto init.
-* [NOT AVAILABLE YET] Configurable Git repository auto init.
+* One shot project folders scaffolding by JSON structure.
 
 ## Get started
 ```bash
@@ -116,17 +120,144 @@ The file will be named **test-item.dto.ts** (assuming that we are using a `ts` e
 
 The class name would be: **TestItem**
 
-## **CLI Configuration**:
-*Energy* has a `.energy.cli.json` file that holds all its configurations.
+*Energy* by default generates TypeScript file templates, learn how to configure this behavior specifying your [custom file templates](#custom-file-templates)
 
-Below, each configuration and effect on the CLI:
+## **SCAFFOLD**: 
+**Usage**: ```nrg scaffold```
 
-| Preference               | Description                                                                                  |
-|:-------------------------|----------------------------------------------------------------------------------------------|
-| `srcFolder`              | The relative path to the folder you want to use as **source** folder.                        |
-| `defaultExt`             | The default extension used for the newly generated items.                                    |
-| `additionalTypes`        | The additional item-types you want to generate. <br>`{name: string, plural: string}[]`       |
-| `dotnetInterfaceStyle`   | When creating interfaces, decides whether to put or not a `I` in front of the interface name |
+**Description**: Scaffolds the folders structure defined in the cli configuration.
+
+The command can be ran without flags, and it will scaffold the structure inside **source** folder defined in the configuration. [Learn how to configure these folders](#default-project-structure-configuration)
+ 
+**Flags**:
+- **root**: Allows to specify a different location for the scaffold process. This will bypass the default configuration.
+
+**Usage example**:
+```bash
+# This will scaffold the default structure inside the ./src
+nrg scaffold 
+
+# This will scaffold the default structure inside the ./src/new-struct folder
+nrg scaffold --root=src/new-struct
+
+# This will scaffold the default structure inside a folder called src2, outside src
+nrg scaffold --root=src2
+```
+
+# **CLI Configuration**:
+*Energy* has a `.energy.cli.json` file that holds all its configurations. *Energy* reads this file each time you issue a command. This means that you can quickly change this file manually, and the cli will use the new configuration with the next command you will run.
+
+Some of the powers of *Energy* resides in its configuration file. Settings that you set, but don't necessarily use inside the commands. 
+
+### Custom file templates:
+
+*Energy* features a templating system for your files, it was originally meant for TypeScript files, but *Energy* fits in any project, of any language. 
+
+For this purpose you can override the default behavior of the templating system, specifying a custom template to use for a certain item type, or to override a default item type.
+
+So when you will generate an item of that kind, the new template defined by you will be used instead the default one.
+
+The templates can be defined inline, in the cli configuration, or you can link for each item a template url. This url will be relative, and will match a template file.
+
+The template must contain a `{{classname}}` placeholder, this placeholder will be swapped at generation time with the real Class/Interface/Enum name.
+
+In order to successfully define a custom item template, you have to specify two properties. The item type **name** you want to override, and the **template** or **templateFile**, but one of this two has to be defined. Otherwise an error will be thrown.
+
+**Custom file template-inline example:**
+```typescript
+// .energy.cli.json
+
+"customFileTemplates": [
+    {
+        "itemName": "entity",
+        "template": "import * as fs from 'fs';\n\nexport class {{classname}} {\n\n}\n"
+    }
+],
+```
+
+**Custom file template-file example:**
+```typescript
+// .energy.cli.json
+
+"customFileTemplates": [
+    {
+        "itemName": "entity",
+        "templateFile": "src/templates/entity.template.ts"
+    }
+],
+```
+
+```typescript
+//  src/templates/entity.template.ts
+
+import * as fs from 'fs';
+import * as path from 'path';
+import * as process from 'process';
+
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+import { BaseClass } 'src/base/base-class.ts';
+
+export class {{classname}} extends BaseClass {
+
+    public constructor(){
+        super();
+    }
+
+}
+```
+
+As you can see, this is a much more complex template than the default one, it imports various modules, and also extends a BaseClass. And it is as simple as that. Create your file, place it where you want, and link it in the configuration. **Remember the {{classname}}**.
+
+
+### Default project structure configuration:
+The default project configuration is a quick way to scaffold a complex folders structure you know you will use. So instead of going folder by folder manually, define your structure as JSON inside the cli configuration and let *Energy* do the work for you.
+
+**Default project structure configuration example**:
+```typescript
+// .energy.cli.json
+
+"defaultProjectStructure": {
+    "default": {
+        "folder-one": {
+            "deep-one": null,
+            "deep-two": {
+                "deep-deep-one": null,
+                "deep-deep-two": null
+            }
+        },
+        "folder-two": {
+            "deep-one": null,
+            "deep-two": null,
+            "deep-three": null
+        },
+        "interfaces": null,
+        "dtos": null,
+        "enums": null,
+        "customs": null,
+        "models": null,
+        "entities": {
+            "plain": null,
+            "complex": null
+        }
+    }
+}
+```
+**Note**: If you don't need a further structure inside a folder, you have to give it a **null** value.
+
+There are no restrictions for the name you can use for the folders.
+
+
+### All the configurations:
+| Preference                | Description                                                                                  |
+|:--------------------------|----------------------------------------------------------------------------------------------|
+| `srcFolder`               | The relative path to the folder you want to use as **source** folder.                        |
+| `defaultExt`              | The default extension used for the newly generated items.                                    |
+| `additionalTypes`         | The additional item-types you want to generate.<br><br>**type**: `{name: string, plural: string}[]`<br><br>**name**: The name for the item type. Used for the *notation*<br><br>**plural**: The plural form of that name. Used for the folder name                                                                         |
+| `dotnetInterfaceStyle`    | When creating interfaces, decides whether to put or not a `I` in front of the interface name |
+| `customFileTemplates`     | An array containing all of your custom templates for item types. These templates can be used to override the default file templating system.<br><br>**type**: `{itemName: string, template?: string; templateFile?: string}[]`<br><br>**itemName**: The name of the item type you want to affect. For example: *dto, enum, model*. In case of custom item type, use the *singular form* name<br><br>**template**: The string to use for the template, defined inline. If you have a simple template you can use this.<br><br>**templateFile**: In case of complex templates, you can organize your templates into folders, and bind the relative path for each template.<br>Learn more about [custom file templates](#custom-file-templates).                                                  |
+| `defaultProjectStructure` | A folders structure you want to scaffold istantly. Energy will go through all these folders and will create the structure for you.<br> The value is a JSON object, see the [Scaffold Command](#scaffold) for more information.                                                                                          |
 
 ---
 ### Built With

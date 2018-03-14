@@ -8,5 +8,6 @@ export const TYPES = {
 
 export const NAMED_TYPES = {
     InitCommand: 'InitCommand',
+    ScaffoldCommand: 'ScaffoldCommand',
     GenerateCommand: 'GenerateCommand',
 };

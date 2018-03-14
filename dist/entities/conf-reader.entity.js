@@ -16,11 +16,12 @@ const process = require("process");
 const inversify_1 = require("inversify");
 const cli_defaults_config_1 = require("../config/cli-defaults.config");
 const exceptions_conts_1 = require("../consts/exceptions.conts");
+const cli_defaults_config_2 = require("../config/cli-defaults.config");
 const nrg_exception_entity_1 = require("./nrg-exception.entity");
 let ConfReader = class ConfReader {
     constructor() {
         this._configFile = null;
-        this._cliConfFilename = 'energy.cli.json';
+        this._cliConfFilename = cli_defaults_config_2.CLI_CONF_FILENAME;
     }
     getSrcFolder() {
         this.readConf();
@@ -34,9 +35,17 @@ let ConfReader = class ConfReader {
         this.readConf();
         return this._configFile.additionalTypes;
     }
+    getCustomFileTemplates() {
+        this.readConf();
+        return this._configFile.customFileTemplates;
+    }
     useDotnetInterfaceStyle() {
         this.readConf();
         return this._configFile.dotnetInterfaceStyle;
+    }
+    getDefaultProjectStructure() {
+        this.readConf();
+        return this._configFile.defaultProjectStructure;
     }
     ensureIsEnergyProjectFolder() {
         if (!fs.existsSync(process.cwd() + path.sep + this._cliConfFilename)) {
@@ -61,6 +70,9 @@ let ConfReader = class ConfReader {
         fileContent.additionalTypes = fileContent.additionalTypes
             ? fileContent.additionalTypes
             : cli_defaults_config_1.CLI_DEFAULTS.additionalTypes;
+        fileContent.customFileTemplates = fileContent.customFileTemplates
+            ? fileContent.customFileTemplates
+            : cli_defaults_config_1.CLI_DEFAULTS.customFileTemplates;
         return fileContent;
     }
 };

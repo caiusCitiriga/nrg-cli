@@ -79,27 +79,8 @@ let GenerateCommand = class GenerateCommand {
     generateItem(itemType, flags) {
         const jobStatus = new BehaviorSubject_1.BehaviorSubject(false);
         const itemData = this.extractItemData(flags, itemType);
-        const pathItemsToCheck = itemData.fullPath.split(path.sep);
-        pathItemsToCheck.pop(); //      remove the filename
-        pathItemsToCheck.shift(); //    remove the '/' at the beginning
-        this.ensureEveryFolderExistsBeforeWrite(pathItemsToCheck);
-        const exportType = itemType.itemType === item_types_enum_1.ItemTypes.interface
-            ? 'interface'
-            : itemType.itemType === item_types_enum_1.ItemTypes.const
-                ? 'const'
-                : itemType.itemType === item_types_enum_1.ItemTypes.enum
-                    ? 'enum'
-                    : 'class';
-        const typescriptItemContent = `export ${exportType} ${itemData.classname} {\n\t\n}\n`;
-        fs.writeFile(itemData.fullPath, itemData.ext === 'ts' ? typescriptItemContent : '', (err) => {
-            if (!!err) {
-                throw new nrg_exception_entity_1.NRGException().throw({
-                    name: exceptions_conts_1.NRG_EXCEPTIONS.ItemWriteToDiskException.name,
-                    message: exceptions_conts_1.NRG_EXCEPTIONS.ItemWriteToDiskException.message(err.message),
-                });
-            }
-            jobStatus.next(true);
-        });
+        this.ensureEveryFolderExistsBeforeWrite(itemData);
+        this.writeFile(jobStatus, itemData);
         return jobStatus.asObservable();
     }
     extractItemData(flags, itemType) {
@@ -122,9 +103,44 @@ let GenerateCommand = class GenerateCommand {
             classname: this.extractClassname(filename, ext, itemType),
             foldername: itemType.plural,
             fullPath: ``,
+            fileContent: '',
         };
         result.fullPath = `${process.cwd()}${path.sep}${this._confReader.getSrcFolder()}${path.sep}${result.foldername}${path.sep}${additionalSubfolders}${result.filename}.${itemType.name}.${ext}`;
+        result.fileContent = this.getFileContent(itemType, result);
         return result;
+    }
+    getFileContent(itemType, itemData) {
+        let finalResult = '';
+        const customFileTemplates = this._confReader.getCustomFileTemplates();
+        if (!customFileTemplates.find(cft => cft.itemName === itemType.name) && itemData.ext === 'ts' || itemData.ext === 'tsx') {
+            return this.generateDetaultTSItem(itemType, itemData);
+        }
+        if (customFileTemplates.find(cft => cft.itemName === itemType.name)) {
+            const fileTemplateData = customFileTemplates.find(cft => cft.itemName === itemType.name);
+            if (fileTemplateData.templateFile && !!fileTemplateData.templateFile.length) {
+                finalResult = fs.readFileSync(fileTemplateData.templateFile, { encoding: 'utf-8' }).toString();
+            }
+            else {
+                finalResult = fileTemplateData.template;
+            }
+            if (!finalResult.length) {
+                new nrg_exception_entity_1.NRGException().throw({
+                    name: exceptions_conts_1.NRG_EXCEPTIONS.NoValidFileTemplateForThisItemException.name,
+                    message: exceptions_conts_1.NRG_EXCEPTIONS.NoValidFileTemplateForThisItemException.message(itemType.name),
+                });
+            }
+        }
+        return finalResult.length ? finalResult : `// Energy couldn't find a valid file template for this item.`;
+    }
+    generateDetaultTSItem(itemType, itemData) {
+        const exportType = itemType.itemType === item_types_enum_1.ItemTypes.interface
+            ? 'interface'
+            : itemType.itemType === item_types_enum_1.ItemTypes.const
+                ? 'const'
+                : itemType.itemType === item_types_enum_1.ItemTypes.enum
+                    ? 'enum'
+                    : 'class';
+        return `export ${exportType} ${itemData.classname} {\n    \n}\n`;
     }
     extractExtension(rawString, itemTypeName) {
         let extension = this._confReader.getDefaultFilesExt();
@@ -159,7 +175,10 @@ let GenerateCommand = class GenerateCommand {
             ? `I${finalClassName}`
             : finalClassName;
     }
-    ensureEveryFolderExistsBeforeWrite(pathItems) {
+    ensureEveryFolderExistsBeforeWrite(itemData) {
+        const pathItems = itemData.fullPath.split(path.sep);
+        pathItems.pop(); //      remove the filename
+        pathItems.shift(); //    remove the '/' at the beginning
         let progressivePath = path.sep;
         let directoriesCreated = 0;
         pathItems.forEach(item => {
@@ -168,6 +187,17 @@ let GenerateCommand = class GenerateCommand {
                 directoriesCreated++;
                 fs.mkdirSync(progressivePath);
             }
+        });
+    }
+    writeFile(jobStatus, itemData) {
+        fs.writeFile(itemData.fullPath, itemData.fileContent.replace('{{classname}}', itemData.classname), (err) => {
+            if (!!err) {
+                throw new nrg_exception_entity_1.NRGException().throw({
+                    name: exceptions_conts_1.NRG_EXCEPTIONS.ItemWriteToDiskException.name,
+                    message: exceptions_conts_1.NRG_EXCEPTIONS.ItemWriteToDiskException.message(err.message),
+                });
+            }
+            jobStatus.next(true);
         });
     }
 };

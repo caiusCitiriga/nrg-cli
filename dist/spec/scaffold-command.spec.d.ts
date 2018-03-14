@@ -1,5 +1,5 @@
 import 'rxjs/add/operator/filter';
-import { IConfReader } from "../interfaces/conf-reader.interface";
+import { IConfReader } from '../interfaces/conf-reader.interface';
 import { IAdditionalType } from '../interfaces/additional-type.interface';
 import { ICustomFileTemplate } from '../interfaces/custom-file-template.interface';
 export declare class MockConfReader implements IConfReader {

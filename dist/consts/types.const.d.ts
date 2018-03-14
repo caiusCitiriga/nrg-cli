@@ -7,5 +7,6 @@ export declare const TYPES: {
 };
 export declare const NAMED_TYPES: {
     InitCommand: string;
+    ScaffoldCommand: string;
     GenerateCommand: string;
 };

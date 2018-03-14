@@ -6,20 +6,24 @@ import { injectable } from 'inversify';
 
 import { CLI_DEFAULTS } from '../config/cli-defaults.config';
 import { NRG_EXCEPTIONS } from '../consts/exceptions.conts';
+import { CLI_CONF_FILENAME } from '../config/cli-defaults.config';
 
 import { NRGException } from './nrg-exception.entity';
 
 import { IConfReader } from '../interfaces/conf-reader.interface';
-import { IEnergyAdditionalType, IEnergyCLIConf } from '../interfaces/energy-cli-conf.interface';
+import { IEnergyCLIConf } from '../interfaces/energy-cli-conf.interface';
+import { IAdditionalType } from '../interfaces/additional-type.interface';
+import { ICustomFileTemplate } from '../interfaces/custom-file-template.interface';
 
 @injectable()
 export class ConfReader implements IConfReader {
+
     private _cliConfFilename: string;
     private _configFile: IEnergyCLIConf;
 
     public constructor() {
         this._configFile = null as any;
-        this._cliConfFilename = 'energy.cli.json';
+        this._cliConfFilename = CLI_CONF_FILENAME;
     }
 
     public getSrcFolder(): string {
@@ -32,14 +36,24 @@ export class ConfReader implements IConfReader {
         return this._configFile.defaultExt;
     }
 
-    public getAdditionalTypes(): IEnergyAdditionalType[] {
+    public getAdditionalTypes(): IAdditionalType[] {
         this.readConf();
         return this._configFile.additionalTypes;
+    }
+
+    public getCustomFileTemplates(): ICustomFileTemplate[] {
+        this.readConf();
+        return this._configFile.customFileTemplates;
     }
 
     public useDotnetInterfaceStyle(): boolean {
         this.readConf();
         return this._configFile.dotnetInterfaceStyle;
+    }
+
+    public getDefaultProjectStructure(): any {
+        this.readConf();
+        return this._configFile.defaultProjectStructure;
     }
 
     private ensureIsEnergyProjectFolder(): void {
@@ -70,6 +84,10 @@ export class ConfReader implements IConfReader {
         fileContent.additionalTypes = fileContent.additionalTypes
             ? fileContent.additionalTypes
             : CLI_DEFAULTS.additionalTypes;
+
+        fileContent.customFileTemplates = fileContent.customFileTemplates
+            ? fileContent.customFileTemplates
+            : CLI_DEFAULTS.customFileTemplates;
 
         return fileContent;
     }

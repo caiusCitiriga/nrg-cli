@@ -1,14 +1,12 @@
-import { ItemTypes } from '../enums/item-types.enum';
+import { IAdditionalType } from './additional-type.interface';
+import { ICustomFileTemplate } from './custom-file-template.interface';
 
 export interface IEnergyCLIConf {
+    $schema: string;
     srcFolder: string;
     defaultExt: string;
-    additionalTypes: IEnergyAdditionalType[];
     dotnetInterfaceStyle: boolean;
-}
-
-export interface IEnergyAdditionalType {
-    name: string;
-    plural?: string;
-    itemType?: ItemTypes;
+    additionalTypes: IAdditionalType[];
+    customFileTemplates: ICustomFileTemplate[];
+    defaultProjectStructure: any;
 }

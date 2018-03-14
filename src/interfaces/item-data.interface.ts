@@ -4,4 +4,5 @@ export interface IItemData {
     fullPath: string;
     classname: string;
     foldername: string;
+    fileContent: string;
 }

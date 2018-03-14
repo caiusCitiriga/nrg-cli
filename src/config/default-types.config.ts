@@ -1,7 +1,7 @@
 import { ItemTypes } from '../enums/item-types.enum';
-import { IEnergyAdditionalType } from '../interfaces/energy-cli-conf.interface';
+import { IAdditionalType } from '../interfaces/additional-type.interface';
 
-export const DefaultItemTypes: IEnergyAdditionalType[] = [
+export const DefaultItemTypes: IAdditionalType[] = [
     {
         name: 'dto',
         plural: 'dtos',

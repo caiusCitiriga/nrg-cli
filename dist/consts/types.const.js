@@ -9,6 +9,7 @@ exports.TYPES = {
 };
 exports.NAMED_TYPES = {
     InitCommand: 'InitCommand',
+    ScaffoldCommand: 'ScaffoldCommand',
     GenerateCommand: 'GenerateCommand',
 };
 //# sourceMappingURL=types.const.js.map

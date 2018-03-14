@@ -1,7 +1,7 @@
 {
     "name": "nrg-cli",
-    "version": "0.2.4",
-    "description": "A fully customizable CLI that aims to improve your workflow. It integrates well with Angular but is suited for any project.",
+    "version": "0.3.0",
+    "description": "A fully customizable CLI that aims to improve your projects workflow.",
     "author": "Caius Citiriga",
     "license": "MIT",
     "main": "dist/index.js",
@@ -30,11 +30,11 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/caiusCitiriga/nrg-ngx-cli.git"
+        "url": "git+https://github.com/caiusCitiriga/nrg-cli.git"
     },
-    "homepage": "https://github.com/caiusCitiriga/nrg-ngx-cli#readme",
+    "homepage": "https://github.com/caiusCitiriga/nrg-cli#readme",
     "bugs": {
-        "url": "https://github.com/caiusCitiriga/nrg-ngx-cli/issues"
+        "url": "https://github.com/caiusCitiriga/nrg-cli/issues"
     },
     "keywords": [
         "angular",
@@ -56,9 +56,16 @@
         "components",
         "services",
         "pipes",
+        "node",
         "modules",
         "directives",
         "crud",
+        "generate",
+        "generator",
+        "initialize",
+        "init",
+        "project",
+        "workflow",
         "default",
         "basic"
     ]

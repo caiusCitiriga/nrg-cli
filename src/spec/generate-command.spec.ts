@@ -5,45 +5,62 @@ import * as path from 'path';
 import * as rimraf from 'rimraf';
 import * as child_process from 'child_process';
 
+import { ItemTypes } from "../enums/item-types.enum";
+
 import { IFlag } from "smart-cli/dist/interfaces/plain/flag.interface";
+import { IItemData } from '../interfaces/item-data.interface';
 import { IConfReader } from "../interfaces/conf-reader.interface";
-import { IEnergyAdditionalType } from "../interfaces/energy-cli-conf.interface";
+import { IAdditionalType } from '../interfaces/additional-type.interface';
+import { ICustomFileTemplate } from '../interfaces/custom-file-template.interface';
 
 import { GenerateCommand } from "../entities/generate-command.entity";
 import { DefaultItemTypes } from "../config/default-types.config";
-import { ItemTypes } from "../enums/item-types.enum";
-import { IItemData } from '../interfaces/item-data.interface';
 
 export class MockConfReader implements IConfReader {
     private additionalTypes = [];
+    private customFileTemplates = [];
     private useDotnetInterfaces = false;
     private defaultFilesExtension = 'ts';
+    private defaultProjectStructure = {};
     private srcFolder = 'dist/spec/src_outlet';
 
     public setSrcFolder(val: string): void { this.srcFolder = val; }
-    public setUseDotnetInterfaceStyle(val: boolean) { this.useDotnetInterfaces = val; }
+    public setAdditionalTypes(val: IAdditionalType[]): void { this.additionalTypes = val; }
     public setDefaultFilesExtension(val: string): void { this.defaultFilesExtension = val; }
-    public setAdditionalTypes(val: IEnergyAdditionalType[]): void { this.additionalTypes = val; }
+    public setUseDotnetInterfaceStyle(val: boolean) { this.useDotnetInterfaces = val; }
+    public setCustomFileTemplates(val: ICustomFileTemplate[]): void { this.customFileTemplates = val; }
+    public setDefaultProjectStructure(val: any): void { this.defaultProjectStructure = val; }
 
     public getSrcFolder(): string { return this.srcFolder; }
     public getDefaultFilesExt(): string { return this.defaultFilesExtension; }
+    public getAdditionalTypes(): IAdditionalType[] { return this.additionalTypes; }
+    public getCustomFileTemplates(): ICustomFileTemplate[] { return this.customFileTemplates; }
     public useDotnetInterfaceStyle(): boolean { return this.useDotnetInterfaces; }
-    public getAdditionalTypes(): IEnergyAdditionalType[] { return this.additionalTypes; }
+    public getDefaultProjectStructure(): any { return this.getDefaultProjectStructure; }
 }
 
 const confReader = new MockConfReader();
 const generateCommand = new GenerateCommand(confReader);
 
-beforeAll(() => {
-    const defTypes = DefaultItemTypes.concat(confReader.getAdditionalTypes());
-    (generateCommand as any)._availableItemTypes = defTypes;
-    (generateCommand as any)._availableItemTypes
-        .forEach((t, idx) =>
-            !!t.itemType ? null : (generateCommand as any)._availableItemTypes[idx].itemType = ItemTypes.custom
-        );
-});
-
 describe('GenerateCommand with case "g --dto=test-one.dto"', () => {
+    beforeAll(() => {
+        const defTypes = DefaultItemTypes.concat(confReader.getAdditionalTypes());
+        (generateCommand as any)._availableItemTypes = defTypes;
+        (generateCommand as any)._availableItemTypes
+            .forEach((t, idx) =>
+                !!t.itemType ? null : (generateCommand as any)._availableItemTypes[idx].itemType = ItemTypes.custom
+            );
+    });
+
+    beforeEach((done) => {
+        rimraf(confReader.getSrcFolder(), err => {
+            if (!!err) {
+                console.log(`There was an error deleting the SRC folder:\n${err.message}`);
+            }
+            done();
+        });
+    });
+
     it('should parse the extension correctly', () => {
         //  Arrange
         const flags: IFlag[] = [{
@@ -403,7 +420,7 @@ describe('GenerateCommand with case "g --dto=test-one.special.dto.ts"', () => {
 });
 
 describe('GenerateCommand integration testing', () => {
-    it('should create the item correctly without the deep folder path', () => {
+    it('should create the item correctly without the deep folder path', (done) => {
         //  Arrange
         const flags: IFlag[] = [{
             name: "dto",
@@ -416,7 +433,7 @@ describe('GenerateCommand integration testing', () => {
             ]
         }];
 
-        //  Act/Assert
+        //  Act
         if (fs.existsSync(confReader.getSrcFolder())) {
             rimraf.sync(confReader.getSrcFolder());
         }
@@ -424,14 +441,14 @@ describe('GenerateCommand integration testing', () => {
         generateCommand
             .run(flags)
             .filter(res => !!res)
-            .subscribe(res => {
-                //  Assert
-                expect(fs.existsSync(process.cwd() + path.sep + confReader.getSrcFolder() + '/dtos/' + 'test-one.special.dto.ts')).toBeTruthy();
-                rimraf.sync(confReader.getSrcFolder());
-            });
+            .subscribe(res => done());
+
+        //  Assert
+        expect(fs.existsSync(process.cwd() + path.sep + confReader.getSrcFolder() + '/dtos/' + 'test-one.special.dto.ts')).toBeTruthy();
+        rimraf.sync(confReader.getSrcFolder());
     });
 
-    it('should create the interface item correctly', () => {
+    it('should create the interface item correctly', (done) => {
         //  Arrange
         const flags: IFlag[] = [{
             name: "int",
@@ -444,7 +461,7 @@ describe('GenerateCommand integration testing', () => {
             ]
         }];
 
-        //  Act/Assert
+        //  Act
         if (fs.existsSync(confReader.getSrcFolder())) {
             rimraf.sync(confReader.getSrcFolder());
         }
@@ -452,11 +469,12 @@ describe('GenerateCommand integration testing', () => {
         generateCommand
             .run(flags)
             .filter(res => !!res)
-            .subscribe(res => {
-                //  Assert
-                expect(fs.existsSync(process.cwd() + path.sep + confReader.getSrcFolder() + '/interfaces/' + 'test-one.interface.ts')).toBeTruthy();
-                rimraf.sync(confReader.getSrcFolder());
-            });
+            .subscribe(res => done());
+
+        //  Assert
+        expect(fs.existsSync(process.cwd() + path.sep + confReader.getSrcFolder() + '/interfaces/' + 'test-one.interface.ts')).toBeTruthy();
+        rimraf.sync(confReader.getSrcFolder());
+
     });
 
     it('should return the item data parsed correctly', () => {
