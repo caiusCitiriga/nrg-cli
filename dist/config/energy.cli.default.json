@@ -2,9 +2,24 @@
     "$schema": "https://raw.githubusercontent.com/caiusCitiriga/nrg-cli/38bd13fb9fd8054793460851cf4b8c75635c3779/src/config/cli-conf.schema.json",
     "srcFolder": "src",
     "defaultExt": "ts",
-    "additionalTypes": [],
-    "customFileTemplates": [],
-    "dotnetInterfaceStyle": false,
+    "additionalTypes": [
+        {
+            "name": "test",
+            "plural": "tests"
+        }
+    ],
+    "customFileTemplates": [
+        {
+            "itemName": "dto",
+            "templateFile": "./templates/dto.template.ts",
+            "template": "export class #classname# {\n\n}\n"
+        },
+        {
+            "itemName": "test",
+            "templateFile": "./templates/test.template.ts",
+            "template": "export class #classname# {\n\n}\n"
+        }
+    ],
     "defaultProjectStructure": {
         "default": {
             "folder-one": {
@@ -19,19 +34,16 @@
                 "deep-two": null,
                 "deep-three": null
             },
-            "interfaces": {
-                "mine": null
-            },
+            "interfaces": null,
             "dtos": null,
             "enums": null,
             "customs": null,
-            "models": {
-                "yolo": null
-            },
+            "models": null,
             "entities": {
                 "plain": null,
                 "complex": null
             }
         }
-    }
+    },
+    "dotnetInterfaceStyle": false
 }

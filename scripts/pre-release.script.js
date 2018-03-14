@@ -121,6 +121,9 @@ function publish() {
 
         if (!stderr) {
             cli.UI.out.printInfo('Rebuilded package successfully');
+            fs.copyFileSync('./src/config/package.info.json', './dist/config/package.info.json');
+            fs.copyFileSync('./src/config/energy.cli.default.json', './dist/config/energy.cli.default.json');
+            cli.UI.out.printInfo('Copied JSON config files into dist successfully');
             buildEnded.next(true);
             return;
         } else {

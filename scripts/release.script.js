@@ -100,7 +100,6 @@ function publish() {
     fs.writeFileSync('./src/config/package.info.json', JSON.stringify(infoFile), { encoding: 'utf-8' });
     cli.UI.out.printInfo('CLI info version updated successfully');
 
-
     rimraf('./dist', err => {
         if (!!err) {
             cli.UI.out.printError(err.message);
@@ -122,6 +121,9 @@ function publish() {
 
         if (!stderr) {
             cli.UI.out.printInfo('Rebuilded package successfully');
+            fs.copyFileSync('./src/config/package.info.json', './dist/config/package.info.json');
+            fs.copyFileSync('./src/config/energy.cli.default.json', './dist/config/energy.cli.default.json');
+            cli.UI.out.printInfo('Copied JSON config files into dist successfully');
             buildEnded.next(true);
             return;
         } else {
