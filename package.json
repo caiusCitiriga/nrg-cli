@@ -1,1 +1,74 @@
-{"name":"nrg-cli","version":"0.4.0","description":"A fully customizable CLI that aims to improve your projects workflow.","author":"Caius Citiriga","license":"MIT","main":"dist/index.js","bin":{"nrg":"dist/index.js"},"scripts":{"build":"tsc","dev":"tsc --watch","test":"jasmine --config=jasmine.json","release":"node scripts/release.script.js","pre-release":"node scripts/pre-release.script.js"},"dependencies":{"rxjs":"5.5.6","smart-cli":"1.0.0","inversify":"4.11.1","reflect-metadata":"0.1.12"},"devDependencies":{"@types/jasmine":"2.8.6","@types/node":"9.4.6","@types/rimraf":"2.0.2","jasmine":"3.1.0","link":"0.1.5","rimraf":"2.6.2","typescript":"2.7.2"},"repository":{"type":"git","url":"git+https://github.com/caiusCitiriga/nrg-cli.git"},"homepage":"https://github.com/caiusCitiriga/nrg-cli#readme","bugs":{"url":"https://github.com/caiusCitiriga/nrg-cli/issues"},"keywords":["angular","ng","ngx","energy","cli","@angular/cli","angular-cli","angular_cli","angularcli","angular2","angularX","scaffold","domain-configuration","domain","configuration","project-scaffold","components","services","pipes","node","modules","directives","crud","generate","generator","initialize","init","project","workflow","default","basic"]}
+{
+  "name": "nrg-cli",
+  "version": "0.4.0",
+  "description": "A fully customizable CLI that aims to improve your projects workflow.",
+  "author": "Caius Citiriga",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "bin": {
+    "nrg": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jasmine --config=jasmine.json",
+    "release": "node scripts/release.script.js",
+    "pre-release": "node scripts/pre-release.script.js"
+  },
+  "dependencies": {
+    "rxjs": "5.5.6",
+    "smart-cli": "1.0.0",
+    "inversify": "4.11.1",
+    "reflect-metadata": "0.1.12"
+  },
+  "devDependencies": {
+    "@types/jasmine": "2.8.6",
+    "@types/node": "9.4.6",
+    "@types/rimraf": "2.0.2",
+    "jasmine": "3.1.0",
+    "link": "0.1.5",
+    "rimraf": "2.6.2",
+    "typescript": "2.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caiusCitiriga/nrg-cli.git"
+  },
+  "homepage": "https://github.com/caiusCitiriga/nrg-cli#readme",
+  "bugs": {
+    "url": "https://github.com/caiusCitiriga/nrg-cli/issues"
+  },
+  "keywords": [
+    "angular",
+    "ng",
+    "ngx",
+    "energy",
+    "cli",
+    "@angular/cli",
+    "angular-cli",
+    "angular_cli",
+    "angularcli",
+    "angular2",
+    "angularX",
+    "scaffold",
+    "domain-configuration",
+    "domain",
+    "configuration",
+    "project-scaffold",
+    "components",
+    "services",
+    "pipes",
+    "node",
+    "modules",
+    "directives",
+    "crud",
+    "generate",
+    "generator",
+    "initialize",
+    "init",
+    "project",
+    "workflow",
+    "default",
+    "basic"
+  ]
+}
