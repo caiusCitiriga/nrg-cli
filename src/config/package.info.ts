@@ -1,1 +1,1 @@
-export const PACKAGE_INFO = {"name":"Akash","version":"0.4.0"}
+export const PACKAGE_INFO = {"name":"Akash","version":"0.4.1"}

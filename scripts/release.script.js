@@ -68,48 +68,30 @@ function askLastConfirm() {
     cli.UI.out.printWarning('Your\'e about to publish a new release to NPM. Are you sure about this? You cannot go back from this point.\n');
 
     setTimeout(() => {
+        cli.UI.input.askUserInput({
+            question: '> ',
+            callback: (answer) => {
+                if (answer.toLowerCase() === 'y') {
+                    publish();
+                    return;
+                }
 
+                if (answer.toLowerCase() === 'n') {
+                    abort();
+                    return;
+                }
+
+                askLastConfirm();
+            }
+        });
     }, 1500);
-    cli.UI.input.askUserInput({
-        question: '> ',
-        callback: (answer) => {
-            if (answer.toLowerCase() === 'y') {
-                publish();
-                return;
-            }
-
-            if (answer.toLowerCase() === 'n') {
-                abort();
-                return;
-            }
-
-            askLastConfirm();
-        }
-    });
 }
 
 function publish() {
-    const package = JSON.parse(fs.readFileSync('./package.json').toString());
-    package.version = newVersion.number;
-    fs.writeFileSync('./package.json', JSON.stringify(package), { encoding: 'utf-8' });
-    cli.UI.out.printInfo('Package version updated successfully');
+    updatePackageVersion();
+    updateInfoFile();
+    cleanDistFolder();
 
-    const infoFile = JSON.parse(fs.readFileSync('./src/config/package.info.json').toString());
-    infoFile.name = newVersion.name;
-    infoFile.version = newVersion.number;
-    fs.writeFileSync('./src/config/package.info.json', JSON.stringify(infoFile), { encoding: 'utf-8' });
-    fs.writeFileSync('./src/config/package.info.ts', `export const PACKAGE_INFO = ${JSON.stringify(infoFile)}`, { encoding: 'utf-8' });
-    cli.UI.out.printInfo('CLI info version updated successfully');
-
-    rimraf('./dist', err => {
-        if (!!err) {
-            cli.UI.out.printError(err.message);
-            abort();
-            return;
-        }
-    });
-
-    cli.UI.out.printInfo('Removed old dist folder successfully');
     cli.UI.out.printInfo('Rebuilding package...');
     let buildEnded = new BehaviorSubject(false);
     exec('npm run build', (err, stdout, stderr) => {
@@ -203,6 +185,34 @@ function publish() {
                 });
         });
 
+}
+
+function updatePackageVersion() {
+    const package = JSON.parse(fs.readFileSync('./package.json').toString());
+    package.version = newVersion.number;
+    fs.writeFileSync('./package.json', JSON.stringify(package), { encoding: 'utf-8' });
+    cli.UI.out.printInfo('Package version updated successfully');
+}
+
+function updateInfoFile() {
+    const infoFile = JSON.parse(fs.readFileSync('./src/config/package.info.json').toString());
+    infoFile.name = newVersion.name;
+    infoFile.version = newVersion.number;
+    fs.writeFileSync('./src/config/package.info.json', JSON.stringify(infoFile), { encoding: 'utf-8' });
+    fs.writeFileSync('./src/config/package.info.ts', `export const PACKAGE_INFO = ${JSON.stringify(infoFile)}`, { encoding: 'utf-8' });
+    cli.UI.out.printInfo('CLI info version updated successfully');
+}
+
+function cleanDistFolder() {
+    rimraf('./dist', err => {
+        if (!!err) {
+            cli.UI.out.printError(err.message);
+            abort();
+            return;
+        }
+
+        cli.UI.out.printInfo('Removed old dist folder successfully');
+    });
 }
 
 function abort() {
